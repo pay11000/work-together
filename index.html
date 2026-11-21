@@ -219,6 +219,15 @@ input:disabled{opacity:.35}
 .up-task + .up-proj{border-top:1px solid var(--line)}
 .up-task:last-child{padding-bottom:12px}
 .due-mini{font-size:11px;color:var(--sub);white-space:nowrap}
+.ex-opts{display:flex;flex-direction:column;gap:8px}
+.ex-o{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.ex-o:has(input[type=checkbox]:checked){border-color:var(--accent);background:var(--accent-soft)}
+.ex-o input[type=checkbox]{width:19px;height:19px;accent-color:var(--accent);margin-top:2px;flex:none}
+.ex-o input[type=radio]{accent-color:var(--accent)}
+.ex-res{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.ex-file{border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
+.ex-file img{width:100%;border-radius:8px;border:1px solid var(--line);margin-bottom:8px;background:#fff}
+#exC input{flex:1}
 .hidden{display:none!important}
 </style>
 </head>
@@ -234,7 +243,7 @@ const COLORS = ['var(--p0)','var(--p1)','var(--p2)','var(--p3)'];
 const SWATCHES = ['#2f9e8f','#e07a5f','#6c7bd9','#c9a227','#d6589f','#3d8bd9','#7a9e3b','#8e6cc9','#e0563b','#5f6b7a'];
 const WD = ['日','一','二','三','四','五','六'];
 const EMOJIS = ['👏','💪','🔥','🌟','❤️','☕'];
-const EMOJIS_ALL = ['👏','💪','🔥','🌟','❤️','☕','🙏','😊','🎉','👍','🤗','💯','✨','🥳','🫶','🙌','🚀','🏆','😍','🥰','😂','🤣','😆','👌','😮','😱','👀','😢','🥲','🥺','😤','🙄','😡','😑','😵','🫠','💀','😮‍💨','🤔','😅','🍀','🌈'];
+const EMOJIS_ALL = ['👏','💪','🔥','🌟','❤️','☕','🙏','😊','🎉','👍','🤗','💯','✨','🥳','💖','🙌','🚀','🏆','😍','🥰','😂','🤣','😆','👌','😮','😱','👀','😢','😭','🥺','😤','🙄','😡','😑','😵','😩','💀','😓','🤔','😅','😬','🍀'];
 const AC = 'autocomplete="off" autocorrect="off" spellcheck="false"';   // 不讓瀏覽器記住輸入內容
 
 // ===================== 小工具 =====================
@@ -608,7 +617,7 @@ function renderRecords(){
       <select id="fr">${RANGES.map(([k,l])=>`<option value="${k}" ${st.recRange===k?'selected':''}>${l}</option>`).join('')}</select></div>
     <div class="row" style="justify-content:space-between;margin:0 4px 4px">
       <span style="font-size:13px;color:var(--sub)">合計 <b style="color:var(--text)">${zhDur(total)}</b></span>
-      <span class="row" style="gap:6px"><button class="btn sm ghost" id="exp">匯出 Excel</button><button class="btn sm" id="add">＋ 補登</button></span></div>
+      <span class="row" style="gap:6px"><button class="btn sm ghost" id="exp">📤 匯出成果</button><button class="btn sm" id="add">＋ 補登</button></span></div>
     ${list.length?Object.keys(groups).map(k=>{ const [y,m,d]=k.split('-').map(Number), dd=new Date(y,m-1,d);
       const dayTot=groups[k].reduce((t,s)=>t+(sessEnd(s)-new Date(s.start_at)),0);
       return `<div class="day-h"><span>${m}/${d}（${WD[dd.getDay()]}）</span><span>${zhShort(dayTot)}</span></div>
@@ -623,17 +632,192 @@ function renderRecords(){
   $('#fw').onchange=e=>{ st.recWho=e.target.value; renderRecords(); };
   $('#fr').onchange=e=>{ st.recRange=e.target.value; renderRecords(); };
   $('#add').onclick=()=>openSessionModal(null);
-  $('#exp').onclick=exportCSV;
+  $('#exp').onclick=openExportModal;
   document.querySelectorAll('.rec.tap[data-id]').forEach(el=>el.onclick=()=>openSessionModal(st.sessions.find(s=>s.id===el.dataset.id)));
 }
 function downloadFile(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
-function exportCSV(){
-  const list=recList().slice().reverse();
-  const rows=[['人員','專案','任務','開始','結束','時長','小時數','備註']].concat(list.map(s=>{ const ms=sessEnd(s)-new Date(s.start_at);
-    return [nameOf(s.user_id),projName(s.project_id),taskOf(s.task_id)?.title||'',fmtFull(s.start_at),s.end_at?fmtFull(s.end_at):'進行中',zhDur(ms),hrs(ms).toFixed(2),s.note||'']; }));
-  const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
-  const lbl=RANGES.find(r=>r[0]===st.recRange)[1], d=new Date();
-  downloadFile(`工時紀錄_${lbl}_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}.csv`, csv, 'text/csv;charset=utf-8');
+// ===================== 匯出工作成果 =====================
+function downloadBlob(name, blob){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),60000); }
+function cssColor(c){ const m=String(c).match(/^var\((--[^)]+)\)$/); return m ? (getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim()||'#2f9e8f') : c; }
+const CH_FONT='"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif';
+function ymd(d){ return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`; }
+function dayList(range,c){ const out=[]; let p=periodOf('day',range.start,0,c); let guard=0;
+  while(+p.start<+range.end && guard++<800){ out.push(p); p=periodOf('day',p.end,0,c); } return out; }
+function exportRange(kind, from, to){
+  const c=userCut(me.id);
+  if(kind==='custom'){ const [y1,m1,d1]=from.split('-').map(Number), [y2,m2,d2]=to.split('-').map(Number);
+    return {start:atCut(y1,m1-1,d1,c), end:atCut(y2,m2-1,d2+1,c), label:`${m1}月${d1}日-${m2}月${d2}日`}; }
+  const map={week:['week',0,'本週'],lastweek:['week',-1,'上週'],month:['month',0,'本月'],lastmonth:['month',-1,'上月']};
+  const [k,o,l]=map[kind]; const p=periodOf(k,Date.now(),o,c); return {...p,label:l};
+}
+function exportData(range, uids, pid){
+  const c=userCut(me.id);
+  const ss=st.sessions.filter(s=>uids.includes(s.user_id) && (pid==='all' || (s.project_id||'')===pid) && overlapMs(s,range)>0)
+    .sort((a,b)=>new Date(a.start_at)-new Date(b.start_at));
+  const todayEnd=periodOf('day',Date.now(),0,c).end;   // 圖表畫到今天為止
+  const days=dayList({start:range.start,end:new Date(Math.min(+range.end,+todayEnd))},c);
+  return {range,uids,pid,ss,days,c};
+}
+// ---- Excel ----
+async function buildExcel(D){
+  const X=await loadXLSX(); const wb=X.utils.book_new(); const r2=n=>Math.round(n*100)/100;
+  const names=D.uids.map(nameOf);
+  const det=[['人員','工作日','專案','任務','開始','結束','時長','期間內小時數','備註']];
+  D.ss.forEach(s=>{ const ms=overlapMs(s,D.range); const wk=workDateKey(s.start_at,D.c);
+    det.push([nameOf(s.user_id),wk.replace(/-/g,'/'),projName(s.project_id),taskOf(s.task_id)?.title||'',fmtFull(s.start_at),s.end_at?fmtFull(s.end_at):'進行中',zhDur(sessEnd(s)-new Date(s.start_at)),r2(hrs(ms)),s.note||'']); });
+  const daily=[['工作日','星期',...names,'合計']];
+  D.days.forEach(p=>{ const row=D.uids.map(u=>r2(hrs(sumMs(D.ss.filter(s=>s.user_id===u),p)))); const tot=r2(row.reduce((a,b)=>a+b,0));
+    daily.push([`${p.start.getFullYear()}/${p.start.getMonth()+1}/${p.start.getDate()}`,'週'+WD[p.start.getDay()],...row,tot]); });
+  daily.push(['合計','',...D.uids.map(u=>r2(hrs(sumMs(D.ss.filter(s=>s.user_id===u),D.range)))),r2(hrs(sumMs(D.ss,D.range)))]);
+  const pids=[...new Set(D.ss.map(s=>s.project_id||''))];
+  const proj=[['專案','任務',...names,'合計']];
+  pids.forEach(pid=>{ const ps=D.ss.filter(s=>(s.project_id||'')===pid);
+    const row=D.uids.map(u=>r2(hrs(sumMs(ps.filter(s=>s.user_id===u),D.range))));
+    proj.push([projName(pid),'（專案合計）',...row,r2(row.reduce((a,b)=>a+b,0))]);
+    [...new Set(ps.map(s=>s.task_id).filter(Boolean))].forEach(tid=>{ const ts=ps.filter(s=>s.task_id===tid);
+      const r=D.uids.map(u=>r2(hrs(sumMs(ts.filter(s=>s.user_id===u),D.range)))); proj.push(['',taskOf(tid)?.title||'(已刪除任務)',...r,r2(r.reduce((a,b)=>a+b,0))]); }); });
+  const add=(rows,name,cols)=>{ const ws=X.utils.aoa_to_sheet(rows); ws['!cols']=cols.map(w=>({wch:w})); X.utils.book_append_sheet(wb,ws,name); };
+  add(daily,'每日彙總',[12,6,...names.map(()=>10),10]);
+  add(proj,'專案彙總',[18,20,...names.map(()=>10),10]);
+  add(det,'工時明細',[8,11,16,18,20,20,18,12,20]);
+  const out=X.write(wb,{bookType:'xlsx',type:'array'});
+  return new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+// ---- 畫布工具 ----
+function makeCanvas(w,h){ const c=document.createElement('canvas'), s=2; c.width=w*s; c.height=h*s; const x=c.getContext('2d'); x.scale(s,s);
+  x.fillStyle='#ffffff'; x.fillRect(0,0,w,h); x.textBaseline='middle'; return [c,x]; }
+function chartHeader(x,w,title,sub,D){
+  x.fillStyle='#1d2129'; x.font=`bold 22px ${CH_FONT}`; x.textAlign='left'; x.fillText(title,32,34);
+  x.fillStyle='#6b7280'; x.font=`14px ${CH_FONT}`; x.fillText(sub,32,62);
+  let lx=w-32; x.textAlign='right'; x.font=`14px ${CH_FONT}`;
+  [...D.uids].reverse().forEach(u=>{ const n=nameOf(u); const tw=x.measureText(n).width; x.fillStyle='#1d2129'; x.fillText(n,lx,34); lx-=tw+8;
+    x.fillStyle=cssColor(colorOf(u)); x.beginPath(); x.roundRect(lx-12,28,12,12,3); x.fill(); lx-=28; });
+}
+function niceMax(v){ if(v<=0) return 1; const p=Math.pow(10,Math.floor(Math.log10(v))); for(const m of [1,1.5,2,2.5,3,4,5,6,8,10]) if(m*p>=v) return m*p; return 10*p; }
+function rangeSub(D){ const f=d=>`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`; const a=D.days[0]?.start||D.range.start, z=(D.days[D.days.length-1]||{start:D.range.start}).start; return `${f(a)}（${WD[a.getDay()]}）～ ${f(z)}（${WD[z.getDay()]}）・${D.pid==='all'?'全部專案':projName(D.pid)}・依 ${nameOf(me.id)} 的切點（${cutText(D.c)}）`; }
+// ---- 長條圖 ----
+function barByDate(D){
+  let groups=D.days.map(p=>({p,label:`${p.start.getMonth()+1}/${p.start.getDate()}`,sub:WD[p.start.getDay()]})), unit='日';
+  if(groups.length>31){ unit='週'; const ws=[]; let p=periodOf('week',D.range.start,0,D.c);
+    while(+p.start<+D.range.end){ ws.push({p:{start:new Date(Math.max(+p.start,+D.range.start)),end:new Date(Math.min(+p.end,+D.range.end))},label:`${p.start.getMonth()+1}/${p.start.getDate()}`,sub:'週'}); p=periodOf('week',p.end,0,D.c); } groups=ws; }
+  const vals=groups.map(g=>D.uids.map(u=>hrs(sumMs(D.ss.filter(s=>s.user_id===u),g.p))));
+  const max=niceMax(Math.max(0.5,...vals.flat()));
+  const W=Math.max(900, 120+groups.length*(D.uids.length*16+14)), H=520, L=64, R=24, T=100, B=70, cw=W-L-R, ch=H-T-B;
+  const [c,x]=makeCanvas(W,H);
+  chartHeader(x,W,`每${unit}工作時數`,rangeSub(D),D);
+  x.font=`12px ${CH_FONT}`; x.textAlign='right';
+  for(let i=0;i<=5;i++){ const v=max*i/5, y=T+ch-ch*i/5; x.strokeStyle=i?'#eceef1':'#c9ccd2'; x.lineWidth=1; x.beginPath(); x.moveTo(L,y); x.lineTo(W-R,y); x.stroke();
+    x.fillStyle='#6b7280'; x.fillText((Math.round(v*10)/10)+'h',L-8,y); }
+  const gw=cw/groups.length, bw=Math.min(28,(gw-10)/D.uids.length);
+  groups.forEach((g,i)=>{ const gx=L+gw*i+(gw-bw*D.uids.length)/2;
+    D.uids.forEach((u,j)=>{ const v=vals[i][j], h=ch*v/max, bx=gx+bw*j, by=T+ch-h;
+      x.fillStyle=cssColor(colorOf(u)); if(h>0){ x.beginPath(); x.roundRect(bx+1,by,bw-2,h,[4,4,0,0]); x.fill(); }
+      if(v>0 && bw>=14){ x.fillStyle='#1d2129'; x.font=`10px ${CH_FONT}`; x.textAlign='center'; x.fillText(v>=10?v.toFixed(0):v.toFixed(1),bx+bw/2,by-8); } });
+    x.fillStyle='#1d2129'; x.font=`12px ${CH_FONT}`; x.textAlign='center'; x.fillText(g.label,L+gw*i+gw/2,T+ch+18);
+    x.fillStyle=(g.sub==='六'||g.sub==='日')?'#e0563b':'#9aa1ad'; x.font=`11px ${CH_FONT}`; x.fillText(g.sub,L+gw*i+gw/2,T+ch+36); });
+  x.fillStyle='#6b7280'; x.font=`13px ${CH_FONT}`; x.textAlign='left';
+  x.fillText('合計：'+D.uids.map(u=>`${nameOf(u)} ${fmtHrs(sumMs(D.ss.filter(s=>s.user_id===u),D.range))} 小時`).join('　'),L,H-16);
+  return c;
+}
+function barByProject(D){
+  const pids=[...new Set(D.ss.map(s=>s.project_id||''))];
+  const rows=pids.map(pid=>({name:projName(pid),v:D.uids.map(u=>hrs(sumMs(D.ss.filter(s=>(s.project_id||'')===pid&&s.user_id===u),D.range)))}))
+    .sort((a,b)=>b.v.reduce((p,q)=>p+q,0)-a.v.reduce((p,q)=>p+q,0));
+  const barH=18, gap=18, rowH=D.uids.length*barH+gap, L=180, R=80, T=100, W=1000;
+  const H=T+Math.max(1,rows.length)*rowH+60, cw=W-L-R;
+  const [c,x]=makeCanvas(W,H);
+  chartHeader(x,W,'各專案工作時數',rangeSub(D),D);
+  const max=niceMax(Math.max(0.5,...rows.flatMap(r=>r.v)));
+  x.font=`12px ${CH_FONT}`;
+  for(let i=0;i<=5;i++){ const gx=L+cw*i/5; x.strokeStyle=i?'#eceef1':'#c9ccd2'; x.beginPath(); x.moveTo(gx,T-8); x.lineTo(gx,H-50); x.stroke();
+    x.fillStyle='#6b7280'; x.textAlign='center'; x.fillText((Math.round(max*i/5*10)/10)+'h',gx,H-36); }
+  if(!rows.length){ x.fillStyle='#9aa1ad'; x.textAlign='center'; x.font=`15px ${CH_FONT}`; x.fillText('這段期間沒有紀錄',W/2,T+20); }
+  rows.forEach((r,i)=>{ const y0=T+i*rowH;
+    x.fillStyle='#1d2129'; x.font=`bold 14px ${CH_FONT}`; x.textAlign='right';
+    let nm=r.name; while(x.measureText(nm).width>L-24 && nm.length>2) nm=nm.slice(0,-2)+'…'; x.fillText(nm,L-12,y0+D.uids.length*barH/2);
+    D.uids.forEach((u,j)=>{ const w=cw*r.v[j]/max, y=y0+j*barH; x.fillStyle=cssColor(colorOf(u));
+      if(w>0){ x.beginPath(); x.roundRect(L,y+2,w,barH-4,[0,4,4,0]); x.fill(); }
+      x.fillStyle='#1d2129'; x.font=`12px ${CH_FONT}`; x.textAlign='left'; x.fillText(`${r.v[j].toFixed(1)} h`,L+w+6,y+barH/2); }); });
+  return c;
+}
+// ---- 時段圖 ----
+function timelineChart(D){
+  let days=D.days; let note='';
+  if(days.length>62){ days=days.slice(-62); note='（期間超過 62 天，只顯示最後 62 天）'; }
+  const lanes=D.uids.length, laneH=16, rowH=lanes*laneH+10, L=96, R=24, T=110, W=1100, cw=W-L-R;
+  const H=T+days.length*rowH+50;
+  const [c,x]=makeCanvas(W,H);
+  chartHeader(x,W,'每日工作時段'+note,rangeSub(D),D);
+  const startH=D.c.m/60;
+  x.font=`11px ${CH_FONT}`; x.textAlign='center';
+  for(let h=0;h<=24;h+=2){ const gx=L+cw*h/24; x.strokeStyle=h%6===0?'#d5d8dd':'#eef0f2'; x.beginPath(); x.moveTo(gx,T-6); x.lineTo(gx,T+days.length*rowH); x.stroke();
+    const hh=(startH+h)%24; x.fillStyle='#6b7280'; x.fillText(`${pad(Math.floor(hh))}:${pad(Math.round((hh%1)*60))}`,gx,T-16); }
+  days.forEach((p,i)=>{ const y0=T+i*rowH;
+    if(i%2===0){ x.fillStyle='#f7f8fa'; x.fillRect(L,y0,cw,rowH); }
+    const wd=p.start.getDay(); x.fillStyle=(wd===0||wd===6)?'#e0563b':'#1d2129'; x.font=`12px ${CH_FONT}`; x.textAlign='right';
+    x.fillText(`${p.start.getMonth()+1}/${p.start.getDate()}（${WD[wd]}）`,L-10,y0+rowH/2);
+    D.uids.forEach((u,j)=>{ x.fillStyle=cssColor(colorOf(u));
+      D.ss.filter(s=>s.user_id===u).forEach(s=>{ const a=Math.max(+new Date(s.start_at),+p.start), b=Math.min(sessEnd(s),+p.end); if(b<=a) return;
+        const x1=L+cw*(a-p.start)/86400000, x2=L+cw*(b-p.start)/86400000;
+        x.beginPath(); x.roundRect(x1,y0+5+j*laneH,Math.max(2,x2-x1),laneH-3,3); x.fill(); }); });
+    x.textAlign='left'; x.font=`10px ${CH_FONT}`; x.fillStyle='#6b7280';
+  });
+  x.fillStyle='#6b7280'; x.font=`12px ${CH_FONT}`; x.textAlign='left';
+  x.fillText(`每列一天，由 ${minToHM(D.c.m)} 起算 24 小時；${lanes>1?'每位人員各一條，':''}色塊為工作時段`,L,H-20);
+  return c;
+}
+if(!CanvasRenderingContext2D.prototype.roundRect){ CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){ this.rect(x,y,w,h); }; }
+function canvasBlob(c){ return new Promise(ok=>c.toBlob(b=>ok(b),'image/png')); }
+
+function openExportModal(){
+  const today=new Date(), iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const rangeSel=['week','lastweek','month','lastmonth'].includes(st.recRange)?st.recRange:'month';
+  const projs=st.projects.filter(p=>st.scope==='all'||isMine(p));
+  modal(`<h3>匯出工作成果</h3>
+    <label class="f">期間</label>
+    <select id="exR"><option value="week">本週</option><option value="lastweek">上週</option><option value="month">本月</option><option value="lastmonth">上月</option><option value="custom">自訂起訖</option></select>
+    <div id="exC" class="row hidden" style="gap:8px;margin-top:8px"><input id="exF" type="date" ${AC} value="${iso(new Date(today.getFullYear(),today.getMonth(),1))}"><span>～</span><input id="exT" type="date" ${AC} value="${iso(today)}"></div>
+    <label class="f">人員</label>${assigneePicker('exU', st.recWho==='all'?people():[st.recWho])}
+    <label class="f">專案</label><select id="exP"><option value="all">全部專案</option>${projs.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}<option value="">未指定專案</option></select>
+    <label class="f">匯出內容（可複選）</label>
+    <div class="ex-opts">
+      <label class="ex-o"><input type="checkbox" id="exX" checked><span><b>📊 Excel</b><br><span class="hint" style="margin:0">每日彙總、專案／任務彙總、工時明細 3 個工作表</span></span></label>
+      <label class="ex-o"><input type="checkbox" id="exB"><span><b>📈 長條圖</b><br><span class="hint" style="margin:0">
+        <label style="margin-right:10px"><input type="radio" name="exBy" value="date" checked> 依日期</label><label><input type="radio" name="exBy" value="proj"> 依專案</label></span></span></label>
+      <label class="ex-o"><input type="checkbox" id="exL"><span><b>🕒 時段圖</b><br><span class="hint" style="margin:0">每天幾點到幾點在工作，一目了然</span></span></label>
+    </div>
+    <button class="btn big" id="exGo" style="margin-top:14px">產生</button>
+    <div id="exOut"></div>
+    <div class="actions"><button class="btn ghost" id="exX2">關閉</button></div>`,(el,close)=>{
+    const R=el.querySelector('#exR'); R.value=rangeSel;
+    R.onchange=()=>el.querySelector('#exC').classList.toggle('hidden',R.value!=='custom');
+    el.querySelector('#exX2').onclick=close;
+    el.querySelector('#exGo').onclick=async()=>{
+      const uids=pickedOf(el,'exU'); if(!uids.length) return toast('請至少選一位人員');
+      const wantX=el.querySelector('#exX').checked, wantB=el.querySelector('#exB').checked, wantL=el.querySelector('#exL').checked;
+      if(!wantX&&!wantB&&!wantL) return toast('請至少勾選一種匯出內容');
+      let range; try{ range=exportRange(R.value, el.querySelector('#exF').value, el.querySelector('#exT').value); }catch(e){ return toast('請選擇起訖日期'); }
+      if(!(+range.end>+range.start)) return toast('結束日期要晚於開始日期');
+      const D=exportData(range, people().filter(u=>uids.includes(u)), el.querySelector('#exP').value);
+      const out=el.querySelector('#exOut'); out.innerHTML='<div class="hint">產生中…</div>';
+      const stamp=ymd(new Date()), base=`工作成果_${range.label}_${stamp}`, files=[];
+      try{
+        if(wantX) files.push({name:`${base}.xlsx`, blob:await buildExcel(D), label:'📊 Excel'});
+        if(wantB){ const by=el.querySelector('input[name=exBy]:checked').value; const cv=by==='date'?barByDate(D):barByProject(D);
+          files.push({name:`${base}_長條圖${by==='date'?'_依日期':'_依專案'}.png`, blob:await canvasBlob(cv), label:'📈 長條圖', img:true}); }
+        if(wantL) files.push({name:`${base}_時段圖.png`, blob:await canvasBlob(timelineChart(D)), label:'🕒 時段圖', img:true});
+      }catch(e){ out.innerHTML='<div class="imp-err">產生失敗，請確認網路連線後再試一次</div>'; return; }
+      const total=sumMs(D.ss,range);
+      out.innerHTML=`<div class="ex-res"><div class="lbl-s">已產生 ${files.length} 個檔案・期間內共 ${zhShort(total)}・${D.ss.length} 筆紀錄</div>
+        ${files.map((f,i)=>`<div class="ex-file">${f.img?`<img src="${URL.createObjectURL(f.blob)}" alt="">`:''}
+          <div class="row" style="justify-content:space-between"><span><b>${f.label}</b><br><span class="hint" style="margin:0;word-break:break-all">${esc(f.name)}</span></span><button class="btn sm" data-dl="${i}">下載</button></div></div>`).join('')}
+        ${files.length>1?`<button class="btn ghost" id="exAll" style="width:100%;margin-top:8px">全部下載</button>`:''}
+        <p class="hint">手機上也可以長按圖片直接儲存或分享。</p></div>`;
+      out.querySelectorAll('[data-dl]').forEach(b=>b.onclick=()=>downloadBlob(files[+b.dataset.dl].name, files[+b.dataset.dl].blob));
+      const all=out.querySelector('#exAll'); if(all) all.onclick=async()=>{ for(const f of files){ downloadBlob(f.name,f.blob); await new Promise(r=>setTimeout(r,600)); } };
+      out.scrollIntoView({behavior:'smooth',block:'start'});
+    };
+  });
 }
 
 // ===================== 行事曆提醒 =====================
@@ -900,7 +1084,23 @@ async function sendKudos(to, w, emoji, message){
   if(error) return toast('送出失敗');
   await loadKudos(); render(); popKudos(`已送出 ${esc(emoji||'💌')}`, `${esc(nameOf(to))} 打開 App 就會看到`);
 }
-const QUICK_REACT=['❤️','👍','😂','🤗','🙏','😮','😢','😤','🙄'];
+const QUICK_REACT_RAW=['❤️','👍','😂','🤗','🙏','😮','😢','😤','🙄'];
+// 檢查這台裝置能不能顯示某個表情（顯示不出來就自動隱藏）
+const emojiOK=(()=>{ let cv,ctx,base=null,tofu=null; const cache={};
+  function px(e){ ctx.clearRect(0,0,40,40); ctx.fillText(e,2,2); return ctx.getImageData(0,0,40,40).data; }
+  function stats(d){ let ink=0,col=0; for(let i=0;i<d.length;i+=4){ if(d[i+3]>50){ ink++; if(Math.abs(d[i]-d[i+1])>25||Math.abs(d[i+1]-d[i+2])>25) col++; } } return {ink,col}; }
+  function diff(a,b){ let n=0; for(let i=3;i<a.length;i+=4) if(Math.abs(a[i]-b[i])>60) n++; return n; }
+  return e=>{ if(e in cache) return cache[e];
+    try{ if(!cv){ cv=document.createElement('canvas'); cv.width=cv.height=40; ctx=cv.getContext('2d',{willReadFrequently:true}); ctx.textBaseline='top';
+        ctx.font='30px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+        base={...stats(px('😀')),w:ctx.measureText('😀').width}; tofu=px('\u{10FFFD}'); }
+      if(base.col<20) return cache[e]=true;              // 無法判斷時一律顯示
+      const d=px(e), s=stats(d);
+      if(s.ink<15) return cache[e]=false;                // 什麼都沒畫出來
+      if(ctx.measureText(e).width>base.w*1.6) return cache[e]=false;   // 組合表情被拆成兩個字
+      return cache[e]= s.col>20 || diff(d,tofu)>40;      // 有顏色，或至少不是「方框」
+    }catch(_){ return cache[e]=true; } }; })();
+const QUICK_REACT=QUICK_REACT_RAW.filter(e=>emojiOK(e));
 function reactionsTo(k){ return st.kudos.filter(x=>x.ref==='reply:'+k.id); }
 function kudoRow(k){
   const reps=reactionsTo(k), myReacts=reps.filter(x=>x.from_user===me.id);
@@ -990,7 +1190,7 @@ function openKudosModal(to, w){
   modal(`<h3>${w?(w.kind==='reply'?'回覆 '+esc(nameOf(to)):'給個肯定'):'對 '+esc(nameOf(to))+' 說句話'}</h3>
     ${w?`<p class="hint">${w.icon} ${w.text}</p>`:''}
     <label class="f" style="margin-top:4px">選一個表情</label>
-    <div class="emo-grid">${EMOJIS_ALL.map(e=>`<button class="emo ${e===emoji?'sel':''}" data-e="${e}">${e}</button>`).join('')}</div>
+    <div class="emo-grid">${EMOJIS_ALL.filter(e=>emojiOK(e)).map(e=>`<button class="emo ${e===emoji?'sel':''}" data-e="${e}">${e}</button>`).join('')}</div>
     <label class="f">快速選一句（可再修改）</label>
     <div class="phr">${phrasesFor(w,to).map(p=>`<button class="phrase">${esc(p)}</button>`).join('')}</div>
     <textarea id="kM" rows="3" maxlength="120" ${AC} placeholder="寫下具體的感謝或鼓勵…（可留空，只送表情）"></textarea>
