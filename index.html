@@ -307,7 +307,8 @@ html[data-theme=dark] .due.over{background:#3d2a22;color:#f08a5d}
 .win-acts{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
 .heart-btn{border:1.5px solid var(--line);background:var(--bg);border-radius:18px;padding:6px 14px;font-size:14px;font-family:inherit;color:var(--text);cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .heart-btn:active,.heart-btn.pop{transform:scale(1.12);transition:transform .15s;border-color:#e0563b}
-.toast.with-btn{pointer-events:auto;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;justify-content:center}
+.toast.with-btn{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;justify-content:center}
+.toast.show.with-btn{pointer-events:auto}
 .undo-btn{border:0;background:#fff;color:#1d2129;border-radius:12px;padding:4px 12px;font-weight:700;font-family:inherit;cursor:pointer;font-size:14px}
 .undo-sub{flex-basis:100%;text-align:center;font-size:11px;opacity:.7}
 .toast:not(.with-btn) .undo-sub{display:none}
@@ -340,11 +341,119 @@ html.big-text .prow .val{width:128px}
 .sh-free{font-size:13px;color:var(--sub);font-weight:500}
 .rv-shun{margin-top:10px;font-size:14px;text-align:center}
 .toast.sprout{background:#3f7f33}
+.drag-h{cursor:grab;touch-action:none;color:var(--sub);font-size:18px;letter-spacing:-3px;padding:6px 6px 6px 0;flex:none;-webkit-user-select:none;user-select:none}
+.rec.dragging{background:var(--accent-soft);box-shadow:0 6px 20px rgba(0,0,0,.15);position:relative;z-index:2;border-radius:12px}
+.rec.dragging .drag-h{cursor:grabbing;color:var(--accent)}
+.no-select{-webkit-user-select:none;user-select:none}
+.ntf-when{background:var(--bg);border-radius:12px;padding:10px 12px;margin-top:10px;font-size:14px}
+.ntf-when ul{margin:6px 0 8px;padding-left:20px}
 .hidden{display:none!important}
 
 html[data-theme=dark]{color-scheme:dark} html[data-theme=light]{color-scheme:light}
 @media (prefers-color-scheme:dark){html:not([data-theme=light]){color-scheme:dark}}
 .together-btn{font-size:17px;letter-spacing:.5px}
+
+/* ===== v17：今天頁、番茄鐘、完成回饋、成就 ===== */
+.pres{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:14px;padding:10px 14px;box-shadow:var(--shadow);margin-bottom:12px;font-size:14px}
+.pres .pd{width:9px;height:9px;border-radius:50%;flex:none}
+.pres .pt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-card h2{font-size:18px;margin:0 0 6px}
+.td-head{display:flex;justify-content:space-between;align-items:center}
+.fi{display:flex;align-items:center;gap:12px;padding:11px 10px;margin:0 -10px;border-radius:14px;position:relative;overflow:hidden;transition:max-height .35s ease,padding .35s ease,opacity .25s ease;max-height:96px}
+.fi+.fi{border-top:1px solid var(--line)}
+.fi .nm{flex:1;min-width:0;position:relative;z-index:1}.fi .nm b{font-size:16.5px;display:block}.fi .nm small{display:block;color:var(--sub);font-size:13px}
+.fi.gone{max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-top-color:transparent}
+.fi .sweep{position:absolute;inset:0;background:var(--accent-soft);transform:scaleX(0);transform-origin:left;border-radius:14px;z-index:0}
+.fi.doneA .sweep{animation:swp .42s .08s cubic-bezier(.3,.8,.3,1) forwards}
+@keyframes swp{to{transform:scaleX(1)}}
+.fi.doneA .nm b{color:var(--accent);transition:color .25s .25s}
+.ck{width:30px;height:30px;flex:none;position:relative;cursor:pointer;border:0;background:none;padding:0;z-index:1}
+.ck svg{width:30px;height:30px;display:block}
+.ck .bx{fill:none;stroke:#c4c8cf;stroke-width:2.4}
+.ck .tk{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24}
+.ck.on .bx{fill:var(--accent);stroke:var(--accent)}.ck.on .tk{stroke-dashoffset:0}
+.ck.pop .bx{fill:var(--accent);stroke:var(--accent);transform-origin:15px 15px;animation:ckpop .35s cubic-bezier(.2,1.6,.4,1)}
+.ck.pop .tk{animation:ckdraw .3s .1s ease-out forwards}
+@keyframes ckpop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes ckdraw{to{stroke-dashoffset:0}}
+.burst{position:absolute;left:50%;top:50%;width:6px;height:6px;border-radius:50%;pointer-events:none;animation:bfly .6s ease-out forwards}
+@keyframes bfly{from{transform:translate(-50%,-50%);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.3);opacity:0}}
+.play{width:40px;height:40px;border-radius:50%;border:2.2px solid var(--accent);color:var(--accent);background:transparent;display:flex;align-items:center;justify-content:center;flex:none;padding:0;cursor:pointer;box-sizing:border-box}
+.play svg{width:60%;height:60%;display:block}.play.sm{width:34px;height:34px}
+.play:active{transform:scale(.94)}
+.tray{margin-top:10px;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:14px;padding:10px 12px;cursor:pointer}
+.tray .hd{display:flex;justify-content:space-between;color:var(--accent);font-weight:700;font-size:14px}
+.tray .pill{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:4px 10px;font-size:13px;font-weight:600;margin:8px 6px 0 0}
+.tray .pill.new{animation:pillpop .5s cubic-bezier(.2,1.7,.4,1)}
+@keyframes pillpop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.18);opacity:1}100%{transform:scale(1)}}
+.tray .tr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:14.5px;margin-top:6px}
+.tray .tr span{color:var(--sub);font-size:12.5px}.tray .tr a{color:var(--accent);font-size:13px;font-weight:700;margin-left:10px}
+.lab{font-size:13px;color:var(--sub);font-weight:700;margin:14px 2px 8px}
+.rcs{display:flex;gap:8px;flex-wrap:wrap}
+.rcs button{border:1.5px solid var(--line);background:var(--card);color:var(--text);border-radius:16px;padding:7px 12px;font-size:14px;font-family:inherit;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rcs button.o{color:var(--accent);border-style:dashed}
+.stats3{display:flex;justify-content:space-around;text-align:center;gap:6px}
+.stats3 .v{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}.stats3 .l{font-size:12.5px;color:var(--sub)}
+.wk{text-align:center}
+.wk-name{font-size:26px;font-weight:800;line-height:1.25;word-break:break-word}
+.wk-proj{color:var(--sub);font-size:14px}
+.wk-intent{display:inline-block;background:var(--accent-soft);border-radius:12px;padding:6px 12px;font-size:14px;margin:10px 0 2px}
+.shun-add{font-size:13.5px;border:1.5px dashed #9cc27a;color:#4f7d2b;background:transparent;border-radius:12px;padding:4px 12px;font-family:inherit;cursor:pointer}
+html[data-theme=dark] .shun-add{color:#a6d58a}
+.shun-tag{display:inline-block;font-size:13px;background:#eef6e9;color:#4f7d2b;border-radius:10px;padding:3px 9px;margin:2px}
+html[data-theme=dark] .shun-tag{background:#25331d;color:#b5dd9c}
+.shun-hint{font-size:12px;color:var(--sub);margin:2px 0 4px}
+.toms{font-size:20px;letter-spacing:3px;margin:10px 0 0}.toms .off{opacity:.25}
+.rnd{color:var(--sub);font-size:13px}
+.ring{position:relative;width:180px;height:180px;margin:8px auto 12px}
+.ring svg{width:180px;height:180px;transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .c b{font-size:48px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}.ring .c span{color:var(--sub);font-size:14px;margin-top:4px}
+.mins{font-size:56px;font-weight:800;margin:10px 0 12px;font-variant-numeric:tabular-nums}.mins small{font-size:20px;color:var(--sub);font-weight:700;margin-left:4px}
+.done-next{width:100%;margin-top:10px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:14px;padding:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer}
+.sw-link{display:inline-block;margin-top:10px;color:var(--sub);font-size:13.5px}
+.recap{background:linear-gradient(135deg,var(--accent-soft),var(--card));border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:16px;padding:14px;margin-bottom:12px}
+.recap .it{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}.recap .it:last-child{border-bottom:0}
+.chipx{display:inline-block;border:1.5px solid var(--line);background:var(--bg);color:var(--text);border-radius:16px;padding:8px 13px;font-size:14.5px;margin:0 6px 8px 0;font-family:inherit;cursor:pointer}
+.chipx.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.tg2{display:flex;align-items:center;padding:0 3px;width:52px;height:32px;border-radius:16px;background:#d5d8dd;flex:none;box-sizing:border-box;cursor:pointer;border:0;transition:background .2s}
+.tg2 i{display:block;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
+.tg2.on{background:var(--accent)}.tg2.on i{transform:translateX(20px)}
+html[data-theme=dark] .tg2:not(.on){background:#3a3f48}
+.swrow{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:14px;padding:12px 14px;margin:6px 0 12px;gap:10px}
+.stp{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.stp .ct{display:flex;align-items:center;gap:10px}.stp .ct b{font-size:20px;min-width:34px;text-align:center}
+.stp button{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--accent);font-size:20px;font-weight:700;cursor:pointer;line-height:1;padding:0}
+.rad{width:22px;height:22px;flex:none;display:block}
+.opt{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.opt .t{flex:1}.opt .t b{font-size:15.5px}.opt .t small{display:block;color:var(--sub);font-size:12.5px}
+.emo-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.emo-row button{width:46px;height:46px;border-radius:12px;background:var(--bg);border:0;font-size:26px;cursor:pointer;padding:0}
+.emo-row button.on{background:var(--accent-soft);box-shadow:inset 0 0 0 2px var(--accent)}
+.ic2{display:flex;gap:12px}.ic2 button{flex:1;background:var(--bg);border:0;border-radius:14px;padding:12px;text-align:center;cursor:pointer;font-family:inherit;color:var(--text)}
+.ic2 button.on{box-shadow:inset 0 0 0 2px var(--accent)}.ic2 .e{font-size:38px}
+.pk .pj,.pk .tk2{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line)}
+.pk .pj{padding:10px 2px;font-weight:700;font-size:16px}.pk .tk2{padding:8px 2px 8px 22px;font-size:15px}
+.pk .xp{color:var(--sub);font-size:13px;font-weight:600;cursor:pointer;margin-left:auto;margin-right:6px}
+.nx-big{display:flex;align-items:center;gap:12px;border:2px solid var(--accent);background:var(--accent-soft);border-radius:16px;padding:12px 14px;cursor:pointer}
+.nx-row{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.ring-ov{position:fixed;inset:0;z-index:60;background:color-mix(in srgb,var(--accent) 12%,var(--card));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;color:var(--text)}
+.ring-ov .em{width:136px;height:136px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:76px;box-shadow:0 10px 30px rgba(0,0,0,.08);animation:emb 1.4s ease-in-out infinite}
+@keyframes emb{50%{transform:scale(1.05)}}
+.ring-ov h2{font-size:30px;margin:20px 0 6px}.ring-ov p{color:var(--sub);font-size:16.5px;margin:0}
+.ring-ov .btn{max-width:360px;margin-top:10px}.ring-ov .rt{margin-top:18px;font-size:12.5px;color:var(--sub)}
+.seg{display:flex;background:var(--track);border-radius:12px;padding:3px;margin:0 0 12px}
+.seg button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font-size:15px;color:var(--sub);font-weight:600;font-family:inherit;cursor:pointer}
+.seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+.ach-grid div{background:var(--bg);border-radius:14px;padding:12px 4px}.ach-grid .e{font-size:30px}.ach-grid b{font-size:20px;display:block}
+.ach-row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.ach-row .e{font-size:28px}
+.rec.win.gold{background:linear-gradient(90deg,#fff7e0,transparent)}
+html[data-theme=dark] .rec.win.gold{background:linear-gradient(90deg,#3a3016,transparent)}
+.ms{text-align:center}.ms .medal{font-size:62px;display:block;animation:mspin 1s ease-out}
+@keyframes mspin{0%{transform:rotateY(0) scale(.5)}60%{transform:rotateY(540deg) scale(1.1)}100%{transform:rotateY(720deg) scale(1)}}
+.ms h3{font-size:24px;margin:8px 0 6px;letter-spacing:1px}.ms p{color:var(--sub);margin:4px 0;font-size:15px;line-height:1.6}
+.ms .sh{background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:8px;font-size:13px;margin:12px 0 4px}
+.toast .undo-sub:empty{display:none}
 </style>
 </head>
 <body>
@@ -371,7 +480,7 @@ applyThemeMode();
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad = n => String(n).padStart(2,'0');
-function toast(msg, ms=2400){ const t=$('#toast'); t.innerHTML=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),ms); }
+function toast(msg, ms=2400){ const t=$('#toast'); t.innerHTML=msg; t.classList.remove('with-btn'); t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),ms); }
 function hms(ms){ ms=Math.max(0,Math.floor(ms/1000)); return `${Math.floor(ms/3600)}:${pad(Math.floor(ms%3600/60))}:${pad(ms%60)}`; }
 function zhDur(ms){ ms=Math.max(0,Math.floor(ms/1000)); const h=Math.floor(ms/3600),m=Math.floor(ms%3600/60),s=ms%60; return `${h} 小時 ${m} 分 ${s} 秒`; }
 function zhShort(ms){ ms=Math.max(0,Math.floor(ms/1000)); const h=Math.floor(ms/3600),m=Math.floor(ms%3600/60); return h?`${h} 小時 ${m} 分`:`${m} 分`; }
@@ -527,7 +636,7 @@ async function loadKudos(){
   const d=await q('kudos',r=>r.order('created_at',{ascending:false}).range(0,499)); if(!d) return;
   const fresh=d.filter(k=>k.to_user===me.id && !k.read_at && !seenKudos.has(k.id));
   st.kudos=d; d.forEach(k=>seenKudos.add(k.id));
-  if(loadKudos.ready && fresh.length){ const k=fresh[0]; popKudos(`${esc(nameOf(k.from_user))} 送你 ${esc(k.emoji||'💌')}`, k.message, k.id); }
+  if(loadKudos.ready && fresh.length && !openOf(me.id)){ const k=fresh[0]; notifyLocal(`${nameOf(k.from_user)} 送你 ${k.emoji||'💌'}${k.message?'：'+k.message:''}`,false,'wt-kudos'); popKudos(`${esc(nameOf(k.from_user))} 送你 ${esc(k.emoji||'💌')}`, k.message, k.id); }
   loadKudos.ready=true;
 }
 async function loadSessions(){
@@ -538,8 +647,11 @@ async function loadSessions(){
     all=all.concat(data||[]); if(!data||data.length<1000) break; from+=1000;
   }
   st.sessions=all.filter(x=>!x.deleted_at); st.trashS=all.filter(x=>x.deleted_at);
+  if(me){ const opens=st.sessions.filter(x=>x.user_id!==me.id && !x.end_at);
+    if(loadSessions.ready) opens.filter(o=>!loadSessions.seen.has(o.id)).forEach(o=>notifyLocal(`${nameOf(o.user_id)} 開始工作了：${projName(o.project_id)} ✨ 要一起嗎？`,false,'wt-partner'));
+    loadSessions.seen=new Set(opens.map(o=>o.id)); loadSessions.ready=true; }
 }
-const LOADERS={profiles:loadProfiles,projects:loadProjects,tasks:loadTasks,project_user_settings:loadPus,sessions:loadSessions,task_done:loadTaskDone,kudos:loadKudos};
+const LOADERS={profiles:loadProfiles,projects:loadProjects,tasks:loadTasks,project_user_settings:loadPus,sessions:loadSessions,task_done:loadTaskDone,kudos:loadKudos,achievements:loadAch};
 async function loadAll(){ await Promise.all(Object.values(LOADERS).map(f=>f())); }
 
 const pending=new Set(); let reloadT=null;
@@ -571,6 +683,144 @@ async function startApp(){
   sb.auth.onAuthStateChange(ev=>{ if(ev==='SIGNED_OUT'){ me=null; renderLogin(); } });
   document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && me){ subscribe(); scheduleReload('all'); } });
   setInterval(tick,1000);
+}
+
+// ===================== v17：聲音、番茄鐘、提醒、推播 =====================
+const PLAY_SVG='<svg viewBox="0 0 24 24"><path d="M8 6.4v11.2c0 .8.9 1.3 1.6.8l7.9-5.6c.6-.4.6-1.2 0-1.6L9.6 5.6C8.9 5.1 8 5.6 8 6.4z" fill="currentColor"/></svg>';
+function playBtn(attr,sm){ return `<button class="play${sm?' sm':''}" ${attr} aria-label="開始">${PLAY_SVG}</button>`; }
+function radioSVG(on){ return `<svg class="rad" viewBox="0 0 22 22"><circle cx="11" cy="11" r="10" fill="none" stroke="${on?'var(--accent)':'#c4c8cf'}" stroke-width="2"/>${on?'<circle cx="11" cy="11" r="5.5" fill="var(--accent)"/>':''}</svg>`; }
+function ckSVG(){ return '<svg viewBox="0 0 30 30"><circle class="bx" cx="15" cy="15" r="13"/><path class="tk" d="M8.5 15.5l4.3 4.3 8.7-9"/></svg>'; }
+const SND_LIST=[['loud','明顯提醒','嗶嗶嗶連續三聲，最不容易錯過'],['melody','小段旋律','圓圓暖暖的木琴，叮咚叮咚往上走'],['long','連續長音','柔和的長音慢慢浮出來，不吵人'],['beep','一聲短促','「嗶」一聲，乾淨俐落'],['soft','小聲提醒','低低柔柔，適合辦公室'],['vib','只震動','不響，只有畫面＋震動'],['quiet','只要畫面','不響也不震，安靜跳出提醒']];
+const SND_GAP={loud:1400,melody:2800,long:3400,beep:2500,soft:3500,vib:3000,quiet:3000};
+const Snd={ ac:null, buf:{}, active:[],
+  ctx(){ try{ this.ac=this.ac||new (window.AudioContext||window.webkitAudioContext)(); if(this.ac.state==='suspended') this.ac.resume(); }catch(e){} return this.ac; },
+  bus(){ const a=this.ctx(); if(!a) return null; const g=a.createGain(); g._n=[]; g.connect(a.destination); this.active.push(g); return g; },
+  hush(){ const a=this.ac; if(!a) return; const t=a.currentTime; this.active.forEach(g=>{ try{ g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value,t); g.gain.linearRampToValueAtTime(0,t+.04); }catch(e){} g._n.forEach(n=>{ try{ n.stop(t+.05); }catch(e){} }); }); this.active=[]; },
+  tone(B,f,t0,dur,vol,type){ const a=this.ac, o=a.createOscillator(), g=a.createGain(); o.type=type||'sine'; o.frequency.value=f;
+    g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(vol,t0+.01); g.gain.exponentialRampToValueAtTime(.0008,t0+dur);
+    o.connect(g).connect(B); o.start(t0); o.stop(t0+dur+.05); B._n.push(o); },
+  async file(B,name){ try{ const a=this.ac; if(!this.buf[name]){ const r=await fetch(`snd/${name}.mp3`); this.buf[name]=await a.decodeAudioData(await r.arrayBuffer()); }
+      if(!this.active.includes(B)) return; const s=a.createBufferSource(); s.buffer=this.buf[name]; s.connect(B); s.start(); B._n.push(s); }catch(e){} },
+  play(k){ this.hush(); if(!k||k==='vib'||k==='quiet') return; const B=this.bus(); if(!B) return; const t=this.ac.currentTime+.02;
+    if(k==='melody'||k==='long') return this.file(B,k);
+    if(k==='loud') for(let i=0;i<3;i++){ this.tone(B,1046,t+i*.22,.16,.32,'square'); this.tone(B,1568,t+i*.22,.16,.08); }
+    if(k==='beep') this.tone(B,1320,t,.14,.3,'square');
+    if(k==='soft'){ this.tone(B,587,t,1.2,.07); this.tone(B,880,t+.35,1.2,.05); } } };
+// 第一次點畫面時把聲音「解鎖」（手機瀏覽器規定）
+document.addEventListener('pointerdown',()=>{ Snd.ctx(); },{passive:true});
+
+// ---- 番茄鐘設定 ----
+const POMO_PRESETS={'25':{focus:25,brk:5,rounds:4,long:15},'50':{focus:50,brk:10,rounds:4,long:20}};
+const REST_EMO=['☕','🍵','🧋','🍪','🛋️','😌','🌿','🎧','🐱','🌙'], START_EMO=['🍅','⏰','🚀','💪','🔥','🌱','✨','🎯','📚','✏️'];
+function pcfg(){ const c=prof(me.id)?.pomo_cfg||{};
+  return { mine:{focus:40,brk:8,rounds:4,long:20,...(c.mine||{})}, msg:c.msg||'起來走走、喝口水 💧', last:c.last||'none', auto:!!c.auto,
+    rest:c.rest||'☕', start:c.start||'🍅', sound:c.sound||'melody', vib:c.vib!==false }; }
+async function savePcfg(patch){ const c={...(prof(me.id)?.pomo_cfg||{}),...patch}; const p=prof(me.id); if(p) p.pomo_cfg=c;
+  const {error}=await sb.from('profiles').update({pomo_cfg:c}).eq('id',me.id); if(error) toast('設定儲存失敗'); }
+function presetOf(key){ return key==='mine'?{...pcfg().mine}:POMO_PRESETS[key]?{...POMO_PRESETS[key]}:null; }
+function presetLabel(p){ return `${p.focus}＋${p.brk}`; }
+function prun(){ return prof(me.id)?.pomo_run||null; }
+async function setRun(r){ const p=prof(me.id); if(p) p.pomo_run=r; await sb.from('profiles').update({pomo_run:r}).eq('id',me.id); }
+function tomatoToday(uid){ const t=prof(uid||me.id)?.tomatoes; return t && t.d===workDateKey(Date.now(),userCut(uid||me.id)) ? (t.n||0) : 0; }
+async function addTomato(){ const n=tomatoToday()+1, v={d:todayKey(),n}; const p=prof(me.id); if(p) p.tomatoes=v; await sb.from('profiles').update({tomatoes:v}).eq('id',me.id); }
+function tomRow(done,total){ const e=pcfg().start; let h=''; for(let i=0;i<total;i++) h+= i<done?e:`<span class="off">${e}</span>`; return `<div class="toms">${h}</div>`; }
+function ringHTML(pct,big,small,col){ const C=2*Math.PI*60, off=C*(1-Math.max(0,Math.min(1,pct)));
+  return `<div class="ring"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="var(--track)" stroke-width="10"/><circle data-ring cx="70" cy="70" r="60" fill="none" stroke="${col||'var(--accent)'}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg><div class="c"><b data-left>${big}</b><span>${small}</span></div></div>`; }
+function minsLeft(end){ return Math.max(0,Math.ceil((end-Date.now())/60000)); }
+
+// ---- 推播（手機鎖螢幕也會響）----
+async function pushJob(kind, at, title, body, maxTries){
+  try{ await sb.from('push_jobs').upsert({user_id:me.id,kind,fire_at:new Date(at).toISOString(),title,body,tries:0,max_tries:maxTries||5,every_sec:60},{onConflict:'user_id,kind'}); }catch(e){} }
+async function pushCancel(kind){ try{ await sb.from('push_jobs').delete().eq('user_id',me.id).eq('kind',kind); }catch(e){} }
+function b64uToU8(s){ const p='='.repeat((4-s.length%4)%4), b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from(b,c=>c.charCodeAt(0)); }
+function pushSupported(){ return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+async function pushPublicKey(){ const c=cfg(); const r=await fetch(c.url.replace(/\/$/,'')+'/functions/v1/wt-push',{headers:{apikey:c.key}});
+  if(!r.ok) throw new Error('fn '+r.status); const j=await r.json(); if(!j.publicKey) throw new Error('nokey'); return j.publicKey; }
+async function pushStatus(){ if(!pushSupported()) return 'unsupported'; if(Notification.permission==='denied') return 'denied';
+  try{ const reg=await navigator.serviceWorker.getRegistration(); const sub=reg&&await reg.pushManager.getSubscription(); return sub?'on':'off'; }catch(e){ return 'off'; } }
+async function enablePush(){
+  if(!pushSupported()){ const E=notifyEnv(); return toast(E.ios&&!E.standalone?'iPhone 要先把 App 加到主畫面，再從主畫面打開才能開啟':'這個瀏覽器不支援推播'); }
+  const perm=await Notification.requestPermission(); if(perm!=='granted') return toast('沒有允許通知，請到瀏覽器設定打開');
+  let pk; try{ pk=await pushPublicKey(); }catch(e){ return modal(`<h3>推播伺服器還沒準備好</h3><p class="hint" style="font-size:14px">請照手冊「設定推播」那一章，把 <b>wt-push</b> 建立好，並把「Verify JWT」關掉。<br>（錯誤代碼：${esc(e.message)}）</p><div class="actions"><button class="btn" id="pxX">知道了</button></div>`,(el,close)=>{ el.querySelector('#pxX').onclick=close; }); }
+  try{ const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub) sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uToU8(pk)});
+    const j=sub.toJSON(); const {error}=await sb.from('push_subs').upsert({user_id:me.id,endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,ua:navigator.userAgent.slice(0,180)},{onConflict:'endpoint'});
+    if(error) throw error; toast('推播已開啟 ✓ 可以按「送一則測試」試試'); return true;
+  }catch(e){ toast('開啟推播失敗：'+esc(e.message||e)); return false; } }
+async function testPush(){ await pushJob('test',Date.now()+3000,'🔔 測試推播','收到這則，代表鎖螢幕提醒設定好了！',1); toast('已排好，約 30 秒內會收到（可以先把手機鎖起來）',4000); }
+
+// ---- 響鈴畫面（時間到／休息結束）----
+let ringing=null, wakeLock=null;
+async function keepAwake(on){ try{ if(on && 'wakeLock' in navigator && !wakeLock) wakeLock=await navigator.wakeLock.request('screen'); if(!on && wakeLock){ await wakeLock.release(); wakeLock=null; } }catch(e){} }
+let titleT=null; function flashTitle(msg){ clearInterval(titleT); if(!msg){ document.title='Work Together'; return; } let f=0; titleT=setInterval(()=>{ document.title=(f=!f)?msg:'Work Together'; },1000); }
+function ringStart(o){
+  ringStop(); const c=pcfg();
+  const el=document.createElement('div'); el.className='ring-ov';
+  el.innerHTML=`${o.toms||''}<div class="rnd" style="margin-bottom:20px">${o.rnd||''}</div><div class="em">${o.emoji}</div><h2>${o.title}</h2><p>${esc(o.sub||'')}</p>
+    <button class="btn big" data-r="1">${o.b1}</button><button class="btn big ghost" data-r="2">${o.b2}</button><div class="rt" id="rgT">${c.sound==='quiet'?'':'🔔 響鈴中・按任一個按鈕就停'}</div>`;
+  document.body.appendChild(el);
+  const loop=()=>{ Snd.play(c.sound); if(c.vib && c.sound!=='quiet' && navigator.vibrate) try{ navigator.vibrate([250,120,250]); }catch(e){} };
+  loop(); const iv=setInterval(loop,SND_GAP[c.sound]||3000);
+  const auto=setTimeout(()=>{ clearInterval(iv); Snd.hush(); const t=el.querySelector('#rgT'); if(t) t.textContent='已響 5 分鐘，先幫你停了'; },300000);
+  keepAwake(true); flashTitle(o.flash||o.title);
+  if(document.hidden) notifyLocal(o.title+(o.sub?'・'+o.sub:''),true,'wt-pomo');
+  ringing={el,iv,auto,kind:o.kind};
+  el.querySelector('[data-r="1"]').onclick=()=>{ ringStop(); o.on1(); };
+  el.querySelector('[data-r="2"]').onclick=()=>{ ringStop(); o.on2(); };
+}
+function ringStop(){ if(!ringing) return; clearInterval(ringing.iv); clearTimeout(ringing.auto); Snd.hush(); if(navigator.vibrate) try{ navigator.vibrate(0); }catch(e){}
+  ringing.el.remove(); ringing=null; keepAwake(false); flashTitle(null); }
+
+// ---- 番茄鐘流程 ----
+function brkLenOf(r){ return (r.round % r.p.rounds===0) ? r.p.long : r.p.brk; }
+async function startPomo(key, pid, tid, intent){
+  const p=presetOf(key); if(!p) return; const end=Date.now()+p.focus*60000;
+  await setRun({key,p,round:1,phase:'focus',end,cnt:0,pid,tid,intent:intent||null});
+  pushJob('pomo',end,`${pcfg().rest} ${p.focus} 分鐘到了`,`第 1 輪完成，${pcfg().msg}`);
+}
+async function pomoFocusEnd(){
+  const r=prun(); if(!r||r.phase!=='focus'||ringing) return;
+  if(r.cnt<r.round){ r.cnt=r.round; await setRun(r); await addTomato(); }
+  pushJob('pomo',Date.now()+60000,`${pcfg().rest} ${r.p.focus} 分鐘到了`,`第 ${r.round} 輪完成，${pcfg().msg}`);   // 沒按掉的話，1 分鐘後推播
+  const bl=brkLenOf(r);
+  ringStart({kind:'focus', emoji:pcfg().rest, title:`${r.p.focus} 分鐘到了`, sub:pcfg().msg, flash:`${pcfg().rest} 休息時間到`,
+    toms:tomRow(r.round,r.p.rounds), rnd:`第 ${r.round} / ${r.p.rounds} 輪`,
+    b1:`休息 ${bl} 分鐘`, b2:'再做一下（5 分鐘）',
+    on1:()=>pomoBreak(), on2:async()=>{ r.end=Date.now()+5*60000; await setRun(r); pushJob('pomo',r.end,`${pcfg().rest} 該休息囉`,pcfg().msg); render(); toast('好，再 5 分鐘 💪'); } });
+}
+async function pomoBreak(){
+  const r=prun(); if(!r) return stopWork(true);
+  const bl=brkLenOf(r), end=Date.now()+bl*60000; r.phase='break'; r.end=end; await setRun(r);
+  pushJob('pomo',end,`${pcfg().start} 休息結束`,`準備好就回來，開始第 ${r.round+1} 輪`);
+  await stopWork(true,true);
+}
+async function pomoBreakEnd(){
+  const r=prun(); if(!r||r.phase!=='break'||ringing) return;
+  if(pcfg().auto){ Snd.play(pcfg().sound); return pomoResume(); }
+  pushJob('pomo',Date.now()+60000,`${pcfg().start} 休息結束`,`準備好就回來，開始第 ${r.round+1} 輪`);
+  ringStart({kind:'break', emoji:pcfg().start, title:'休息結束', sub:`準備好就開始第 ${r.round+1} 輪`, flash:`${pcfg().start} 休息結束`,
+    toms:tomRow(r.round,r.p.rounds), rnd:`已完成 ${r.round} 輪`,
+    b1:`▶ 開始第 ${r.round+1} 輪`, b2:'再休息 3 分鐘',
+    on1:()=>pomoResume(), on2:async()=>{ r.end=Date.now()+3*60000; await setRun(r); pushJob('pomo',r.end,`${pcfg().start} 休息結束`,`準備好就回來，開始第 ${r.round+1} 輪`); render(); } });
+}
+async function pomoResume(pid,tid){
+  const r=prun(), z=pausedOf(me.id); if(!r) return;
+  const P=pid!==undefined?pid:(z?.project_id??r.pid), T=pid!==undefined?tid:(z?.task_id??r.tid);
+  r.round+=1; r.phase='focus'; r.end=Date.now()+r.p.focus*60000; r.pid=P; r.tid=T; await setRun(r);
+  pushJob('pomo',r.end,`${pcfg().rest} ${r.p.focus} 分鐘到了`,`第 ${r.round} 輪完成，${pcfg().msg}`);
+  const same=(P||null)===(r.pid||null)&&(T||null)===(r.tid||null);
+  await startWork(P,T,{keepRun:true,intent:same?lastIntent(P,T):null});
+}
+function lastIntent(pid,tid){ const s=st.sessions.filter(x=>x.user_id===me.id && !x.split_of && (x.project_id||null)===(pid||null) && (x.task_id||null)===(tid||null)).sort((a,b)=>new Date(b.start_at)-new Date(a.start_at))[0];
+  return s&&s.intent||null; }
+async function pomoClear(){ if(prun()){ await setRun(null); } pushCancel('pomo'); }
+function pomoTick(){
+  if(!me) return; const r=prun(); if(!r) return;
+  const o=openOf(me.id), z=pausedOf(me.id);
+  if(r.phase==='focus' && o && Date.now()>=r.end) pomoFocusEnd();
+  else if(r.phase==='break' && z && !o && Date.now()>=r.end) pomoBreakEnd();
+  else if(!o && !z && !ringing) pomoClear();   // 已經收工
 }
 
 // ===================== 畫面框架 =====================
@@ -606,11 +856,13 @@ function tick(){
   document.querySelectorAll('[data-since-z]').forEach(el=>{ el.textContent=zhShort(Date.now()-(+el.dataset.sinceZ)); });
   document.querySelectorAll('[data-since-m]').forEach(el=>{ el.textContent=zhMin(Date.now()-(+el.dataset.sinceM)); });
   document.querySelectorAll('[data-tog]').forEach(el=>{ el.textContent=togText(Date.now()-(+el.dataset.tog)); });
+  document.querySelectorAll('[data-min-since]').forEach(el=>{ el.textContent=Math.floor((Date.now()-(+el.dataset.minSince))/60000); });
+  const rr=me&&prun(); if(rr){ const L=document.querySelector('[data-left]'); if(L) L.textContent=minsLeft(rr.end);
+    const R=document.querySelector('[data-ring]'); if(R){ const tot=(rr.phase==='focus'?rr.p.focus:brkLenOf(rr))*60000, C=2*Math.PI*60; R.setAttribute('stroke-dashoffset',C*(1-Math.max(0,Math.min(1,(rr.end-Date.now())/tot)))); } }
+  pomoTick();
   tickN++;
   if(tickN%5===0 && me) checkOvertime();
   if(tickN%5===0 && st.tab==='home' && !document.querySelector('.modal-bg')){
-    const p=$('#people'); if(p) p.innerHTML=peopleHTML();
-    const tb=$('#togetherBox'); if(tb) tb.innerHTML=togetherHTML();
     const g=$('#progress'); if(g && st.sessions.some(s=>!s.end_at)) { g.innerHTML=progressHTML(scoped(st.projects.filter(p=>!p.archived))); bindOpen(); }
   }
 }
@@ -640,67 +892,6 @@ function taskOptions(pid, sel){
   return `<option value="">不指定任務</option>`+ts.map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${esc(t.title)}</option>`).join('');
 }
 function hasTaskOpts(pid){ return pid && st.tasks.some(t=>t.project_id===pid && !isDone(t) && (st.scope==='all'||canCheck(t))); }
-// 最近做過的 3 個（專案＋任務）組合
-function recentCombos(){
-  const seen=new Set(), out=[];
-  for(const s of st.sessions.filter(s=>s.user_id===me.id).sort((a,b)=>new Date(b.start_at)-new Date(a.start_at))){
-    const k=(s.project_id||'')+'|'+(s.task_id||''); if(seen.has(k)) continue; seen.add(k);
-    const p=projOf(s.project_id); if(s.project_id && (!p||p.archived)) continue;
-    const t=taskOf(s.task_id); const tid=(t && !isDone(t))?t.id:null;
-    const k2=(s.project_id||'')+'|'+(tid||''); if(out.some(x=>x.k===k2)) continue;
-    out.push({k:k2,pid:s.project_id||null,tid}); if(out.length>=3) break; }
-  return out;
-}
-function comboLabel(pid,tid){ const t=taskOf(tid); return `<b>${esc(projName(pid))}</b>${t?`<span class="rc-t">${esc(t.title)}</span>`:''}`; }
-function clockHTML(){
-  const o=openOf(me.id), pz=pausedOf(me.id);
-  if(o) return `<div class="card"><div class="clock-live">
-      <div class="since">${sessLabel(o)}・自 ${fmtDT(o.start_at)} 開始</div>
-      <div class="big-t" data-since="${+new Date(o.start_at)}">${hms(Date.now()-new Date(o.start_at))}</div></div>
-      <div class="row" style="gap:10px"><button class="btn big ghost" id="pauseBtn" style="flex:1">☕ 休息一下</button><button class="btn big stop" id="stopBtn" style="flex:1.4">結束工作</button></div>
-      ${(()=>{ const sw=switchList(); return `<div class="sw-box"><div class="lbl-s">換做另一件？點一下就切換（這段會自動結束）</div><div class="sw-row">${sw.map((c,i)=>`<button class="sw-btn" data-sw="${i}">⇄ ${esc(projName(c.pid))}${c.tid?` / ${esc(taskOf(c.tid)?.title||'')}`:''}</button>`).join('')}<button class="sw-btn other" id="swOther">其他…</button></div></div>`; })()}</div>`;
-  if(pz) return `<div class="card"><div class="clock-live">
-      <div class="since">休息中・${comboLabel(pz.project_id,pz.task_id).replace(/<[^>]+>/g,' ').trim()}</div>
-      <div class="big-t off-t">☕ <span data-since="${+new Date(pz.since)}">${hms(Date.now()-new Date(pz.since))}</span></div></div>
-      <div class="row" style="gap:10px"><button class="btn big" id="resumeBtn" style="flex:1.4">▶ 繼續工作</button><button class="btn big ghost" id="endPauseBtn" style="flex:1">今天先到這</button></div></div>`;
-  const rc=recentCombos(), act=clockProjects(); let last=localStorage.getItem(LAST_PROJ_KEY)||'';
-  if(last && !act.find(p=>p.id===last)) last='';
-  if(!last && act.length && localStorage.getItem(LAST_PROJ_KEY)===null) last=act[0].id;
-  return `<div class="card">
-    ${rc.length?`<div class="lbl-s" style="margin-bottom:6px">最近的工作，點一下就開始</div>
-      <div class="recents">${rc.map((c,i)=>`<button class="rc-btn" data-rc="${i}"><span class="rc-play">▶</span><span class="rc-l">${comboLabel(c.pid,c.tid)}</span></button>`).join('')}</div>`:''}
-    <details class="more-pick" ${rc.length?'':'open'}><summary>${rc.length?'選其他專案或任務':'選擇專案開始工作'}</summary>
-      <label class="f" style="margin-top:6px">專案</label>
-      <select id="projSel">${act.map(p=>`<option value="${p.id}" ${p.id===last?'selected':''}>${esc(p.name)}</option>`).join('')}<option value="" ${!last?'selected':''}>未指定專案</option></select>
-      <div id="taskWrap" class="${hasTaskOpts(last)?'':'hidden'}"><label class="f">任務（選填）</label><select id="taskSel">${taskOptions(last,'')}</select></div>
-      <button class="btn big" style="margin-top:12px" id="startBtn">開始工作</button></details></div>`;
-}
-function switchList(){ const o=openOf(me.id); if(!o) return [];
-  const seen=new Set(), out=[];
-  for(const s of st.sessions.filter(s=>s.user_id===me.id && !s.split_of).sort((a,b)=>new Date(b.start_at)-new Date(a.start_at))){
-    const p=projOf(s.project_id); if(s.project_id && (!p||p.archived)) continue;
-    const t=taskOf(s.task_id), tid=(t&&!isDone(t))?t.id:null, k=(s.project_id||'')+'|'+(tid||'');
-    if(seen.has(k) || ((s.project_id||null)===(o.project_id||null) && (tid||null)===(o.task_id||null))) continue;
-    seen.add(k); out.push({pid:s.project_id||null,tid}); if(out.length>=3) break; }
-  // 最近的不夠 3 個時，用其他專案補上
-  for(const p of clockProjects()){ if(out.length>=3) break; if(p.id===o.project_id && !o.task_id) continue; if(out.some(x=>x.pid===p.id)) continue; out.push({pid:p.id,tid:null}); }
-  return out;
-}
-async function switchTo(pid,tid){
-  const o=openOf(me.id);
-  if(o){ const {error}=await sb.from('sessions').update({end_at:new Date().toISOString()}).eq('id',o.id); if(error) return toast('切換失敗'); await loadSessions(); }
-  const ok=await startWork(pid,tid); if(ok) toast(`已切換到「${esc(projName(pid))}${tid?' / '+esc(taskOf(tid)?.title||''):''}」⇄`);
-}
-function openSwitchModal(){
-  const act=clockProjects();
-  modal(`<h3>切換到…</h3><label class="f">專案</label><select id="swP">${act.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}<option value="">未指定專案</option></select>
-    <div id="swTw"><label class="f">任務（選填）</label><select id="swT"></select></div>
-    <div class="actions"><button class="btn ghost" id="swX">取消</button><button class="btn" id="swGo">切換</button></div>`,(el,close)=>{
-    const P=el.querySelector('#swP'), T=el.querySelector('#swT'), W=el.querySelector('#swTw');
-    const up=()=>{ T.innerHTML=taskOptions(P.value,''); W.classList.toggle('hidden',!hasTaskOpts(P.value)); }; P.onchange=up; up();
-    el.querySelector('#swX').onclick=close; el.querySelector('#swGo').onclick=()=>{ close(); switchTo(P.value||null,T.value||null); };
-  });
-}
 function shunToday(uid){ const k=workDateKey(Date.now(),userCut(uid)); return st.sessions.filter(x=>x.user_id===uid && x.split_of && workDateKey(x.start_at,userCut(uid))===k); }
 function shunHTML(){ const xs=shunToday(me.id); if(!xs.length) return '';
   const names=[...new Set(xs.map(x=>projName(x.project_id)+(taskOf(x.task_id)?' / '+taskOf(x.task_id).title:'')))];
@@ -718,32 +909,310 @@ function todayKey(){ return workDateKey(Date.now(),userCut(me.id)); }
 function focusIds(){ const f=prof(me.id)?.focus; return f && f.d===todayKey() ? (f.ids||[]).filter(id=>taskOf(id)) : []; }
 function myOpenTasks(){ return st.tasks.filter(t=>{ const p=projOf(t.project_id); return p && !p.archived && isMine(p) && canCheck(t) && !myChecked(t); })
   .sort((a,b)=>(+taskDue(a)||9e15)-(+taskDue(b)||9e15)); }
-function focusHTML(){
-  const ids=focusIds(), o=openOf(me.id);
-  if(!ids.length) return myOpenTasks().length?`<div class="card focus-empty tap" id="pickFocus">🎯 <b>今天想推進哪幾件？</b><div class="hint" style="margin:2px 0 0">選 1～3 件今天的重點，開工時一點就開始 →</div></div>`:'';
-  const ts=ids.map(taskOf), done=ts.filter(t=>myChecked(t)).length;
-  return `<div class="h2 row" style="justify-content:space-between"><span>🎯 今天的重點（${done}/${ts.length}）</span><a href="#" class="lnk" id="editFocus">調整</a></div>
-    <div class="card list">${ts.map(t=>{ const ck=myChecked(t), working=o&&o.task_id===t.id;
-      return `<div class="rec fc-row"><input type="checkbox" class="chk" data-fchk="${t.id}" ${ck?'checked':''}>
-        <div class="main"><div class="${ck?'strike':''}">${esc(t.title)}</div><div class="meta">${esc(projName(t.project_id))}</div></div>
-        ${ck?'':working?'<span class="tag">進行中</span>':`<button class="btn sm" data-fgo="${t.id}">▶ 開始</button>`}</div>`; }).join('')}</div>
-    ${done===ts.length?'<div class="hint" style="text-align:center;margin-top:-4px">今天的重點都完成了 🎉 剩下的時間都是加分</div>':''}`;
-}
 function openFocusModal(){
   const cur=new Set(focusIds()), ts=myOpenTasks();
   const groups={}; ts.forEach(t=>{ (groups[t.project_id]=groups[t.project_id]||[]).push(t); });
-  modal(`<h3>今天的重點</h3><p class="hint">選 1～3 件今天最想推進的任務</p>
+  modal(`<h3>今日重點</h3><p class="hint">選今天想推進的事，幾件都可以</p>
     <div class="fc-pick">${Object.keys(groups).map(pid=>`<div class="lbl-s" style="margin-top:10px">${esc(projName(pid))}</div>
       ${groups[pid].map(t=>`<label class="fc-opt"><input type="checkbox" value="${t.id}" ${cur.has(t.id)?'checked':''}><span>${esc(t.title)}</span>${dueBadge(taskDue(t))}</label>`).join('')}`).join('')||'<div class="empty">沒有待完成的任務</div>'}</div>
     <div class="actions"><button class="btn ghost" id="fcX">取消</button><button class="btn" id="fcS">確定</button></div>`,(el,close)=>{
     const boxes=[...el.querySelectorAll('.fc-opt input')];
-    boxes.forEach(b=>b.onchange=()=>{ if(boxes.filter(x=>x.checked).length>3){ b.checked=false; toast('最多選 3 件，專注比較容易完成 😊'); } });
     el.querySelector('#fcX').onclick=close;
     el.querySelector('#fcS').onclick=async()=>{ const ids=boxes.filter(x=>x.checked).map(x=>x.value);
       const {error}=await sb.from('profiles').update({focus:{d:todayKey(),ids}}).eq('id',me.id); if(error) return toast('儲存失敗');
-      await loadProfiles(); close(); render(); if(ids.length) toast(`今天的 ${ids.length} 個重點，加油 💪`); };
+      await loadProfiles(); close(); render(); if(ids.length) toast(`今天的 ${ids.length} 個重點，加油 💪`); checkSayDo(); };
   });
 }
+// ===================== v17：今天頁 =====================
+// 最近做過的（照原樣：做專案就給專案、做子任務就給子任務；不足也不自動補）
+function recentCombos(excl){
+  const seen=new Set(excl||[]), out=[];
+  for(const s of st.sessions.filter(s=>s.user_id===me.id && !s.split_of).sort((a,b)=>new Date(b.start_at)-new Date(a.start_at))){
+    const pid=s.project_id||null, tid=s.task_id||null, k=(pid||'')+'|'+(tid||''); if(seen.has(k)) continue; seen.add(k);
+    const p=projOf(pid); if(pid && (!p||p.archived)) continue;
+    if(tid){ const t=taskOf(tid); if(!t||myChecked(t)) continue; }
+    out.push({k,pid,tid}); if(out.length>=3) break; }
+  return out;
+}
+function comboText(pid,tid){ const t=taskOf(tid); return `${projName(pid)}${t?' › '+t.title:''}`; }
+function workTitle(pid,tid){ const t=taskOf(tid); return t?t.title:projName(pid); }
+function presHTML(){
+  const ps=partners(); if(!ps.length) return '';
+  const o=openOf(me.id), tg=togetherSince();
+  if(o && tg) return `<div class="pres"><span>✨</span><span class="pt" data-tog="${tg}">${togText(Date.now()-tg)}</span></div>`;
+  return ps.map(u=>{ const po=openOf(u), pz=pausedOf(u), col=colorOf(u);
+    const txt=po?`<b>${esc(nameOf(u))}</b> 正在做：${esc(comboText(po.project_id,po.task_id))}・<span data-since-m="${+new Date(po.start_at)}">${zhMin(Date.now()-new Date(po.start_at))}</span>`
+      :pz?`<b>${esc(nameOf(u))}</b> 休息一下 ☕`:`<b>${esc(nameOf(u))}</b> 還沒開工`;
+    return `<div class="pres"><span class="pd" style="background:${po?col:'var(--line)'}"></span><span class="pt">${txt}</span></div>`; }).join('');
+}
+function doneTodayTasks(){ const k=todayKey(); return st.taskDone.filter(d=>d.user_id===me.id && d.done_at && workDateKey(d.done_at,userCut(me.id))===k)
+  .sort((a,b)=>new Date(a.done_at)-new Date(b.done_at)).map(d=>taskOf(d.task_id)).filter(Boolean); }
+function trayHTML(){
+  const ds=doneTodayTasks(); if(!ds.length) return '';
+  return `<div class="tray" id="tray"><div class="hd"><span>✓ 今天完成的</span><span>${st.trayOpen?'收起 ▴':'展開 ▾'}</span></div>
+    ${st.trayOpen?ds.map(t=>`<div class="tr"><div>✓ ${esc(t.title)}<br><span>${esc(projName(t.project_id))}</span></div><a href="#" data-undo="${t.id}">復原</a></div>`).join('')
+      :ds.map(t=>`<span class="pill ${st.newDone===t.id?'new':''}">✓ ${esc(t.title)}</span>`).join('')}</div>`;
+}
+function todayCardHTML(){
+  const ids=focusIds().filter(id=>!myChecked(taskOf(id))), rc=recentCombos();
+  const rows=ids.map(id=>{ const t=taskOf(id); return `<div class="fi" data-fi="${t.id}"><span class="sweep"></span><button class="ck" data-fck="${t.id}" aria-label="完成">${ckSVG()}</button><div class="nm"><b>${esc(t.title)}</b><small>${esc(projName(t.project_id))}</small></div>${playBtn(`data-go="${t.project_id}|${t.id}"`)}</div>`; }).join('');
+  const hasAny=focusIds().length;
+  return `<div class="card td-card"><div class="td-head"><h2>今日重點</h2>${myOpenTasks().length?`<a href="#" class="lnk" id="editFocus">${hasAny?'調整':''}</a>`:''}</div>
+    ${rows}
+    ${!hasAny?(myOpenTasks().length?`<button class="btn ghost" id="pickFocus" style="width:100%;margin:4px 0 2px">＋ 選今天的重點</button>`:''):(!ids.length?`<div class="hint" style="margin:4px 0 0">今天的重點都完成了，剩下的時間都是加分 ✨</div>`:'')}
+    ${trayHTML()}
+    <div class="lab">${rc.length?'最近做的':'開始工作'}</div>
+    <div class="rcs">${rc.map((c,i)=>`<button data-rc="${i}">${esc(comboText(c.pid,c.tid))}</button>`).join('')}<button class="o" id="rcOther">${rc.length?'其他…':'選要做的…'}</button></div></div>`;
+}
+function myWeekGoal(){ return st.projects.filter(p=>!p.archived && isMine(p) && +p.weekly_hours>0).reduce((a,p)=>a+(+p.weekly_hours),0); }
+function statsHTML(){
+  const c=userCut(me.id), mine=st.sessions.filter(s=>s.user_id===me.id), wg=myWeekGoal();
+  return `<div class="card"><div class="stats3">
+    <div><div class="l">今天</div><div class="v">${zhShort(sumMs(mine,periodOf('day',Date.now(),0,c)))}</div></div>
+    <div><div class="l">今天的番茄</div><div class="v">${pcfg().start} × ${tomatoToday()}</div></div>
+    <div><div class="l">本週</div><div class="v">${fmtHrs(sumMs(mine,periodOf('week',Date.now(),0,c)))}<span class="l"> ${wg?'/ '+wg+'h':'小時'}</span></div></div></div></div>`;
+}
+function shunPend(sid){ try{ return JSON.parse(localStorage.getItem('wt_shun_'+sid)||'[]'); }catch(e){ return []; } }
+function setShunPend(sid,list){ try{ list.length?localStorage.setItem('wt_shun_'+sid,JSON.stringify(list)):localStorage.removeItem('wt_shun_'+sid); }catch(e){} }
+function workHTML(o){
+  const r=prun(), pend=shunPend(o.id), t=taskOf(o.task_id);
+  let mid;
+  if(r && r.phase==='focus'){ const tot=r.p.focus*60000, left=r.end-Date.now();
+    mid=`${tomRow(r.round-1,r.p.rounds)}<div class="rnd">第 ${r.round} / ${r.p.rounds} 輪</div>${ringHTML(left/tot,minsLeft(r.end),'分鐘後休息')}`; }
+  else mid=`<div class="mins"><span data-min-since="${+new Date(o.start_at)}">${Math.floor((Date.now()-new Date(o.start_at))/60000)}</span><small>分鐘</small></div>`;
+  return `<div class="card wk"><div class="wk-name">${esc(workTitle(o.project_id,o.task_id))}</div>${t?`<div class="wk-proj">${esc(projName(o.project_id))}</div>`:''}
+    ${o.intent?`<div class="wk-intent">🎯 ${esc(o.intent)}</div>`:''}
+    <div style="margin-top:10px">${pend.map(x=>`<span class="shun-tag">🌱 ${esc(comboText(x.pid,x.tid))}</span>`).join('')}<button class="shun-add" id="shunAdd">🌱 ${pend.length?'＋':'順手推進'}</button></div>
+    <div class="shun-hint">也順便做到別的事？點一下記起來</div>
+    ${mid}
+    <div class="row" style="gap:10px"><button class="btn big ghost" id="pauseBtn" style="flex:1">休息</button><button class="btn big stop" id="stopBtn" style="flex:1.4">結束工作</button></div>
+    ${t&&canCheck(t)?`<button class="done-next" id="doneNext">✓ 完成了，換下一件</button>`:''}
+    <a href="#" class="sw-link" id="swOther">⇄ 換做別的</a></div>`;
+}
+function breakHTML(z){
+  const r=prun(); let mid;
+  if(r && r.phase==='break'){ const tot=brkLenOf(r)*60000, left=r.end-Date.now();
+    mid=`${tomRow(r.round,r.p.rounds)}<div class="rnd">已完成 ${r.round} 輪</div>${ringHTML(left/tot,minsLeft(r.end),'分鐘後叫你','#e9a23b')}`; }
+  else mid=`<div class="mins" style="color:var(--sub)">☕ <span data-min-since="${+new Date(z.since)}">${Math.floor((Date.now()-new Date(z.since))/60000)}</span><small>分鐘</small></div>`;
+  const since=+new Date(z.since)-3*3600000, got=st.kudos.filter(k=>k.to_user===me.id && +new Date(k.created_at)>=since).slice(0,4);
+  return `<div class="card wk"><div style="font-size:22px;font-weight:800">休息中</div><div class="hint" style="margin:2px 0 0">${esc(comboText(z.project_id,z.task_id))}・休息時間不算工時</div>${mid}
+    <div class="row" style="gap:10px"><button class="btn big" id="resumeBtn" style="flex:1.4">▶ ${r?`繼續第 ${r.round+1} 輪`:'繼續工作'}</button><button class="btn big ghost" id="endPauseBtn" style="flex:1">今天先到這</button></div></div>
+    ${got.length?`<div class="recap"><b>剛剛收到的</b>${got.map(k=>`<div class="it"><span style="font-size:22px">${esc(k.emoji||'💌')}</span><div><b>${esc(nameOf(k.from_user))}</b>${k.message?'：'+esc(k.message):' 給你一個肯定'}<div class="meta">${ago(k.created_at)}</div></div></div>`).join('')}</div>`:''}`;
+}
+function renderHome(){
+  const un=st.kudos.filter(k=>k.to_user===me.id && !k.read_at), R=showReviewCard(), o=openOf(me.id), z=!o&&pausedOf(me.id);
+  if(o){ $('#view').innerHTML=presHTML()+workHTML(o); bindHome(); return; }
+  $('#view').innerHTML=`
+    ${un.length&&!z?`<div class="card cheer-card tap" id="goCheer"><span class="big-e">${esc(un[0].emoji||'💌')}</span><div><b>${esc(nameOf(un[0].from_user))}</b> 給了你 ${un.length} 個肯定<div class="hint" style="margin:0">點這裡看看 →</div></div></div>`:''}
+    ${R&&!z?reviewHTML(R,false):''}
+    ${z?'':nudgeHTML()}
+    ${presHTML()}
+    ${z?breakHTML(z):todayCardHTML()+statsHTML()+shunHTML()}
+    ${upcomingHTML()}
+    ${z?'':`<div class="h2 row" style="justify-content:space-between"><span>專案進度</span>${scopeToggle()}</div><div id="progress">${progressHTML(scoped(st.projects.filter(p=>!p.archived)))}</div>`}`;
+  bindHome(); st.newDone=null;
+}
+function bindHome(){
+  bindOpen(); bindScope(); bindOverdue($('#view'));
+  const on=(id,fn)=>{ const e=$('#'+id); if(e) e.onclick=fn; };
+  on('goCheer',()=>{ st.freshIds=null; st.tab='cheer'; render(); });
+  on('rvHide',()=>{ hideReview(); render(); });
+  on('rvGo',()=>{ hideReview(); render(); if(myOpenTasks().length) openFocusModal(); });
+  const j=$('#joinBtn'); if(j) j.onclick=()=>{ j.disabled=true; goWork(j.dataset.pid||null, j.dataset.tid||null); };
+  on('pickFocus',openFocusModal);
+  const ef=$('#editFocus'); if(ef) ef.onclick=e=>{ e.preventDefault(); openFocusModal(); };
+  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{ const [p,t]=b.dataset.go.split('|'); goWork(p||null,t||null); });
+  const rc=recentCombos(); document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=()=>{ const c=rc[+b.dataset.rc]; goWork(c.pid,c.tid); });
+  on('rcOther',()=>openPicker((p,t)=>goWork(p,t)));
+  document.querySelectorAll('[data-fck]').forEach(b=>b.onclick=()=>checkA(b));
+  const tr=$('#tray'); if(tr) tr.onclick=e=>{ const u=e.target.closest('[data-undo]'); if(u){ e.preventDefault(); e.stopPropagation(); toggleTask(taskOf(u.dataset.undo),false,{quiet:true}); return; } st.trayOpen=!st.trayOpen; renderHome(); };
+  // 工作中
+  on('stopBtn',()=>{ $('#stopBtn').disabled=true; stopWork(false); });
+  on('pauseBtn',()=>{ $('#pauseBtn').disabled=true; const r=prun(); if(r&&r.phase==='focus') pomoBreak(); else stopWork(true); });
+  on('doneNext',()=>doneAndNext());
+  const so=$('#swOther'); if(so) so.onclick=e=>{ e.preventDefault(); openPicker((p,t)=>switchTo(p,t)); };
+  on('shunAdd',()=>openShunSheet(openOf(me.id)));
+  // 休息中
+  on('resumeBtn',()=>{ $('#resumeBtn').disabled=true; const r=prun(); if(r) pomoResume(); else { const z=pausedOf(me.id); startWork(z.project_id,z.task_id,{intent:lastIntent(z.project_id,z.task_id)}); } });
+  on('endPauseBtn',()=>endFromPause());
+}
+// 打勾：勾勾畫出來＋整列染色 → 直接彈進「今天完成的」
+function checkA(b){
+  const row=b.closest('.fi'), t=taskOf(b.dataset.fck); if(!t||row.dataset.done) return; row.dataset.done=1;
+  b.classList.add('pop'); row.classList.add('doneA');
+  const cols=[cssColor('var(--accent)'),'#f2b632','#e07a5f','#6c7bd9','#d6589f'];
+  for(let i=0;i<10;i++){ const d=document.createElement('span'); d.className='burst'; const a=Math.PI*2*i/10, r=22+Math.random()*10;
+    d.style.setProperty('--dx',Math.cos(a)*r+'px'); d.style.setProperty('--dy',Math.sin(a)*r+'px'); d.style.background=cols[i%5]; b.appendChild(d); setTimeout(()=>d.remove(),700); }
+  if(navigator.vibrate) try{ navigator.vibrate(15); }catch(e){}
+  setTimeout(()=>{ row.classList.add('gone'); },480);
+  setTimeout(()=>{ st.newDone=t.id; toggleTask(t,true,{quiet:true}); },700);
+}
+// 開始做：選番茄鐘（工作中直接切換；休息中＝開始下一輪）
+async function goWork(pid,tid){
+  const o=openOf(me.id), r=prun(), z=pausedOf(me.id);
+  if(o) return switchTo(pid,tid);
+  if(z && r && r.phase==='break') return pomoResume(pid,tid);
+  openStartSheet(pid,tid);
+}
+function openStartSheet(pid,tid,preKey){
+  const c=pcfg(); let key=preKey||c.last, auto=c.auto;
+  modal(`<div class="hint" style="margin:0">開始做</div><h3 style="margin:2px 0 10px;font-size:22px">${esc(workTitle(pid,tid))}</h3>
+    ${taskOf(tid)?`<div class="hint" style="margin:-8px 0 10px">${esc(projName(pid))}</div>`:''}
+    <input type="text" id="ssI" ${AC} maxlength="40" placeholder="🎯 這段想完成什麼？（可不填）">
+    <div class="lab">番茄鐘</div><div id="ssC"></div>
+    <div class="swrow"><span>休息完自動開始下一輪</span><button class="tg2 ${auto?'on':''}" id="ssA" aria-label="開關"><i></i></button></div>
+    <button class="btn big" id="ssGo">▶ 開始</button>`,(el,close)=>{
+    const draw=()=>{ const m=pcfg().mine, opts=[['none','不用'],['25','25＋5'],['50','50＋10'],['mine','我的：'+presetLabel(m)],['custom','自訂']];
+      el.querySelector('#ssC').innerHTML=opts.map(([k,l])=>`<button class="chipx ${k===key?'on':''}" data-k="${k}">${k==='mine'?pcfg().start+' ':''}${l}${k===c.last&&k!=='custom'?'・上次用的':''}</button>`).join('');
+      el.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{ if(b.dataset.k==='custom'){ close(); return openCustomPomo(pid,tid,el.querySelector('#ssI').value.trim()); } key=b.dataset.k; draw(); }); };
+    draw();
+    el.querySelector('#ssA').onclick=e=>{ auto=!auto; e.currentTarget.classList.toggle('on',auto); savePcfg({auto}); };
+    el.querySelector('#ssGo').onclick=async()=>{ const btn=el.querySelector('#ssGo'); btn.disabled=true; const intent=el.querySelector('#ssI').value.trim();
+      close(); await beginWork(pid,tid,key,intent); };
+  });
+}
+async function beginWork(pid,tid,key,intent){
+  if(key!==pcfg().last) savePcfg({last:key});
+  const ok=await startWork(pid,tid,{intent,quiet:true}); if(!ok) return;
+  if(key && key!=='none') await startPomo(key,pid,tid,intent);
+  render();
+  const o=openOf(me.id);
+  toastUndo(`已開始：${esc(workTitle(pid,tid))}`, async()=>{ if(!o) return; await sb.from('sessions').delete().eq('id',o.id); await pomoClear(); await loadSessions(); render(); toast('已復原'); }, '', 5000);
+}
+function openCustomPomo(pid,tid,intent){
+  const c=pcfg(); const v={...c.mine}; let msg=c.msg, auto=c.auto;
+  const LIM={focus:[1,120,5],brk:[1,30,1],rounds:[1,8,1],long:[1,60,5]};
+  modal(`<h3 style="margin:0 0 4px">自訂番茄鐘</h3><div class="hint" style="margin:0 0 6px">改好會自動存成「我的」，下次一鍵選</div>
+    <div id="cpS" style="background:var(--bg);border-radius:14px;padding:2px 12px 6px"></div>
+    <div class="lab">休息時要對自己說的話</div><input type="text" id="cpM" ${AC} maxlength="30" value="${esc(msg)}">
+    <div class="hint" style="margin:4px 2px 0">時間到的提醒畫面會顯示這句</div>
+    <div class="swrow"><span>休息完自動開始下一輪</span><button class="tg2 ${auto?'on':''}" id="cpA"><i></i></button></div>
+    <button class="btn big" id="cpGo">▶ 開始</button>`,(el,close)=>{
+    const draw=()=>{ el.querySelector('#cpS').innerHTML=[['focus','專注','分'],['brk','休息','分'],['rounds','幾輪後長休息','輪'],['long','長休息','分']].map(([k,l,u])=>`<div class="stp"><span>${l}</span><span class="ct"><button data-d="-1" data-k="${k}">−</button><b>${v[k]}</b><span class="hint" style="margin:0;width:16px">${u}</span><button data-d="1" data-k="${k}">＋</button></span></div>`).join('');
+      el.querySelectorAll('#cpS [data-k]').forEach(b=>b.onclick=()=>{ const k=b.dataset.k, d=+b.dataset.d, [a,z,s0]=LIM[k]; const s=(s0===5&&(v[k]<5||(v[k]===5&&d<0)))?1:s0; v[k]=Math.min(z,Math.max(a,v[k]+s*d)); draw(); }); };
+    draw();
+    el.querySelector('#cpA').onclick=e=>{ auto=!auto; e.currentTarget.classList.toggle('on',auto); };
+    el.querySelector('#cpGo').onclick=async()=>{ msg=el.querySelector('#cpM').value.trim()||'起來走走、喝口水 💧';
+      await savePcfg({mine:v,msg,auto,last:'mine'}); close(); if(pid!==false) await beginWork(pid,tid,'mine',intent); else { render(); toast('已存成「我的」番茄 🍅'); } };
+  });
+}
+// 選要做的（專案或子任務，點 ▶ 直接開始）
+function openPicker(onPick){
+  const ps=clockProjects(), open=new Set(ps.length?[ps[0].id]:[]);
+  modal(`<h3 style="margin:0 0 2px">選要做的</h3><div class="hint" style="margin:0 0 6px">點專案或子任務，直接開始</div><div class="pk" id="pkL"></div>
+    <div class="actions"><button class="btn ghost" id="pkX">取消</button></div>`,(el,close)=>{
+    const draw=()=>{ el.querySelector('#pkL').innerHTML=ps.map(p=>{ const ts=st.tasks.filter(t=>t.project_id===p.id && !myChecked(t) && (st.scope==='all'||canCheck(t))).sort((a,b)=>orderKey(a)-orderKey(b)), ex=open.has(p.id);
+        return `<div class="pj"><span>${esc(p.name)}</span>${ts.length?`<span class="xp" data-xp="${p.id}">${ex?'▴ 收起':`▾ ${ts.length} 個子任務`}</span>`:''}${playBtn(`data-pk="${p.id}|"`,true)}</div>
+          ${ex?ts.map(t=>`<div class="tk2"><span>${esc(t.title)}</span>${playBtn(`data-pk="${p.id}|${t.id}"`,true)}</div>`).join(''):''}`; }).join('')+
+        `<div class="pj"><span style="color:var(--sub)">未指定專案</span>${playBtn('data-pk="|"',true)}</div>`;
+      el.querySelectorAll('[data-xp]').forEach(x=>x.onclick=()=>{ const id=x.dataset.xp; open.has(id)?open.delete(id):open.add(id); draw(); });
+      el.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{ const [p,t]=b.dataset.pk.split('|'); close(); onPick(p||null,t||null); }); };
+    draw(); el.querySelector('#pkX').onclick=close;
+  });
+}
+// 完成了，換下一件
+function nextSuggestions(o){
+  const out=[], seen=new Set([(o.project_id||'')+'|'+(o.task_id||'')]);
+  const add=(pid,tid,why)=>{ const k=(pid||'')+'|'+(tid||''); if(seen.has(k)) return; seen.add(k); out.push({pid,tid,why}); };
+  const left=focusIds().map(taskOf).filter(t=>t && !myChecked(t));
+  left.forEach(t=>add(t.project_id,t.id,`今日重點・還剩 ${left.length} 件`));
+  const cur=taskOf(o.task_id);
+  if(cur){ const sib=st.tasks.filter(t=>t.project_id===cur.project_id && t.id!==cur.id && !myChecked(t) && canCheck(t)).sort((a,b)=>orderKey(a)-orderKey(b));
+    const nx=sib.find(t=>orderKey(t)>orderKey(cur))||sib[0]; if(nx) add(nx.project_id,nx.id,`${projName(nx.project_id)} 的下一個子任務`); }
+  recentCombos().forEach(c=>add(c.pid,c.tid,'最近做的'));
+  return out.slice(0,3);
+}
+async function doneAndNext(){
+  const o=openOf(me.id), t=o&&taskOf(o.task_id); if(!t) return;
+  await toggleTask(t,true,{quiet:true,noRender:true});
+  const sug=nextSuggestions(openOf(me.id)||o);
+  modal(`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="ck on">${ckSVG()}</span><div><b style="font-size:17px">${esc(t.title)}</b><div class="hint" style="margin:0">完成了！收進今天完成的</div></div></div>
+    ${sug.length?`<div class="lab" style="margin-top:4px">接著做</div>
+      <div class="nx-big" data-nx="0"><div style="flex:1"><b style="font-size:18px">${esc(workTitle(sug[0].pid,sug[0].tid))}</b><div class="meta">${esc(sug[0].why)}</div></div>${playBtn('',false)}</div>
+      ${sug.slice(1).map((s,i)=>`<div class="nx-row" data-nx="${i+1}"><div style="flex:1"><b style="font-size:15.5px">${esc(workTitle(s.pid,s.tid))}</b><div class="meta">${esc(s.why)}</div></div>${playBtn('',true)}</div>`).join('')}`:''}
+    <div class="rcs" style="margin-top:12px"><button class="o" id="nxO">其他…</button><button id="nxB">先休息一下</button><button id="nxE">今天先到這</button></div>
+    ${prun()?'<div class="hint">番茄鐘會接著跑，不用重新開始</div>':''}`,(el,close)=>{
+    el.querySelectorAll('[data-nx]').forEach(b=>b.onclick=()=>{ const s=sug[+b.dataset.nx]; close(); switchTo(s.pid,s.tid); });
+    el.querySelector('#nxO').onclick=()=>{ close(); openPicker((p,t2)=>switchTo(p,t2)); };
+    el.querySelector('#nxB').onclick=()=>{ close(); const r=prun(); if(r&&r.phase==='focus') pomoBreak(); else stopWork(true); };
+    el.querySelector('#nxE').onclick=()=>{ close(); stopWork(false); };
+  });
+  render();
+}
+async function flushShun(o,endIso){ const pend=shunPend(o.id); if(!pend.length) return; setShunPend(o.id,[]);
+  await sb.from('sessions').insert(pend.map(x=>({user_id:me.id,project_id:x.pid||null,task_id:x.pid?(x.tid||null):null,start_at:o.start_at,end_at:endIso,share:1,background:true,split_of:o.id}))); }
+async function switchTo(pid,tid){
+  const o=openOf(me.id);
+  if(o){ const end=new Date().toISOString(); const {error}=await sb.from('sessions').update({end_at:end}).eq('id',o.id); if(error) return toast('切換失敗'); await flushShun(o,end); await loadSessions(); }
+  const r=prun(); if(r){ r.pid=pid; r.tid=tid; await setRun(r); }
+  const ok=await startWork(pid,tid,{quiet:true,keepRun:true}); if(ok) toast(`換做「${esc(workTitle(pid,tid))}」⇄`);
+}
+// 工作中：順手推進（先記著，結束時一起存）
+function openShunSheet(o){
+  if(!o) return; let pend=shunPend(o.id);
+  const keyOf=(pid,tid)=>(pid||'')+'|'+(tid||''), self=keyOf(o.project_id,o.task_id);
+  const cands=recentCombos([self]).concat(clockProjects().map(p=>({k:keyOf(p.id,null),pid:p.id,tid:null}))).filter((c,i,a)=>c.k!==self && a.findIndex(x=>x.k===c.k)===i).slice(0,6);
+  pend.forEach(x=>{ if(!cands.some(c=>c.k===x.k)) cands.unshift(x); });
+  modal(`<h3 style="margin:0 0 2px">🌱 順手推進了什麼？</h3><div class="hint" style="margin:0 0 10px">做這件事時，也順便推進了別的？點一下就好，結束時也能再改</div><div id="shC"></div>
+    <div class="actions"><button class="btn" id="shOk">好</button></div>`,(el,close)=>{
+    const draw=()=>{ el.querySelector('#shC').innerHTML=cands.map((c,i)=>`<button class="chipx ${pend.some(x=>x.k===c.k)?'on':''}" data-i="${i}">🌱 ${esc(comboText(c.pid,c.tid))}</button>`).join('')+`<button class="chipx" id="shMore">＋ 其他</button>`;
+      el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ const c=cands[+b.dataset.i], i=pend.findIndex(x=>x.k===c.k); if(i>=0) pend.splice(i,1); else pend.push({k:c.k,pid:c.pid,tid:c.tid}); draw(); });
+      el.querySelector('#shMore').onclick=()=>{ close(); openPicker((p,t)=>{ const k=keyOf(p,t); if(k===self) return toast('這就是目前這段的工作'); if(!pend.some(x=>x.k===k)) pend.push({k,pid:p,tid:t}); setShunPend(o.id,pend); render(); toast('記下來了 🌱'); }); }; };
+    draw(); el.querySelector('#shOk').onclick=()=>{ setShunPend(o.id,pend); close(); render(); };
+  });
+}
+
+// ===================== v17：成就 =====================
+const ACH={say_do:['🏅','說到做到'],week_goal:['🎯','本週目標達成'],project_done:['🏆','專案完成']};
+async function loadAch(){
+  const d=await q('achievements',r=>r.order('created_at',{ascending:false})); if(!d) return;
+  const fresh=d.filter(a=>a.user_id!==me.id && !(loadAch.seen||new Set()).has(a.id));
+  st.ach=d; const first=!loadAch.seen; loadAch.seen=new Set(d.map(a=>a.id));
+  if(!first && fresh.length && !openOf(me.id)){ const a=fresh[0]; popKudos(`${ACH[a.kind]?.[0]||'🏅'} ${esc(nameOf(a.user_id))}${a.kind==='say_do'?' 今天說到做到':' '+esc(achText(a))}`,'到「加油」頁送個愛心吧',a.id); notifyLocal(`${nameOf(a.user_id)}：${achText(a)}`,false,'wt-ach'); }
+}
+function achText(a){ const m=a.meta||{};
+  if(a.kind==='say_do') return '說到做到';
+  if(a.kind==='week_goal') return `「${m.name||''}」本週目標 ${m.hours||''} 小時達成`;
+  if(a.kind==='project_done') return `完成「${m.name||''}」`;
+  return a.title||''; }
+function achSub(a){ const m=a.meta||{};
+  if(a.kind==='say_do') return `今天排的 ${m.n||''} 件事全部完成`;
+  if(a.kind==='project_done') return `${m.n||0} 個任務・共 ${m.hours||0} 小時`;
+  return ''; }
+async function achieve(kind,ref,meta){
+  st.ach=st.ach||[]; if(st.ach.some(a=>a.user_id===me.id && a.kind===kind && a.ref===ref)) return false;
+  const row={user_id:me.id,kind,ref,title:ACH[kind][1],meta};
+  const {error}=await sb.from('achievements').insert(row); if(error) return false;
+  st.ach.unshift({...row,id:'tmp'+Date.now(),created_at:new Date().toISOString()}); loadAch();
+  achCard(kind,meta); return true;
+}
+const achQ=[];
+function achCard(kind,m){ achQ.push([kind,m]); if(achQ.length===1) achShowNext(); }
+function achShowNext(){ if(!achQ.length) return; const [kind,m]=achQ[0];
+  const ps=partners(), share=ps.length?`<div class="sh">💌 ${esc(ps.map(nameOf).join('、'))} 也會收到這個好消息</div>`:'';
+  const [e,t]=ACH[kind];
+  const lines= kind==='say_do'?[`今天排的 ${m.n} 件事，全部完成！`,'很棒，好好犒賞自己一下 🎉']
+    : kind==='week_goal'?[`「${esc(m.name)}」這週累積了 ${m.hours} 小時。`,'一段一段，都算數。']
+    : [`「${esc(m.name)}」${m.n} 個任務・共投入 ${m.hours} 小時`, m.shared?'一起完成的，謝謝彼此 🤝':'一步一步，終於完成了 👏'];
+  setTimeout(()=>{ celebrate(''); $('#toast').classList.remove('show');
+    modal(`<div class="ms"><span class="medal">${e}</span><h3>${kind==='project_done'?esc(m.name)+' 完成！':t}</h3>${lines.map(l=>`<p>${l}</p>`).join('')}${share}<button class="btn big" id="msOk" style="margin-top:12px">好</button></div>`,(el,close)=>{ el.querySelector('#msOk').onclick=()=>{ close(); achQ.shift(); achShowNext(); }; }); },450);
+}
+function checkSayDo(){ const ids=focusIds(); if(ids.length && ids.every(id=>myChecked(taskOf(id)))) achieve('say_do',todayKey(),{n:ids.length}); }
+function checkProjectDone(t){ const p=projOf(t.project_id); if(!p) return; const ts=st.tasks.filter(x=>x.project_id===p.id);
+  if(ts.length>=2 && ts.every(isDone)){ const ms=st.sessions.filter(s=>s.project_id===p.id).reduce((a,s)=>a+weightedDur(s),0);
+    achieve('project_done',p.id,{name:p.name,n:ts.length,hours:+fmtHrs(ms),shared:projPeople(p).length>1}); } }
+// 加油頁「成就」分頁
+function achTabHTML(){
+  const who=st.achWho||me.id, list=(st.ach||[]).filter(a=>a.user_id===who), ps=people();
+  const cnt=k=>list.filter(a=>a.kind===k).length;
+  const hearts=a=>st.kudos.filter(k=>k.ref==='ach:'+a.id && k.to_user===a.user_id);
+  return `<div class="seg" style="background:transparent;padding:0;gap:8px">${ps.map(u=>`<button class="${u===who?'on':''}" data-aw="${u}" style="border:1.5px solid ${u===who?'var(--accent)':'var(--line)'};${u===who?'color:var(--accent);background:var(--accent-soft)':''}">${u===me.id?'我':esc(nameOf(u))}</button>`).join('')}</div>
+    <div class="card"><div class="ach-grid">${Object.entries(ACH).map(([k,[e,t]])=>`<div><div class="e">${e}</div><b>${cnt(k)}</b><div class="meta">${t==='本週目標達成'?'週目標達成':t}</div></div>`).join('')}</div>
+    ${list.length?`<div class="lab">最近</div>${list.slice(0,30).map(a=>{ const hs=hearts(a); return `<div class="ach-row"><span class="e">${ACH[a.kind]?.[0]||'🏅'}</span><div style="flex:1"><b>${esc(achText(a))}</b><div class="meta">${fmtFullM(a.created_at)}${hs.length?`・${hs.map(k=>esc(nameOf(k.from_user))+' '+esc(k.emoji||'❤️')).join(' ')}`:''}</div></div>${a.user_id!==me.id?`<button class="heart-btn sm" data-ah="${a.id}">❤️</button>`:''}</div>`; }).join('')}`
+      :`<div class="empty" style="padding:16px 0 4px">${who===me.id?'完成今日重點、達成週目標、完成專案，都會收進這裡':'還沒有成就'}</div>`}
+    <div class="hint" style="text-align:center;margin-top:10px">一直累積，不會歸零</div></div>`;
+}
+
 // ---- 目標 ----
 const KINDS=[['daily_hours','day','今日','每日'],['weekly_hours','week','本週','每週'],['monthly_hours','month','本月','每月']];
 function goalReached(uid,p,f,k,excl){ const per=periodOf(k,Date.now(),0,projCut(uid,p.id)); return sumMs(st.sessions.filter(s=>s.user_id===uid&&s.project_id===p.id&&s.id!==excl),per) >= +p[f]*3600000; }
@@ -855,29 +1324,35 @@ function upcomingHTML(){
     ${g.ts.map(t=>`<div class="rec tap up-task" data-open="${g.p.id}"><div class="main">${esc(t.title)}</div>${dueBadge(taskDue(t))}${isOver(taskDue(t))?overdueActs(t):''}</div>`).join('')}`).join('')}</div>`;
 }
 // ---- 開工 / 休息 / 結束 ----
-async function startWork(pid,tid){
+async function startWork(pid,tid,opts={}){
   localStorage.setItem(LAST_PROJ_KEY,pid||'');
-  const {error}=await sb.from('sessions').insert({user_id:me.id,project_id:pid||null,task_id:pid?(tid||null):null,start_at:new Date().toISOString()});
+  if(!opts.keepRun && prun()) await pomoClear();
+  const row={user_id:me.id,project_id:pid||null,task_id:pid?(tid||null):null,start_at:new Date().toISOString()}; if(opts.intent) row.intent=opts.intent;
+  const {error}=await sb.from('sessions').insert(row);
   if(error){ toast(String(error.message).includes('one_open')?'你已經在工作中了':'打卡失敗，請再試一次'); return false; }
   if(pausedOf(me.id)) await sb.from('profiles').update({paused:null}).eq('id',me.id);
   await Promise.all([loadSessions(),loadProfiles()]); render();
+  if(opts.quiet) return true;
   const partnerOn=partners().some(u=>openOf(u));
   toast(partnerOn?'一起開工 ✨ 加油！':'開始工作 💪'); return true;
 }
-async function stopWork(pause){
+async function stopWork(pause,silent){
   const o=openOf(me.id); if(!o) return; const end=new Date(), p=projOf(o.project_id);
   const before=p?KINDS.filter(([f,k])=>p[f]>0 && goalReached(me.id,p,f,k,o.id)).map(x=>x[0]):[];
   const {error}=await sb.from('sessions').update({end_at:end.toISOString()}).eq('id',o.id);
   if(error) return toast('打卡失敗，請再試一次');
   await sb.from('profiles').update({paused:pause?{project_id:o.project_id,task_id:o.task_id,since:end.toISOString()}:null}).eq('id',me.id);
   try{ localStorage.removeItem('wt_snooze_'+o.id); }catch(e){}
+  if(!pause) await pomoClear(); else await flushShun(o,end.toISOString());
   await Promise.all([loadSessions(),loadProfiles()]); render();
-  if(pause) return toast('休息一下 ☕ 計時已暫停，回來按「繼續工作」');
+  if(pause){ if(!silent) toast('休息一下 ☕ 計時已暫停，回來按「繼續工作」'); return; }
   const newly=p?KINDS.filter(([f,k])=>p[f]>0 && !before.includes(f) && goalReached(me.id,p,f,k)):[];
   if(newly.length) celebrate(`🎯 達成「${esc(p.name)}」${newly.map(x=>x[2]).join('、')}目標！`);
+  newly.filter(x=>x[1]==='week').forEach(()=>{ const per=periodOf('week',Date.now(),0,projCut(me.id,p.id)); achieve('week_goal',`${p.id}:${per.start.toISOString()}`,{name:p.name,hours:+p.weekly_hours}); });
   setTimeout(()=>openNoteModal(st.sessions.find(s=>s.id===o.id)||o),newly.length?900:200);
 }
 async function endFromPause(){
+  await pomoClear();
   await sb.from('profiles').update({paused:null}).eq('id',me.id); await loadProfiles(); render();
   const last=st.sessions.filter(s=>s.user_id===me.id && s.end_at).sort((a,b)=>new Date(b.end_at)-new Date(a.end_at))[0];
   if(last) openNoteModal(last); else toast('辛苦了，今天先到這 🌙');
@@ -890,7 +1365,7 @@ function myTags(){
 }
 function celebrateSmall(msg){ const t=$('#toast'); toast(msg,3000); t.classList.add('sprout'); setTimeout(()=>t.classList.remove('sprout'),3000); }
 function openNoteModal(s){
-  let sel=new Set(s.tags||[]), editing=false, extras=[];
+  let sel=new Set(s.tags||[]), editing=false, extras=shunPend(s.id).map(x=>({...x,pct:0}));
   const existing=st.sessions.filter(x=>x.split_of===s.id), existingSplit=existing.filter(x=>!x.background).reduce((a,x)=>a+Math.round(+x.share*100),0);
   const dur=zhDur(sessEnd(s)-new Date(s.start_at));
   modal(`<h3>這段做了什麼？</h3><p class="hint">${fmtDT(s.start_at)} ~ ${s.end_at?fmtT(s.end_at):''}・共 ${dur}・${sessLabel(s)}</p>
@@ -943,7 +1418,10 @@ function openNoteModal(s){
     const add=async()=>{ const v=el.querySelector('#tgNew').value.trim(); if(!v) return; const list=prof(me.id)?.tags||DEFAULT_TAGS;
       if(list.includes(v)) return toast('已經有這個標籤'); await saveTags([...list,v]); el.querySelector('#tgNew').value=''; draw(); };
     el.querySelector('#tgAddB').onclick=add; el.querySelector('#tgNew').onkeydown=e=>{ if(e.key==='Enter'&&!e.isComposing) add(); };
-    el.querySelector('#ntSkip').onclick=()=>{ close(); toast(`辛苦了！共 ${dur}`); };
+    for(const x of extras){ if(!cands.some(c=>c.k===x.k)) cands.unshift({k:x.k,pid:x.pid,tid:x.tid}); } drawMx();
+    el.querySelector('#ntSkip').onclick=async()=>{ close();
+      if(extras.length){ const end=s.end_at||new Date().toISOString(); await sb.from('sessions').insert(extras.map(x=>({user_id:me.id,project_id:x.pid||null,task_id:x.pid?(x.tid||null):null,start_at:s.start_at,end_at:end,share:1,background:true,split_of:s.id}))); await loadSessions(); render(); }
+      setShunPend(s.id,[]); toast(`辛苦了！共 ${dur}`); };
     el.querySelector('#ntS').onclick=async()=>{ const note=el.querySelector('#ntT').value.trim()||null, tags=[...sel];
       const used=existingSplit+extras.reduce((a,x)=>a+x.pct,0);
       if(used>90) return toast('主要工作至少要留 10%，請調低比例');
@@ -951,7 +1429,7 @@ function openNoteModal(s){
       if(extras.length){ const end=s.end_at||new Date().toISOString();
         const rows=extras.map(x=>({user_id:me.id,project_id:x.pid||null,task_id:x.pid?(x.tid||null):null,start_at:s.start_at,end_at:end,share:x.pct?x.pct/100:1,background:!x.pct,split_of:s.id}));
         const r=await sb.from('sessions').insert(rows); if(r.error) toast('順手推進的紀錄儲存失敗'); }
-      await loadSessions(); close(); render();
+      setShunPend(s.id,[]); await loadSessions(); close(); render();
       if(extras.length) celebrateSmall(`記下來了 ✍️ 還順手推進了 ${extras.length} 件 🌱`); else toast(note||tags.length?'記下來了 ✍️ 又往前一步':'辛苦了！'); };
   });
 }
@@ -991,7 +1469,7 @@ function checkOvertime(){
   let next=+new Date(o.start_at)+h*3600000; try{ const s=localStorage.getItem('wt_snooze_'+o.id); if(s) next=+s; }catch(e){}
   if(Date.now()<next) return;
   const el=Date.now()-new Date(o.start_at);
-  if(document.hidden){ notifyLocal(`已經工作 ${zhShort(el)} 了，還在做嗎？`); try{ localStorage.setItem('wt_snooze_'+o.id, Date.now()+3600000); }catch(e){} return; }
+  if(document.hidden){ notifyLocal(`已經工作 ${zhShort(el)} 了，還在做嗎？`,false,'wt-overtime'); try{ localStorage.setItem('wt_snooze_'+o.id, Date.now()+3600000); }catch(e){} return; }
   try{ localStorage.setItem('wt_snooze_'+o.id, Date.now()+3600000); }catch(e){}
   modal(`<h3>⏰ 已經工作 ${zhShort(el)} 了</h3><p class="hint">${sessLabel(o)}・從 ${fmtDT(o.start_at)} 開始。還在做嗎？還是忘了按結束？</p>
     <button class="btn big" id="otGo" style="margin-top:8px">還在做（1 小時後再提醒）</button>
@@ -1005,46 +1483,13 @@ function checkOvertime(){
       if(error) return toast('更新失敗'); await loadSessions(); render(); openSessionModal(st.sessions.find(s=>s.id===o.id)); toast('請把結束時間改成實際結束的時間'); };
   });
 }
-async function notifyLocal(body){
-  try{ if(!('Notification' in window) || Notification.permission!=='granted') return;
+async function notifyLocal(body, force, tag){
+  try{ if(!('Notification' in window) || Notification.permission!=='granted') return false;
+    if(!force && !document.hidden) return false;
     const reg=navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
-    if(reg && reg.showNotification) reg.showNotification('Work Together',{body,icon:'icon-192.png',tag:'wt-overtime'}); else new Notification('Work Together',{body,icon:'icon-192.png'}); }catch(e){}
-}
-function renderHome(){
-  const un=st.kudos.filter(k=>k.to_user===me.id && !k.read_at), R=showReviewCard();
-  $('#view').innerHTML=`
-    ${un.length?`<div class="card cheer-card tap" id="goCheer"><span class="big-e">${esc(un[0].emoji||'💌')}</span><div><b>${esc(nameOf(un[0].from_user))}</b> 給了你 ${un.length} 個肯定<div class="hint" style="margin:0">點這裡看看 →</div></div></div>`:''}
-    ${R?reviewHTML(R,false):''}
-    <div id="togetherBox">${togetherHTML()}</div>
-    <div class="people" id="people">${peopleHTML()}</div>
-    ${nudgeHTML()}
-    <div class="h2">我的打卡</div><div id="clock">${clockHTML()}</div>
-    ${shunHTML()}
-    ${focusHTML()}
-    ${upcomingHTML()}
-    <div class="h2 row" style="justify-content:space-between"><span>專案進度</span>${scopeToggle()}</div>
-    <div id="progress">${progressHTML(scoped(st.projects.filter(p=>!p.archived)))}</div>`;
-  bindOpen(); bindScope(); bindOverdue($('#view'));
-  const gc=$('#goCheer'); if(gc) gc.onclick=()=>{ st.freshIds=null; st.tab='cheer'; render(); };
-  const rvH=$('#rvHide'); if(rvH) rvH.onclick=()=>{ hideReview(); render(); };
-  const rvG=$('#rvGo'); if(rvG) rvG.onclick=()=>{ hideReview(); render(); if(myOpenTasks().length) openFocusModal(); };
-  const ps=$('#projSel');
-  if(ps) ps.onchange=()=>{ const pid=ps.value; $('#taskSel').innerHTML=taskOptions(pid,''); $('#taskWrap').classList.toggle('hidden',!hasTaskOpts(pid)); };
-  const rc=recentCombos(); document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=()=>{ b.disabled=true; const c=rc[+b.dataset.rc]; startWork(c.pid,c.tid); });
-  const sBtn=$('#startBtn'); if(sBtn) sBtn.onclick=()=>{ sBtn.disabled=true; startWork($('#projSel').value||null, ($('#taskSel')&&$('#taskSel').value)||null).then(ok=>{ if(!ok) sBtn.disabled=false; }); };
-  const j=$('#joinBtn'); if(j) j.onclick=()=>{ j.disabled=true; startWork(j.dataset.pid||null, j.dataset.tid||null); };
-  const eBtn=$('#stopBtn'); if(eBtn) eBtn.onclick=()=>{ eBtn.disabled=true; stopWork(false); };
-  const swl=switchList(); document.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{ b.disabled=true; const c=swl[+b.dataset.sw]; switchTo(c.pid,c.tid); });
-  const swo=$('#swOther'); if(swo) swo.onclick=openSwitchModal;
-  const pBtn=$('#pauseBtn'); if(pBtn) pBtn.onclick=()=>{ pBtn.disabled=true; stopWork(true); };
-  const rBtn=$('#resumeBtn'); if(rBtn) rBtn.onclick=()=>{ rBtn.disabled=true; const z=pausedOf(me.id); startWork(z.project_id,z.task_id); };
-  const ePz=$('#endPauseBtn'); if(ePz) ePz.onclick=()=>endFromPause();
-  const pf=$('#pickFocus'); if(pf) pf.onclick=openFocusModal;
-  const ef=$('#editFocus'); if(ef) ef.onclick=e=>{ e.preventDefault(); openFocusModal(); };
-  document.querySelectorAll('[data-fchk]').forEach(c=>c.onchange=()=>toggleTask(taskOf(c.dataset.fchk),c.checked));
-  document.querySelectorAll('[data-fgo]').forEach(b=>b.onclick=async()=>{ b.disabled=true; const t=taskOf(b.dataset.fgo), o=openOf(me.id);
-    if(o){ await sb.from('sessions').update({end_at:new Date().toISOString()}).eq('id',o.id); await loadSessions(); }
-    startWork(t.project_id,t.id); });
+    const opt={body,icon:'icon-192.png',badge:'icon-192.png',tag:tag||('wt-'+Date.now())};
+    if(reg && reg.showNotification) await reg.showNotification('Work Together',opt); else new Notification('Work Together',opt);
+    return true; }catch(e){ return false; }
 }
 function bindOpen(){ document.querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>{ st.tab='proj'; st.projView=el.dataset.open; render(); window.scrollTo(0,0); }); }
 
@@ -1435,7 +1880,7 @@ function openProjectImportModal(){
       const newP=okG.filter(g=>!g.existing).map(g=>({id:uuid(),name:g.name.slice(0,30),assignees:[]}));
       okG.filter(g=>!g.existing).forEach((g,i)=>g.pid=newP[i].id); okG.filter(g=>g.existing).forEach(g=>g.pid=g.existing.id);
       if(newP.length){ const {error}=await sb.from('projects').insert(newP); if(error){ go.disabled=false; show(); return toast('建立專案失敗，請再試一次'); } }
-      const tasks=okG.flatMap(g=>g.tasks.filter(t=>!t.errs.length).map(t=>({project_id:g.pid,title:t.title.slice(0,60),assignees:t.assignees,due_at:t.due?t.due.toISOString():null})));
+      const tasks=okG.flatMap(g=>{ const base=g.existing?maxOrder(g.pid):0; return g.tasks.filter(t=>!t.errs.length).map((t,i)=>({project_id:g.pid,title:t.title.slice(0,60),assignees:t.assignees,due_at:t.due?t.due.toISOString():null,sort_order:base+(i+1)*1000})); });
       if(tasks.length){ const {error}=await sb.from('tasks').insert(tasks); if(error){ await loadProjects(); render(); return toast('專案已建立，但任務匯入失敗，請再試一次'); } }
       await Promise.all([loadProjects(),loadTasks()]); close(); render(); toast(`已匯入 ${newP.length} 個新專案、${tasks.length} 個任務 ✓`); };
   });
@@ -1475,7 +1920,7 @@ function openImportModal(p){
     el.querySelector('#impX').onclick=close;
     go.onclick=async()=>{ const ok=parsed.filter(r=>!r.errs.length); if(!ok.length) return;
       go.disabled=true; go.textContent='匯入中…';
-      const {error}=await sb.from('tasks').insert(ok.map(r=>({project_id:p.id,title:r.title.slice(0,60),assignees:r.assignees,due_at:r.due?r.due.toISOString():null})));
+      const base=maxOrder(p.id); const {error}=await sb.from('tasks').insert(ok.map((r,i)=>({project_id:p.id,title:r.title.slice(0,60),assignees:r.assignees,due_at:r.due?r.due.toISOString():null,sort_order:base+(i+1)*1000})));
       if(error){ go.disabled=false; show(); return toast('匯入失敗，請再試一次'); }
       await loadTasks(); close(); render(); toast(`已匯入 ${ok.length} 筆任務 ✓`); };
   });
@@ -1503,11 +1948,30 @@ function assigneePicker(name, selected){
   return `<div class="pick" data-pick="${name}">${people().map(u=>`<label class="pk" style="--c:${colorOf(u)}"><input type="checkbox" value="${u}" ${selected.includes(u)?'checked':''}><span>${esc(nameOf(u))}</span></label>`).join('')}</div>`;
 }
 function pickedOf(root,name){ return [...root.querySelectorAll(`[data-pick="${name}"] input:checked`)].map(i=>i.value); }
-function taskRowHTML(t){
+function maxOrder(pid){ return st.tasks.concat(st.trashT||[]).filter(t=>t.project_id===pid).reduce((m,t)=>Math.max(m,+t.sort_order||0),0); }
+function orderKey(t){ return t.sort_order!=null ? +t.sort_order : 1e15+(+new Date(t.created_at||0)); }
+function bindTaskDrag(box, onDrop){
+  box.querySelectorAll('.drag-h').forEach(h=>{
+    h.addEventListener('pointerdown',e=>{ e.preventDefault(); e.stopPropagation(); const row=h.closest('.rec'); const before=[...box.querySelectorAll('.rec[data-tid]')].map(r=>r.dataset.tid);
+      row.classList.add('dragging'); try{ h.setPointerCapture(e.pointerId); }catch(_){}
+      const move=ev=>{ const y=ev.clientY; let n=row.nextElementSibling, pr=row.previousElementSibling;
+        if(n && n.matches('.rec[data-tid]')){ const r=n.getBoundingClientRect(); if(y>r.top+r.height/2){ box.insertBefore(n,row); return; } }
+        if(pr && pr.matches('.rec[data-tid]')){ const r=pr.getBoundingClientRect(); if(y<r.top+r.height/2){ box.insertBefore(row,pr); } } };
+      const up=()=>{ window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); window.removeEventListener('pointercancel',up); row.classList.remove('dragging'); document.body.classList.remove('no-select');
+        const after=[...box.querySelectorAll('.rec[data-tid]')].map(r=>r.dataset.tid); if(after.join()!==before.join()) onDrop(after); };
+      document.body.classList.add('no-select');
+      window.addEventListener('pointermove',move); window.addEventListener('pointerup',up); window.addEventListener('pointercancel',up); });
+    h.addEventListener('click',e=>e.stopPropagation()); });
+}
+async function saveTaskOrder(ids){
+  const ups=[]; ids.forEach((id,i)=>{ const t=taskOf(id), v=(i+1)*1000; if(t && +t.sort_order!==v) ups.push(sb.from('tasks').update({sort_order:v}).eq('id',id)); });
+  const rs=await Promise.all(ups); if(rs.some(r=>r.error)) toast('排序儲存失敗'); await loadTasks(); render();
+}
+function taskRowHTML(t, drag){
   const a=taskAssignees(t), ms=sumMs(st.sessions.filter(s=>s.task_id===t.id),ALL_TIME), done=isDone(t), can=canCheck(t);
   const people_=a.length?people().filter(u=>a.includes(u)):[];
   const prog = a.length>1 ? `<span class="hint" style="margin:0 0 0 4px">${a.filter(u=>doneBy(t,u)).length}/${a.length} 人完成</span>`:'';
-  return `<div class="rec task" data-tid="${t.id}">
+  return `<div class="rec task" data-tid="${t.id}">${drag?'<span class="drag-h" title="按住拖曳調整順序">⋮⋮</span>':''}
     <input type="checkbox" class="chk" data-chk="${t.id}" ${myChecked(t)?'checked':''} ${can?'':'disabled title="只有負責人可以勾選"'}>
     <div class="main"><div class="${done?'strike':''}">${esc(t.title)}</div>
       <div class="meta" style="white-space:normal">${a.length?chipsFor(people_,u=>doneBy(t,u)):'<span class="chip" style="--c:var(--sub)">未指派</span>'}${prog}${ms?`<span class="meta-i">已投入 ${zhShort(ms)}</span>`:''}</div>
@@ -1517,7 +1981,7 @@ function taskRowHTML(t){
 function renderProjectDetail(){
   const p=projOf(st.projView), ts=st.tasks.filter(t=>t.project_id===p.id);
   const sortDue=(a,b)=>(+taskDue(a)||9e15)-(+taskDue(b)||9e15);
-  const todo=ts.filter(t=>!isDone(t)).sort(sortDue), done=ts.filter(isDone);
+  const todo=ts.filter(t=>!isDone(t)).sort((a,b)=>orderKey(a)-orderKey(b)), done=ts.filter(isDone);
   const ov=projOverride(me.id,p.id), myCut=projCut(me.id,p.id), dl=projDeadline(p);
   $('#view').innerHTML=`
     <div class="row" style="justify-content:space-between;margin:0 0 10px"><button class="btn sm ghost" id="back">‹ 專案</button><button class="btn sm ghost" id="editP">編輯專案</button></div>
@@ -1539,10 +2003,13 @@ function renderProjectDetail(){
       </div>${dueQuickHTML('newD')}
       <div class="row" style="gap:8px;margin-top:10px"><button class="btn" id="addT" style="flex:2">＋ 新增任務</button><button class="btn ghost" id="impBtn" style="flex:1">📥 批次匯入</button></div>
     </div>
-    <div class="card list">${todo.map(taskRowHTML).join('')||'<div class="empty" style="padding:14px">沒有進行中的任務</div>'}</div>
+    ${todo.length>1?`<div class="row" style="justify-content:space-between;margin:0 4px 6px"><span class="hint" style="margin:0">按住 ⋮⋮ 拖曳可調整順序</span><a href="#" class="lnk" id="sortDue">依期限排序</a></div>`:''}
+    <div class="card list" id="todoList">${todo.map(t=>taskRowHTML(t,todo.length>1)).join('')||'<div class="empty" style="padding:14px">沒有進行中的任務</div>'}</div>
     ${done.length?`<div class="h2"><a href="#" id="tglDone" class="lnk">${st.showDone?'隱藏':'顯示'}已完成（${done.length}）</a></div>${st.showDone?`<div class="card list" style="opacity:.75">${done.map(taskRowHTML).join('')}</div>`:''}`:''}
     <p class="hint" style="text-align:center">勾選方框＝我完成了；多位負責人需全部勾選才算完成<br>點任務文字可修改、設定提醒或刪除</p>`;
   bindDueQuick($('#view')); bindOverdue($('#view'));
+  const tl=$('#todoList'); if(tl) bindTaskDrag(tl, ids=>saveTaskOrder(ids));
+  const sd=$('#sortDue'); if(sd) sd.onclick=e=>{ e.preventDefault(); saveTaskOrder(todo.slice().sort(sortDue).map(t=>t.id)).then(()=>toast('已依期限重新排序')); };
   $('#back').onclick=()=>{ st.projView=null; render(); };
   $('#editP').onclick=()=>openProjectModal(p);
   $('#cutP').onclick=e=>{ e.preventDefault(); openCutModal(p); };
@@ -1552,7 +2019,7 @@ function renderProjectDetail(){
   $('#addT').onclick=async()=>{ const title=$('#newT').value.trim(); if(!title) return toast('請輸入任務名稱');
     const assignees=pickedOf(v,'newA'), dv=$('#newD').value;
     $('#addT').disabled=true;
-    const {error}=await sb.from('tasks').insert({project_id:p.id,title,assignees,due_at:dv?new Date(dv).toISOString():null});
+    const {error}=await sb.from('tasks').insert({project_id:p.id,title,assignees,due_at:dv?new Date(dv).toISOString():null,sort_order:maxOrder(p.id)+1000});
     $('#addT').disabled=false;
     if(error) return toast('新增失敗'); await loadTasks(); renderProjectDetail(); toast('已新增任務'); };
   $('#impBtn').onclick=()=>openImportModal(p);
@@ -1560,7 +2027,7 @@ function renderProjectDetail(){
   document.querySelectorAll('[data-chk]').forEach(el=>{ el.onclick=e=>e.stopPropagation(); el.onchange=()=>toggleTask(taskOf(el.dataset.chk), el.checked); });
   document.querySelectorAll('[data-tid]').forEach(el=>el.onclick=()=>openTaskModal(taskOf(el.dataset.tid)));
 }
-async function toggleTask(t, on){
+async function toggleTask(t, on, opts={}){
   let error;
   if(on) ({error}=await sb.from('task_done').upsert({task_id:t.id,user_id:me.id}));
   else ({error}=await sb.from('task_done').delete().eq('task_id',t.id).eq('user_id',me.id));
@@ -1571,8 +2038,11 @@ async function toggleTask(t, on){
     ({error}=await sb.from('tasks').update({done:allDone}).eq('id',t.id));
   }
   if(error) return toast('更新失敗');
-  await Promise.all([loadTasks(),loadTaskDone()]); render();
-  if(on){ const t2=taskOf(t.id); if(isDone(t2)) celebrate(`✅ 完成任務「${esc(t.title)}」`); else toast(`你的部分完成了 ✓，等${esc(taskAssignees(t).filter(u=>!doneBy(t2,u)).map(nameOf).join('、'))}完成`); }
+  await Promise.all([loadTasks(),loadTaskDone()]); if(!opts.noRender) render();
+  if(on){ const t2=taskOf(t.id);
+    if(!opts.quiet){ if(isDone(t2)) celebrate(`✅ 完成任務「${esc(t.title)}」`); else toast(`你的部分完成了 ✓，等${esc(taskAssignees(t).filter(u=>!doneBy(t2,u)).map(nameOf).join('、'))}完成`); }
+    else if(!isDone(t2) && taskAssignees(t).length>1) toast(`你的部分完成了 ✓`);
+    checkSayDo(); checkProjectDone(t2); }
 }
 
 // ===================== 加油（肯定區） =====================
@@ -1592,12 +2062,15 @@ function winsOf(uid){
     if(p[f]>0 && goalReached(uid,p,f,k)){ const per=periodOf(k,Date.now(),0,projCut(uid,p.id));
       const last=st.sessions.filter(s=>s.user_id===uid&&s.project_id===p.id).reduce((m,s)=>Math.max(m,sessEnd(s)),0);
       wins.push({ref:`goal:${p.id}:${k}:${per.start.toISOString()}`, t:last, icon:'🎯', kind:'goal', text:`達成「${esc(p.name)}」${lbl}目標 ${+p[f]} 小時`, sub:rangeLabel(k,per)}); } }));
+  (st.ach||[]).filter(a=>a.user_id===uid && +new Date(a.created_at)>=since).forEach(a=>{
+    wins.push({ref:'ach:'+a.id, t:+new Date(a.created_at), icon:ACH[a.kind]?.[0]||'🏅', kind:'ach', gold:true, text:a.kind==='say_do'?'今天說到做到':esc(achText(a)), sub:esc(achSub(a))||'成就'}); });
   return wins.sort((a,b)=>b.t-a.t).slice(0,25);
 }
 function phrasesFor(w, to){
   const n=nameOf(to);
   if(w && w.kind==='reply') return [`謝謝你 😊`,`收到，超開心！`,`有你一起真好 🤗`,`你也辛苦了，一起加油 ☕`];
   if(!w) return [`今天也一起加油 💪`,`謝謝你一起做這些事 🙌`,`累了就休息一下，我們進度沒問題 ☕`,`有你一起真好 😊`];
+  if(w.kind==='ach') return [`太厲害了，恭喜你 🎉`,`說到做到，真的很棒 👏`,`看你一步步完成，替你開心 🥳`,`這是努力換來的，好好犒賞自己 🍰`];
   if(w.kind==='session') return [`辛苦了！專注了 ${w.dur}，很穩 💪`,`看得到你的投入，謝謝你 🙏`,`記得起來動一動、喝口水 ☕`];
   if(w.kind==='shun') return [`一次推進兩件事，效率很好 🌱`,`連這個都順手處理了，謝謝你 🙏`,`多做的這一點點，累積起來很可觀 ✨`];
   if(w.kind==='task') return [`「${w.title}」搞定了，謝謝你一步步推進 ✨`,`這塊你處理掉了，幫了大忙！`,`又往前一步了 🚶`];
@@ -1641,14 +2114,21 @@ function kudoRow(k){
     <button class="react-btn" data-rbtn="${k.id}" aria-label="回應">回應</button></div>`;
 }
 function renderCheer(){
+  const tab=st.cheerTab||'feed';
+  const segH=`<div class="seg"><button data-ct="feed" class="${tab==='feed'?'on':''}">動態</button><button data-ct="ach" class="${tab==='ach'?'on':''}">成就</button></div>`;
+  if(tab==='ach'){ $('#view').innerHTML=segH+achTabHTML(); bindCheerTabs();
+    document.querySelectorAll('[data-aw]').forEach(b=>b.onclick=()=>{ st.achWho=b.dataset.aw; renderCheer(); });
+    document.querySelectorAll('[data-ah]').forEach(b=>{ const a=st.ach.find(x=>x.id===b.dataset.ah); const w={ref:'ach:'+a.id,kind:'ach',icon:ACH[a.kind]?.[0],text:achText(a)};
+      b.onclick=()=>{ b.classList.add('pop'); sendKudos(a.user_id,w,'❤️',null); }; bindLongPress(b,()=>openEmojiBar(b,'💬 留言',e=>{ if(e==='reply'||e==='more') openKudosModal(a.user_id,w); else sendKudos(a.user_id,w,e,null); })); });
+    return; }
   const recv=st.kudos.filter(k=>k.to_user===me.id);
   if(!st.freshIds) st.freshIds=recv.filter(k=>!k.read_at).map(k=>k.id);
   recv.filter(k=>!k.read_at && !st.freshIds.includes(k.id)).forEach(k=>st.freshIds.push(k.id));
   const fresh=recv.filter(k=>st.freshIds.includes(k.id)), hist=recv.filter(k=>!st.freshIds.includes(k.id));
   const unreadIds=recv.filter(k=>!k.read_at).map(k=>k.id);
   const ps=partners();
-  $('#view').innerHTML=`
-    <div class="h2 row" style="justify-content:space-between"><span>收到的肯定</span>${fresh.length?`<span class="pill-new">${fresh.length} 則新的</span>`:''}</div>
+  $('#view').innerHTML=segH+`
+    <div class="h2 row" style="justify-content:space-between;margin-top:6px"><span>收到的肯定</span>${fresh.length?`<span class="pill-new">${fresh.length} 則新的</span>`:''}</div>
     ${fresh.length?`<div class="card list">${fresh.map(kudoRow).join('')}</div>`:`<div class="card empty" style="padding:14px">${recv.length?'沒有新的肯定':'還沒有收到肯定<br><span class="hint">先給對方一個吧，善意通常會回來的 😊</span>'}</div>`}
     ${hist.length?`<div class="hist-bar tap" id="histBar"><span>📜 歷史紀錄（${hist.length}）</span><span>${st.moreRecv?'收起 ▲':'展開 ▼'}</span></div>
       ${st.moreRecv?`<div class="card list">${hist.slice(0,st.histN).map(kudoRow).join('')}</div>${hist.length>st.histN?`<div class="more-row"><a href="#" class="lnk" id="histMore">再顯示 10 則 ▼</a></div>`:''}`:''}`:''}
@@ -1656,13 +2136,14 @@ function renderCheer(){
     ${ps.map(u=>{ const ws=winsOf(u), sent=st.kudos.filter(k=>k.from_user===me.id&&k.to_user===u);
       return `<div class="h2 row" style="justify-content:space-between"><span>給 ${esc(nameOf(u))} 加油</span><button class="btn sm ghost" data-gen="${u}">💌 說句話</button></div>
       ${ws.length?`<div class="card list">${ws.map((w,i)=>{ if(i>=4 && !st.moreWins[u]) return ''; const mine=sent.filter(k=>k.ref===w.ref);
-        return `<div class="rec win"><span class="big-e">${w.icon}</span>
-          <div class="main"><div>${w.text}</div><div class="meta">${w.sub}・${ago(w.t)}</div>
+        return `<div class="rec win${w.gold?' gold':''}"><span class="big-e">${w.icon}</span>
+          <div class="main"><div>${w.text}</div><div class="meta">${w.sub?w.sub+'・':''}${ago(w.t)}</div>
           ${mine.length?`<div class="sent">你送了 ${mine.map(k=>esc(k.emoji||'💌')).join(' ')}${mine.some(k=>k.message)?'・含留言':''}</div>`:''}
           <div class="win-acts"><button class="heart-btn" data-u="${u}" data-w="${i}">❤️ 給個愛心</button><span class="hint" style="margin:0">長按可選其他表情或留言</span></div></div></div>`; }).join('')}</div>
       ${ws.length>4?`<div class="more-row"><a href="#" class="lnk" data-morew="${u}">${st.moreWins[u]?'收起 ▲':`顯示更多（還有 ${ws.length-4} 項）▼`}</a></div>`:''}`
       :`<div class="card empty">${esc(nameOf(u))} 最近 7 天還沒有新的成果<br><span class="hint">也可以按上面的「說句話」直接鼓勵</span></div>`}`; }).join('')}
     <p class="hint" style="text-align:center">具體說出對方「做了什麼、投入了什麼」，比「好棒」更有力量 💡</p>`;
+  bindCheerTabs();
   const wsMap={}; ps.forEach(u=>wsMap[u]=winsOf(u));
   document.querySelectorAll('.heart-btn').forEach(b=>{ const u=b.dataset.u, w=wsMap[u][+b.dataset.w];
     b.onclick=()=>{ b.classList.add('pop'); sendKudos(u,w,'❤️',null); };
@@ -1683,6 +2164,7 @@ function renderCheer(){
   });
   if(unreadIds.length){ sb.from('kudos').update({read_at:new Date().toISOString()}).eq('to_user',me.id).is('read_at',null).then(()=>{ st.kudos.forEach(k=>{ if(unreadIds.includes(k.id)) k.read_at=new Date().toISOString(); }); updateBadge(); }); }
 }
+function bindCheerTabs(){ document.querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{ st.cheerTab=b.dataset.ct; renderCheer(); window.scrollTo(0,0); }); }
 function openReactBar(row,id){
   openEmojiBar(row,'💬 回覆',e=>{
     if(e==='reply'){ const box=row.querySelector('[data-rb]'); box.classList.remove('hidden'); box.querySelector('.rb-in').focus(); }
@@ -1739,11 +2221,12 @@ function meItem(id,icon,title,sub,extra){ return `<div class="rec tap me-it" id=
 function renderMe(){
   if(st.meView==='rec') return renderRecords();
   if(st.meView==='trash') return renderTrash();
+  if(st.meView==='pomo') return renderPomoSettings();
   const c=userCut(me.id), wk=periodOf('week',Date.now(),0,c), mine=st.sessions.filter(s=>s.user_id===me.id);
   const doneWk=st.taskDone.filter(d=>d.user_id===me.id && +new Date(d.done_at)>=+wk.start).length;
   const rh=+(prof(me.id)?.remind_hours??3), pm=prof(me.id)?.progress_mode||'pair';
   let font='big'; try{ font=localStorage.getItem(FONT_KEY)||'big'; }catch(e){}
-  const ntf=!('Notification' in window)?'這個瀏覽器不支援':Notification.permission==='granted'?'已開啟 ✓':Notification.permission==='denied'?'已被封鎖，請到瀏覽器設定開啟':'尚未開啟，點一下開啟';
+  const NE=notifyEnv(); const ntf=!NE.supported?(NE.ios&&!NE.standalone?'iPhone 需先加到主畫面，點一下看說明':'這個瀏覽器不支援'):NE.perm==='granted'?'已開啟 ✓（點一下可測試）':NE.perm==='denied'?'被瀏覽器封鎖，點一下看怎麼打開':'尚未開啟，點一下開啟';
   const trashN=trashItems().length;
   $('#view').innerHTML=`
     <div class="card me-head"><span class="me-av" style="background:${colorOf(me.id)}">${esc(nameOf(me.id).slice(0,1))}</span>
@@ -1760,11 +2243,13 @@ function renderMe(){
       ${meItem('goPm','📊','進度顯示方式',PMODES[pm][0])}
       ${meItem('goTheme','🌓','外觀（深色模式）',{auto:'跟隨手機設定',light:'淺色',dark:'深色'}[themeMode()])}
       ${meItem('goFont','🔠','文字大小',font==='big'?'大（目前）':'標準（目前）',`<span class="tag">${font==='big'?'切換成標準':'切換成大'}</span>`)}
+      ${meItem('goPomo','🍅','番茄鐘與提醒',`${pcfg().start} 我的番茄 ${presetLabel(pcfg().mine)}・${SND_LIST.find(x=>x[0]===pcfg().sound)?.[1]||''}`)}
       ${meItem('goRem','⏰','工作太久提醒',rh>0?`連續工作超過 ${rh} 小時提醒`:'不提醒')}
       ${meItem('goNtf','🔔','通知',ntf)}</div>
     <div class="h2">其他</div><div class="card list">
       ${meItem('goShare','👥','邀請另一個人','複製設定連結傳給對方')}
       ${meItem('goTip','📱','加到手機主畫面','像 App 一樣使用')}
+      ${meItem('goAbout','ℹ️','關於 Work Together','版本與授權')}
       ${meItem('goOut','🚪','登出',esc(me.email||''),'')}</div>`;
   const on=(id,fn)=>{ const e=$('#'+id); if(e) e.onclick=fn; };
   on('goRec',()=>{ st.meView='rec'; render(); window.scrollTo(0,0); });
@@ -1773,19 +2258,84 @@ function renderMe(){
   on('goName',()=>openNameModal(false)); on('goColor',openColorModal); on('goCut',()=>openCutModal(null)); on('goPm',openPmModal);
   on('goFont',()=>{ try{ localStorage.setItem(FONT_KEY, font==='big'?'std':'big'); }catch(e){} applyFont(); renderMe(); toast(font==='big'?'已切換成標準字體':'已切換成大字體'); });
   on('goRem',openRemindHoursModal);
+  on('goPomo',()=>{ st.meView='pomo'; render(); window.scrollTo(0,0); });
+  on('goAbout',()=>modal(`<h3>關於 Work Together</h3><p class="hint" style="font-size:14px">版本 v17（2026/11）<br>兩個人一起工作、互相加油的小工具。</p>
+    <p class="hint" style="font-size:13px">提醒音效「小段旋律」「連續長音」使用 FluidR3_GM 音色庫的樂器錄音（Frank Wen 製作），經 gleitz/midi-js-soundfonts 轉成網頁可用的格式。</p><div class="actions"><button class="btn" id="abX">知道了</button></div>`,(el,close)=>{ el.querySelector('#abX').onclick=close; }));
   on('goTheme',()=>{ const cur=themeMode();
     modal(`<h3>外觀</h3><div class="pm-grid" style="grid-template-columns:repeat(3,1fr)">${[['auto','🔄 跟隨手機'],['light','☀️ 淺色'],['dark','🌙 深色']].map(([k,l])=>`<button class="dq-b ${k===cur?'on':''}" data-th="${k}" style="padding:12px 6px">${l}</button>`).join('')}</div>
       <p class="hint">「跟隨手機」會依手機的深色模式設定自動切換。只影響這支手機。</p><div class="actions"><button class="btn ghost" id="thX">關閉</button></div>`,(el,close)=>{
       el.querySelector('#thX').onclick=close;
       el.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{ try{ localStorage.setItem(THEME_KEY,b.dataset.th); }catch(e){} applyThemeMode(); close(); renderMe(); toast({auto:'外觀已改成跟隨手機',light:'已切換成淺色',dark:'已切換成深色'}[b.dataset.th]); }); }); });
-  on('goNtf',async()=>{ if('Notification' in window && Notification.permission==='default'){ try{ await Notification.requestPermission(); }catch(e){} renderMe(); } });
+  on('goNtf',openNotifyModal);
   on('goShare',async()=>{ const c=cfg(); const token=encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify({u:c.url,k:c.key})))));
     const url=location.origin+location.pathname+'#setup='+token; try{ await navigator.clipboard.writeText(url); toast('已複製，傳給對方即可'); }catch{ prompt('請複製這個連結：',url); } });
   on('goTip',()=>modal(`<h3>加到手機主畫面</h3><p>iPhone：用 Safari 開啟 → 下方「分享」→「加入主畫面」</p><p>Android：用 Chrome 開啟 → 右上「⋮」→「安裝應用程式」或「加到主畫面」</p><div class="actions"><button class="btn" id="tpX">知道了</button></div>`,(el,close)=>{ el.querySelector('#tpX').onclick=close; }));
   on('goOut',async()=>{ if(confirm('確定要登出？')){ await sb.auth.signOut(); me=null; renderLogin(); } });
 }
+
+function renderPomoSettings(){
+  const c=pcfg();
+  $('#view').innerHTML=subHeader('番茄鐘與提醒')+`
+    <div class="h2">我的番茄</div><div class="card"><div class="row" style="justify-content:space-between;align-items:center">
+      <div><b style="font-size:17px">${c.start} ${presetLabel(c.mine)}</b><div class="hint" style="margin:2px 0 0">每 ${c.mine.rounds} 輪長休息 ${c.mine.long} 分・休息時說「${esc(c.msg)}」</div></div>
+      <button class="btn sm ghost" id="pmEdit" style="white-space:nowrap;flex:none">修改</button></div>
+      <div class="swrow" style="margin-bottom:0"><span>休息完自動開始下一輪</span><button class="tg2 ${c.auto?'on':''}" id="pmAuto"><i></i></button></div></div>
+    <div class="h2">提醒圖示（點一下換）</div><div class="card">
+      <div class="ic2"><button class="${st.icWhich!=='start'?'on':''}" data-ic="rest"><div class="e">${c.rest}</div><div class="meta">時間到・該休息</div></button><button class="${st.icWhich==='start'?'on':''}" data-ic="start"><div class="e">${c.start}</div><div class="meta">休息結束・該開始</div></button></div>
+      <div class="lab">換成…</div><div class="emo-row">${(st.icWhich==='start'?START_EMO:REST_EMO).filter(e=>emojiOK(e)).map(e=>`<button class="${e===(st.icWhich==='start'?c.start:c.rest)?'on':''}" data-em="${e}">${e}</button>`).join('')}</div>
+      <div class="hint">輪數的小圖示會跟著「開始」的圖示</div></div>
+    <div class="h2">提醒聲音（響到你按掉為止）</div><div class="card" style="padding:4px 16px">
+      ${SND_LIST.map(([k,n,d])=>`<div class="opt" data-snd="${k}">${radioSVG(k===c.sound)}<div class="t"><b>${n}</b><small>${d}</small></div>${k==='vib'||k==='quiet'?'':playBtn(`data-prev="${k}"`,true)}</div>`).join('')}
+      <div class="swrow" style="margin:10px 0"><span>震動（Android 手機）</span><button class="tg2 ${c.vib?'on':''}" id="pmVib"><i></i></button></div>
+      <div class="hint" style="margin:0 0 10px">沒人按的話，響 5 分鐘會自動停（畫面會留著）。iPhone 的網頁 App 不能震動。</div></div>
+    <div class="h2">手機鎖螢幕也提醒（推播）</div><div class="card" id="pushCard"><div class="hint" style="margin:0">檢查中…</div></div>`;
+  bindSubBack();
+  const on=(id,fn)=>{ const e=$('#'+id); if(e) e.onclick=fn; };
+  on('pmEdit',()=>openCustomPomo(false));
+  on('pmAuto',async()=>{ await savePcfg({auto:!c.auto}); renderPomoSettings(); });
+  on('pmVib',async()=>{ await savePcfg({vib:!c.vib}); renderPomoSettings(); });
+  document.querySelectorAll('[data-ic]').forEach(b=>b.onclick=()=>{ st.icWhich=b.dataset.ic; renderPomoSettings(); });
+  document.querySelectorAll('[data-em]').forEach(b=>b.onclick=async()=>{ await savePcfg(st.icWhich==='start'?{start:b.dataset.em}:{rest:b.dataset.em}); renderPomoSettings(); });
+  document.querySelectorAll('[data-snd]').forEach(r=>r.onclick=async e=>{ if(e.target.closest('[data-prev]')) return; Snd.hush(); await savePcfg({sound:r.dataset.snd}); renderPomoSettings(); });
+  document.querySelectorAll('[data-prev]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); Snd.play(b.dataset.prev); });
+  drawPushCard();
+}
+async function drawPushCard(){
+  const box=$('#pushCard'); if(!box) return; const s=await pushStatus(), E=notifyEnv();
+  const txt={on:'已開啟 ✓ 手機鎖起來也會準時響、震動、亮起',off:'還沒開啟',denied:'通知被瀏覽器封鎖了，要到瀏覽器設定打開',unsupported:E.ios&&!E.standalone?'iPhone 要先把 App「加到主畫面」，再從主畫面打開':'這個瀏覽器不支援推播'}[s];
+  box.innerHTML=`<div style="font-size:15px">${txt}</div><div class="hint">沒按掉的話，每 1 分鐘再提醒一次，最多 5 次。</div>
+    <div class="row" style="gap:8px;margin-top:10px">${s==='off'?'<button class="btn" id="psOn" style="flex:1">開啟推播</button>':''}${s==='on'?'<button class="btn ghost" id="psTest" style="flex:1">送一則測試</button>':''}</div>`;
+  const a=$('#psOn'); if(a) a.onclick=async()=>{ a.disabled=true; await enablePush(); drawPushCard(); };
+  const t=$('#psTest'); if(t) t.onclick=()=>testPush();
+}
+
 function subHeader(title){ return `<div class="row" style="justify-content:space-between;margin:0 0 10px"><button class="btn sm ghost" id="meBack">‹ 我的</button><b>${title}</b><span style="width:60px"></span></div>`; }
 function bindSubBack(){ const b=$('#meBack'); if(b) b.onclick=()=>{ st.meView=null; render(); window.scrollTo(0,0); }; }
+function notifyEnv(){
+  const ua=navigator.userAgent, ios=/iPhone|iPad|iPod/.test(ua), standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  return {ios, standalone, supported:'Notification' in window, perm:('Notification' in window)?Notification.permission:'unsupported'};
+}
+function openNotifyModal(){
+  const E=notifyEnv();
+  let body='';
+  if(!E.supported) body = E.ios&&!E.standalone
+    ? `<p>iPhone／iPad 的 Safari <b>網頁</b>不能跳通知。要先把 App 加到主畫面：</p><ol><li>用 Safari 開啟 → 下方「分享」→「加入主畫面」</li><li>之後都從<b>主畫面的圖示</b>開啟</li><li>再回到這裡按「開啟通知」</li></ol><p class="hint">需要 iOS 16.4 以上</p>`
+    : `<p>這個瀏覽器不支援通知。建議改用 Chrome、Edge 或 Safari（較新版本）。</p>`;
+  else if(E.perm==='denied') body=`<p>通知被瀏覽器<b>封鎖</b>了，需要手動打開：</p><ul><li>電腦 Chrome：網址列左邊的圖示 →「網站設定」→「通知」改成「允許」</li><li>Android：設定 → 應用程式 → Chrome（或這個 App）→ 通知 → 允許</li><li>iPhone（主畫面 App）：設定 → 通知 → Work Together → 允許通知</li></ul><p class="hint">改好後重新整理頁面，再回來按「傳送測試通知」。</p>`;
+  else if(E.perm==='default') body=`<p>按下面的按鈕，瀏覽器會詢問是否允許通知，請選<b>「允許」</b>。</p>`;
+  else body=`<p>通知已開啟 ✓ 可以按下面的按鈕試試看。</p>`;
+  modal(`<h3>🔔 通知</h3>${body}
+    <div class="ntf-when"><b>什麼時候會通知？</b><ul><li>⏰ 連續工作太久（是不是忘了按結束）</li><li>💌 對方送你肯定</li><li>✨ 對方開始工作（可以一起開工）</li></ul>
+    <p class="hint" style="margin:0">限制：App 要是<b>開著或在背景</b>才會通知。App 完全關掉、或手機把它清掉時不會通知（那需要另外架設「推播」）。</p></div>
+    ${E.supported&&E.perm==='default'?'<button class="btn big" id="ntfOn" style="margin-top:12px">開啟通知</button>':''}
+    ${E.supported&&E.perm==='granted'?'<button class="btn big" id="ntfTest" style="margin-top:12px">傳送測試通知</button>':''}
+    <div class="actions"><button class="btn ghost" id="ntfX">關閉</button></div>`,(el,close)=>{
+    el.querySelector('#ntfX').onclick=close;
+    const on=el.querySelector('#ntfOn'); if(on) on.onclick=async()=>{ let r='default'; try{ r=await Notification.requestPermission(); }catch(e){}
+      close(); renderMe(); if(r==='granted'){ await notifyLocal('通知已開啟 ✓ 之後會在這裡提醒你',true); toast('通知已開啟 ✓'); } else toast(r==='denied'?'通知被封鎖了，可以到瀏覽器設定改回允許':'還沒開啟通知'); };
+    const tb=el.querySelector('#ntfTest'); if(tb) tb.onclick=async()=>{ const ok=await notifyLocal('這是一則測試通知 🔔',true); toast(ok?'已送出測試通知，請看螢幕上方或通知中心':'通知送不出去，請檢查系統或瀏覽器的通知設定'); };
+  });
+}
 function openPmModal(){
   const cur=prof(me.id)?.progress_mode||'pair';
   modal(`<h3>進度顯示方式</h3><p class="hint">只影響你自己的首頁；專案頁仍會顯示每個人的進度</p>
@@ -1853,11 +2403,11 @@ async function recalcShare(mainId){
   const used=st.sessions.filter(x=>x.split_of===mainId && !x.background).reduce((t,x)=>t+Math.round(+x.share*100),0);
   const sh=Math.max(10,100-used)/100; if(Math.abs((+m.share||1)-sh)>0.001){ await sb.from('sessions').update({share:sh}).eq('id',mainId); await loadSessions(); }
 }
-function toastUndo(msg, onUndo){
-  const t=$('#toast'); t.innerHTML=`<span>${msg}</span><button class="undo-btn">復原</button><span class="undo-sub">也可以在「我的 → 垃圾桶」找回</span>`;
+function toastUndo(msg, onUndo, sub, ms){
+  const t=$('#toast'); t.innerHTML=`<span>${msg}</span><button class="undo-btn">復原</button><span class="undo-sub">${sub===undefined?'也可以在「我的 → 垃圾桶」找回':sub}</span>`;
   t.classList.add('show','with-btn'); clearTimeout(toast._t);
   t.querySelector('.undo-btn').onclick=()=>{ t.classList.remove('show','with-btn'); onUndo(); };
-  toast._t=setTimeout(()=>t.classList.remove('show','with-btn'),6000);
+  toast._t=setTimeout(()=>t.classList.remove('show','with-btn'),ms||6000);
 }
 async function purgeTrash(){
   const cut=new Date(Date.now()-TRASH_DAYS*86400000).toISOString();
@@ -2059,7 +2609,7 @@ function openProjectModal(p){
       const {error}=isNew?await sb.from('projects').insert(row):await sb.from('projects').update(row).eq('id',p.id);
       if(error){ btn.disabled=false; return toast('儲存失敗'); }
       let nt=0;
-      if(isNew){ const ts=trows.filter(t=>t.title.trim()).map(t=>({project_id:row.id,title:t.title.trim().slice(0,60),assignees:t.assignees,due_at:t.due?t.due.toISOString():null}));
+      if(isNew){ const ts=trows.filter(t=>t.title.trim()).map((t,i)=>({project_id:row.id,title:t.title.trim().slice(0,60),assignees:t.assignees,due_at:t.due?t.due.toISOString():null,sort_order:(i+1)*1000}));
         if(ts.length){ const r=await sb.from('tasks').insert(ts); if(r.error) toast('專案已建立，但子任務新增失敗'); else nt=ts.length; } }
       await Promise.all([loadProjects(),loadTasks()]); close();
       if(isNew){ st.tab='proj'; st.projView=row.id; }
