@@ -15,13 +15,13 @@
 <style>
 :root{
   --bg:#f4f5f7; --card:#ffffff; --text:#1d2129; --sub:#6b7280; --line:#e6e8ec;
-  --accent:#2f9e8f; --accent-soft:#e3f3f0; --danger:#d9534f; --track:#eceef1;
+  --accent:#2f9e8f; --accent-soft:color-mix(in srgb, var(--accent) 14%, transparent); --danger:#d9534f; --track:#eceef1;
   --p0:#2f9e8f; --p1:#e07a5f; --p2:#6c7bd9; --p3:#c9a227;
   --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);
 }
 @media (prefers-color-scheme:dark){
   :root{ --bg:#111317; --card:#1b1e24; --text:#eceef2; --sub:#9aa1ad; --line:#2a2e36;
-    --accent:#3bb5a3; --accent-soft:#1d3532; --track:#2a2e36; --shadow:none; }
+    --accent-soft:color-mix(in srgb, var(--accent) 22%, transparent); --track:#2a2e36; --shadow:none; }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--text);
@@ -30,7 +30,7 @@ html,body{margin:0;background:var(--bg);color:var(--text);
 .wrap{max-width:560px;margin:0 auto;padding:16px 16px calc(84px + env(safe-area-inset-bottom))}
 header{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 14px}
 header h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.5px}
-header .date{color:var(--sub);font-size:13px}
+header .date{color:var(--sub);font-size:12.5px;font-variant-numeric:tabular-nums}
 .card{background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
 .h2{font-size:13px;color:var(--sub);font-weight:600;margin:18px 4px 8px;letter-spacing:.5px}
 .people{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -38,7 +38,7 @@ header .date{color:var(--sub);font-size:13px}
 .person .name{font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--sub)}
 .dot.on{animation:pulse 1.6s infinite;color:inherit}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,158,143,.55)}70%{box-shadow:0 0 0 7px rgba(47,158,143,0)}100%{box-shadow:0 0 0 0 rgba(47,158,143,0)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb, currentColor 60%, transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
 .person .state{font-size:12px;color:var(--sub);margin-top:2px;min-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .person .timer{font-variant-numeric:tabular-nums;font-size:24px;font-weight:700;margin:6px 0 4px;letter-spacing:.5px}
 .person .timer.off{color:var(--sub);font-size:18px;font-weight:600}
@@ -115,6 +115,7 @@ nav button.act{color:var(--accent)}
 .set-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
 .set-item:last-child{border-bottom:0}
 .tap{cursor:pointer}
+.task .meta .hint{white-space:nowrap}
 .task .chk{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
 .strike{text-decoration:line-through;color:var(--sub)}
 .dot.sm{width:7px;height:7px;display:inline-block;margin-right:4px;vertical-align:middle}
@@ -136,6 +137,55 @@ input[type=time],input[type=date]{width:100%;padding:11px 12px;border-radius:10p
 .sw{aspect-ratio:1;border-radius:50%;border:3px solid transparent;cursor:pointer;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
 .sw.sel{border-color:var(--text)}
 .swatch-cur{display:inline-block;width:16px;height:16px;border-radius:50%;flex:none}
+nav button{position:relative}
+.badge{position:absolute;top:4px;left:50%;margin-left:6px;min-width:17px;height:17px;border-radius:9px;background:var(--danger);color:#fff;font-size:10px;line-height:17px;padding:0 4px;font-weight:700}
+.seg2{display:inline-flex;background:var(--track);border-radius:10px;padding:3px}
+.seg2 button{border:0;background:none;padding:5px 12px;border-radius:8px;font-size:13px;font-family:inherit;color:var(--sub);cursor:pointer}
+.seg2 button.on{background:var(--card);color:var(--accent);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.chips{margin-top:4px}
+.chip{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;margin:2px 4px 2px 0;color:var(--c);background:color-mix(in srgb, var(--c) 14%, transparent);font-weight:600}
+.pick{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.pk{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px}
+.pk input{accent-color:var(--c);width:17px;height:17px;margin:0}
+.pk:has(input:checked){border-color:var(--c);background:color-mix(in srgb, var(--c) 12%, transparent)}
+.warn-card{background:#fff3d6;color:#7a5600;font-size:14px}
+@media (prefers-color-scheme:dark){.warn-card{background:#3a3020;color:#e6b84a}}
+.cheer-card{display:flex;gap:12px;align-items:center;background:var(--accent-soft);animation:glow 2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 4px var(--accent-soft)}}
+.big-e{font-size:26px;line-height:1;flex:none;width:34px;text-align:center}
+.rec.unread{background:var(--accent-soft)}
+.rec.win{align-items:flex-start}
+.emo-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.emo{border:1px solid var(--line);background:var(--bg);border-radius:20px;font-size:17px;padding:4px 9px;cursor:pointer;line-height:1.2;font-family:inherit;color:var(--text)}
+.emo.txt{font-size:12px;padding:6px 11px;color:var(--accent);font-weight:600}
+.emo:active,.emo.pop{transform:scale(1.25);transition:transform .15s}
+.emo.sel{border-color:var(--accent);background:var(--accent-soft)}
+.emo-row.big .emo{font-size:24px;padding:6px 12px}
+.sent{font-size:12px;color:var(--accent);margin-top:4px;font-weight:600}
+.phr{display:flex;flex-direction:column;gap:6px}
+.phrase{text-align:left;border:1px dashed var(--line);background:var(--bg);border-radius:10px;padding:9px 12px;font-size:14px;font-family:inherit;color:var(--text);cursor:pointer}
+.phrase:active{border-color:var(--accent)}
+textarea{width:100%;margin-top:10px;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:15px;font-family:inherit;resize:vertical;outline:none}
+textarea:focus{border-color:var(--accent)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+.confetti i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{top:105%;transform:rotate(720deg) translateX(40px)}}
+.kpop{position:fixed;left:50%;top:22%;transform:translate(-50%,0) scale(.6);opacity:0;z-index:45;animation:kin .35s cubic-bezier(.2,1.4,.4,1) forwards;pointer-events:none}
+.kpop.out{animation:kout .4s ease forwards}
+.kpop-in{background:var(--card);color:var(--text);border-radius:20px;padding:18px 26px;font-size:20px;font-weight:700;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.2);border:2px solid var(--accent)}
+.kpop-sub{font-size:13px;font-weight:400;color:var(--sub);margin-top:4px}
+@keyframes kin{to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes kout{from{opacity:1;transform:translate(-50%,0) scale(1)}to{opacity:0;transform:translate(-50%,-20px) scale(.9)}}
+input:disabled{opacity:.35}
+.rem-list{display:flex;flex-wrap:wrap;gap:6px}
+.rem-chip{display:inline-flex;align-items:center;gap:4px;background:var(--accent-soft);color:var(--accent);border-radius:16px;padding:5px 6px 5px 12px;font-size:13px;font-weight:600}
+.rem-chip button{border:0;background:none;color:inherit;font-size:16px;line-height:1;cursor:pointer;padding:0 4px}
+.rem-presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.imp-tbl{max-height:38vh;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.imp-row{padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px}
+.imp-row:last-child{border-bottom:0}
+.imp-row.bad{background:color-mix(in srgb, var(--danger) 8%, transparent)}
+.imp-err{color:var(--danger);font-size:12px;margin-top:3px}
 .hidden{display:none!important}
 </style>
 </head>
@@ -145,40 +195,49 @@ input[type=time],input[type=date]{width:100%;padding:11px 12px;border-radius:10p
 
 <script>
 // ===================== 基本設定 =====================
-const DEF_CUT = { m: 360, wd: 1 };   // 預設：每天 06:00 起算、每週從週一起算（每人可在「設定」改，各專案可另設）
-const CFG_KEY = 'wt_cfg';
-const LAST_PROJ_KEY = 'wt_last_project';
+const DEF_CUT = { m: 360, wd: 1 };   // 預設：每天 06:00 起算、每週從週一起算
+const CFG_KEY = 'wt_cfg', LAST_PROJ_KEY = 'wt_last_project', SCOPE_KEY = 'wt_scope';
 const COLORS = ['var(--p0)','var(--p1)','var(--p2)','var(--p3)'];
 const SWATCHES = ['#2f9e8f','#e07a5f','#6c7bd9','#c9a227','#d6589f','#3d8bd9','#7a9e3b','#8e6cc9','#e0563b','#5f6b7a'];
 const WD = ['日','一','二','三','四','五','六'];
+const EMOJIS = ['👏','💪','🔥','🌟','❤️','☕'];
+const AC = 'autocomplete="off" autocorrect="off" spellcheck="false"';   // 不讓瀏覽器記住輸入內容
 
 // ===================== 小工具 =====================
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad = n => String(n).padStart(2,'0');
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),2400); }
+function toast(msg, ms=2400){ const t=$('#toast'); t.innerHTML=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),ms); }
 function hms(ms){ ms=Math.max(0,Math.floor(ms/1000)); return `${Math.floor(ms/3600)}:${pad(Math.floor(ms%3600/60))}:${pad(ms%60)}`; }
 function zhDur(ms){ ms=Math.max(0,Math.floor(ms/1000)); const h=Math.floor(ms/3600),m=Math.floor(ms%3600/60),s=ms%60; return `${h} 小時 ${m} 分 ${s} 秒`; }
 function zhShort(ms){ ms=Math.max(0,Math.floor(ms/1000)); const h=Math.floor(ms/3600),m=Math.floor(ms%3600/60); return h?`${h} 小時 ${m} 分`:`${m} 分`; }
 function hrs(ms){ return ms/3600000; }
 function fmtHrs(ms){ const h=hrs(ms); return h>=100?h.toFixed(0):h.toFixed(1); }
 function fmtDT(d){ d=new Date(d); return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+function fmtDM(d){ d=new Date(d); return `${d.getMonth()+1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 function fmtT(d){ d=new Date(d); return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
 function fmtFull(d){ d=new Date(d); return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${fmtT(d)}`; }
+function fmtFullM(d){ d=new Date(d); return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}（${WD[d.getDay()]}）${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 function toInput(d){ d=new Date(d); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${fmtT(d)}`; }
+function toInputM(d){ if(!d) return ''; d=new Date(d); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 function minToHM(m){ return `${pad(Math.floor(m/60))}:${pad(m%60)}`; }
 function hmToMin(s){ const [h,m]=String(s||'').split(':').map(Number); return (h||0)*60+(m||0); }
 function cutText(c){ return `每天 ${minToHM(c.m)} 起算・每週從週${WD[c.wd]}開始`; }
-function dateMD(s){ const [y,m,d]=String(s).split('-').map(Number); return `${m}/${d}`; }
-function dateYMD(s){ const [y,m,d]=String(s).split('-').map(Number); return `${y}/${m}/${d}`; }
-// 距離某個日期（當天 23:59:59 截止）還有幾天
-function daysLeft(s){ const [y,m,d]=String(s).split('-').map(Number); const t=new Date(); const today=new Date(t.getFullYear(),t.getMonth(),t.getDate());
-  return Math.round((new Date(y,m-1,d)-today)/86400000); }
-function dueBadge(s, done){
-  if(!s) return ''; if(done) return `<span class="due ok">${dateMD(s)}</span>`;
-  const n=daysLeft(s); const cls=n<0?'over':n<=3?'soon':n<=7?'near':'';
-  const txt=n<0?`逾期 ${-n} 天`:n===0?'今天到期':`剩 ${n} 天`;
-  return `<span class="due ${cls}">${dateMD(s)}・${txt}</span>`;
+function ago(t){ const s=(Date.now()-new Date(t))/1000; if(s<60) return '剛剛'; if(s<3600) return `${Math.floor(s/60)} 分鐘前`; if(s<86400) return `${Math.floor(s/3600)} 小時前`; return `${Math.floor(s/86400)} 天前`; }
+
+// ---- 死限 / 到期（含時間）----
+function legacyDate(s){ if(!s) return null; const [y,m,d]=String(s).split('-').map(Number); return new Date(y,m-1,d,23,59); }
+function projDeadline(p){ return p.deadline_at ? new Date(p.deadline_at) : legacyDate(p.deadline); }
+function taskDue(t){ return t.due_at ? new Date(t.due_at) : legacyDate(t.due); }
+function dueBadge(d, done){
+  if(!d) return ''; if(done) return `<span class="due ok">${fmtDM(d)}</span>`;
+  const ms=+d-Date.now(), h=ms/3600000;
+  const t=new Date(); const dayDiff=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(t.getFullYear(),t.getMonth(),t.getDate()))/86400000);
+  let cls='', txt='';
+  if(ms<0){ cls='over'; txt=-h<24?`逾期 ${Math.ceil(-h)} 小時`:`逾期 ${Math.ceil(-h/24)} 天`; }
+  else if(h<24){ cls='soon'; txt=h<1?`剩 ${Math.max(1,Math.round(h*60))} 分鐘`:`剩 ${Math.floor(h)} 小時`; }
+  else { cls=dayDiff<=3?'soon':dayDiff<=7?'near':''; txt=`剩 ${dayDiff} 天`; }
+  return `<span class="due ${cls}">${fmtDM(d)}・${txt}</span>`;
 }
 
 // ---- 期間計算（依切點）----
@@ -195,12 +254,15 @@ function workDateKey(t,c){ const s=shifted(t,c); return `${s.getFullYear()}-${pa
 function sessEnd(s){ return s.end_at ? +new Date(s.end_at) : Date.now(); }
 function overlapMs(s,p){ const a=Math.max(+new Date(s.start_at),+p.start), b=Math.min(sessEnd(s),+p.end); return Math.max(0,b-a); }
 function sumMs(list,p){ return list.reduce((t,s)=>t+overlapMs(s,p),0); }
+const ALL_TIME={start:new Date(0),end:new Date(8.64e15)};
 function rangeLabel(kind,p){ const last=new Date(+p.end-86400000);
   return kind==='day'?`${p.start.getMonth()+1}/${p.start.getDate()}`:`${p.start.getMonth()+1}/${p.start.getDate()} – ${last.getMonth()+1}/${last.getDate()}`; }
 
 // ===================== 狀態 =====================
 let sb=null, me=null;
-const st = { profiles:[], projects:[], sessions:[], tasks:[], pus:[], tab:'home', projView:null, showDone:false, recWho:'all', recRange:'week' };
+const st = { profiles:[], projects:[], sessions:[], tasks:[], pus:[], taskDone:[], kudos:[],
+  tab:'home', projView:null, showDone:false, recWho:'all', recRange:'week', scope: localStorage.getItem(SCOPE_KEY)||'mine' };
+const seenKudos=new Set();
 
 function cfg(){ try{ return JSON.parse(localStorage.getItem(CFG_KEY)||'null'); }catch{ return null; } }
 function prof(uid){ return st.profiles.find(p=>p.id===uid); }
@@ -210,11 +272,29 @@ function projOf(pid){ return st.projects.find(p=>p.id===pid); }
 function projName(pid){ return projOf(pid)?.name || '未指定專案'; }
 function taskOf(tid){ return st.tasks.find(t=>t.id===tid); }
 function people(){ const ids=st.profiles.map(p=>p.id); if(me && !ids.includes(me.id)) ids.push(me.id); return ids.sort((a,b)=>(a===me.id?-1:b===me.id?1:0)); }
+function partners(){ return people().filter(u=>u!==me.id); }
 function openOf(uid){ return st.sessions.find(s=>s.user_id===uid && !s.end_at); }
 function userCut(uid){ const p=prof(uid); return p ? {m:p.day_start_min??DEF_CUT.m, wd:p.week_start_day??DEF_CUT.wd} : DEF_CUT; }
 function projOverride(uid,pid){ return st.pus.find(x=>x.user_id===uid && x.project_id===pid); }
 function projCut(uid,pid){ const o=projOverride(uid,pid); return o ? {m:o.day_start_min, wd:o.week_start_day} : userCut(uid); }
 function sessLabel(s){ const t=taskOf(s.task_id); return esc(projName(s.project_id)) + (t?` / ${esc(t.title)}`:''); }
+// 專案負責人：空白 = 兩人共用
+function projAssignees(p){ return (p?.assignees)||[]; }
+function projPeople(p){ const a=projAssignees(p); return a.length ? people().filter(u=>a.includes(u)) : people(); }
+function isMine(p){ const a=projAssignees(p); return !a.length || a.includes(me.id); }
+function scoped(list){ return st.scope==='all' ? list : list.filter(isMine); }
+// 任務完成：有負責人 → 全部負責人都勾才算完成；沒負責人 → 任何人勾就完成
+function taskAssignees(t){ return (t?.assignees)||[]; }
+function doneBy(t,uid){ return st.taskDone.some(d=>d.task_id===t.id && d.user_id===uid); }
+function isDone(t){ const a=taskAssignees(t); return a.length ? a.every(u=>doneBy(t,u)) : !!t.done; }
+function canCheck(t){ const a=taskAssignees(t); return !a.length || a.includes(me.id); }
+function myChecked(t){ return taskAssignees(t).length ? doneBy(t,me.id) : !!t.done; }
+
+// ---- 主題色跟著「我的代表色」----
+function applyTheme(){
+  const c=colorOf(me.id); document.documentElement.style.setProperty('--accent', c);
+  if(/^#/.test(c)){ const m=document.querySelector('meta[name=theme-color]'); if(m) m.content=c; }
+}
 
 // ===================== 啟動 =====================
 (function readSetupLink(){
@@ -239,8 +319,8 @@ function renderSetup(err){
     <h2 style="text-align:center;margin:0 0 4px">工時同步・首次設定</h2>
     <p class="hint" style="text-align:center">貼上 Supabase 的連線資訊（只需設定一次）。<br>另一個人可直接用你在「設定」頁分享的連結，免填。</p>
     <div class="card">
-      <label class="f">Project URL</label><input id="cu" type="url" placeholder="https://xxxx.supabase.co">
-      <label class="f">Publishable key（或 anon public key）</label><input id="ck" type="text" placeholder="sb_publishable_… 或 eyJ…">
+      <label class="f">Project URL</label><input id="cu" type="url" ${AC} placeholder="https://xxxx.supabase.co">
+      <label class="f">Publishable key（或 anon public key）</label><input id="ck" type="text" ${AC} placeholder="sb_publishable_… 或 eyJ…">
       ${err?`<p style="color:var(--danger);font-size:13px">${esc(err)}</p>`:''}
       <button class="btn big" style="margin-top:16px" id="cs">儲存</button>
     </div></div>`;
@@ -269,10 +349,19 @@ function renderLogin(){
 }
 
 // ===================== 資料 =====================
-async function loadProfiles(){ const {data,error}=await sb.from('profiles').select('*'); if(!error) st.profiles=data||[]; }
-async function loadProjects(){ const {data,error}=await sb.from('projects').select('*').order('created_at',{ascending:true}); if(!error) st.projects=data||[]; }
-async function loadTasks(){ const {data,error}=await sb.from('tasks').select('*').order('created_at',{ascending:true}); if(!error) st.tasks=data||[]; }
-async function loadPus(){ const {data,error}=await sb.from('project_user_settings').select('*'); if(!error) st.pus=data||[]; }
+async function q(table, build){ let r=sb.from(table).select('*'); if(build) r=build(r); const {data,error}=await r; return error?null:(data||[]); }
+async function loadProfiles(){ const d=await q('profiles'); if(d) st.profiles=d; }
+async function loadProjects(){ const d=await q('projects',r=>r.order('created_at',{ascending:true})); if(d) st.projects=d; }
+async function loadTasks(){ const d=await q('tasks',r=>r.order('created_at',{ascending:true})); if(d) st.tasks=d; }
+async function loadPus(){ const d=await q('project_user_settings'); if(d) st.pus=d; }
+async function loadTaskDone(){ const d=await q('task_done'); if(d) st.taskDone=d; }
+async function loadKudos(){
+  const d=await q('kudos',r=>r.order('created_at',{ascending:false}).range(0,499)); if(!d) return;
+  const fresh=d.filter(k=>k.to_user===me.id && !k.read_at && !seenKudos.has(k.id));
+  st.kudos=d; d.forEach(k=>seenKudos.add(k.id));
+  if(loadKudos.ready && fresh.length){ const k=fresh[0]; popKudos(`${esc(nameOf(k.from_user))} 送你 ${esc(k.emoji||'💌')}`, k.message, k.id); }
+  loadKudos.ready=true;
+}
 async function loadSessions(){
   const since=new Date(Date.now()-430*86400000).toISOString(); let all=[],from=0;
   while(true){
@@ -282,7 +371,7 @@ async function loadSessions(){
   }
   st.sessions=all;
 }
-const LOADERS={profiles:loadProfiles,projects:loadProjects,tasks:loadTasks,project_user_settings:loadPus,sessions:loadSessions};
+const LOADERS={profiles:loadProfiles,projects:loadProjects,tasks:loadTasks,project_user_settings:loadPus,sessions:loadSessions,task_done:loadTaskDone,kudos:loadKudos};
 async function loadAll(){ await Promise.all(Object.values(LOADERS).map(f=>f())); }
 
 const pending=new Set(); let reloadT=null;
@@ -291,10 +380,10 @@ function scheduleReload(which){
   reloadT=setTimeout(async()=>{
     const ws=[...pending]; pending.clear();
     if(ws.includes('all')) await loadAll(); else await Promise.all(ws.map(w=>LOADERS[w]()));
-    if(!document.querySelector('.modal-bg')) render();
+    if(!document.querySelector('.modal-bg') && !(document.activeElement && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))) render();
+    else updateBadge();
   },300);
 }
-
 let channel=null;
 function subscribe(){
   if(channel) sb.removeChannel(channel);
@@ -321,103 +410,121 @@ const ICONS={
   home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   rec:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>',
   proj:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18"/></svg>',
+  cheer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
   set:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>'
 };
+function clockText(){ const d=new Date(); return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}（${WD[d.getDay()]}）${fmtT(d)}`; }
+function unreadCount(){ return st.kudos.filter(k=>k.to_user===me.id && !k.read_at).length; }
+function updateBadge(){ const b=$('#cheerBadge'); if(!b) return; const n=unreadCount(); b.textContent=n; b.classList.toggle('hidden',!n); }
+
 function render(){
   if(!me) return;
-  const now=new Date();
+  applyTheme();
   $('#app').innerHTML=`<div class="wrap">
-    <header><h1>工時同步</h1><span class="date">${now.getMonth()+1}/${now.getDate()}（${WD[now.getDay()]}）</span></header>
+    <header><h1>工時同步</h1><span class="date" id="clockNow">${clockText()}</span></header>
     <div id="view"></div></div>
     <nav><div class="in">
-      ${[['home','打卡'],['rec','紀錄'],['proj','專案'],['set','設定']].map(([k,l])=>`<button data-tab="${k}" class="${st.tab===k?'act':''}">${ICONS[k]}${l}</button>`).join('')}
+      ${[['home','打卡'],['rec','紀錄'],['proj','專案'],['cheer','加油'],['set','設定']].map(([k,l])=>`<button data-tab="${k}" class="${st.tab===k?'act':''}">${ICONS[k]}${l}${k==='cheer'?'<span id="cheerBadge" class="badge hidden"></span>':''}</button>`).join('')}
     </div></nav>`;
   document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{ st.tab=b.dataset.tab; st.projView=null; render(); window.scrollTo(0,0); });
+  updateBadge();
   if(st.tab==='proj' && st.projView && projOf(st.projView)) return renderProjectDetail();
-  ({home:renderHome,rec:renderRecords,proj:renderProjects,set:renderSettings})[st.tab]();
+  ({home:renderHome,rec:renderRecords,proj:renderProjects,cheer:renderCheer,set:renderSettings})[st.tab]();
 }
 let tickN=0;
 function tick(){
+  const c=$('#clockNow'); if(c) c.textContent=clockText();
   document.querySelectorAll('[data-since]').forEach(el=>{ el.textContent=hms(Date.now()-(+el.dataset.since)); });
   tickN++;
   if(tickN%5===0 && st.tab==='home' && !document.querySelector('.modal-bg')){
     const p=$('#people'); if(p) p.innerHTML=peopleHTML();
-    const g=$('#progress'); if(g && st.sessions.some(s=>!s.end_at)) g.innerHTML=progressHTML(st.projects.filter(p=>!p.archived));
+    const g=$('#progress'); if(g && st.sessions.some(s=>!s.end_at)) { g.innerHTML=progressHTML(scoped(st.projects.filter(p=>!p.archived))); bindOpen(); }
   }
 }
+function scopeToggle(){ return `<div class="seg2" id="scopeT"><button data-s="mine" class="${st.scope==='mine'?'on':''}">我的</button><button data-s="all" class="${st.scope==='all'?'on':''}">總覽</button></div>`; }
+function bindScope(){ document.querySelectorAll('#scopeT button').forEach(b=>b.onclick=()=>{ st.scope=b.dataset.s; localStorage.setItem(SCOPE_KEY,st.scope); render(); }); }
+function chipsFor(uids, checkFn){ return uids.map(u=>`<span class="chip" style="--c:${colorOf(u)}">${checkFn&&checkFn(u)?'✓ ':''}${esc(nameOf(u))}</span>`).join(''); }
 
 // ===================== 首頁 =====================
 function peopleHTML(){
   return people().map(uid=>{
     const c=userCut(uid), o=openOf(uid), mine=st.sessions.filter(s=>s.user_id===uid), col=colorOf(uid);
     return `<div class="card person"><div class="bar-top" style="background:${o?col:'transparent'}"></div>
-      <div class="name"><span class="dot ${o?'on':''}" style="background:${o?col:'var(--line)'}"></span>${esc(nameOf(uid))}${uid===me.id?' <span class="me-tag">我</span>':''}</div>
+      <div class="name"><span class="dot ${o?'on':''}" style="background:${o?col:'var(--line)'};color:${col}"></span>${esc(nameOf(uid))}${uid===me.id?' <span class="me-tag">我</span>':''}</div>
       <div class="state">${o?`工作中・${sessLabel(o)}`:'休息中'}</div>
       ${o?`<div class="timer" data-since="${+new Date(o.start_at)}">${hms(Date.now()-new Date(o.start_at))}</div>`:`<div class="timer off">—</div>`}
       <div class="tot">今日 ${zhShort(sumMs(mine,periodOf('day',Date.now(),0,c)))}<br>本週 ${zhShort(sumMs(mine,periodOf('week',Date.now(),0,c)))}</div></div>`;
   }).join('');
 }
-
+function clockProjects(){ return scoped(st.projects.filter(p=>!p.archived)); }
 function taskOptions(pid, sel){
-  const ts=st.tasks.filter(t=>t.project_id===pid && (!t.done || t.id===sel));
+  const ts=st.tasks.filter(t=>t.project_id===pid && ((!isDone(t) && (st.scope==='all'||canCheck(t))) || t.id===sel));
   return `<option value="">不指定任務</option>`+ts.map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${esc(t.title)}</option>`).join('');
 }
-
+function hasTaskOpts(pid){ return pid && st.tasks.some(t=>t.project_id===pid && !isDone(t) && (st.scope==='all'||canCheck(t))); }
 function clockHTML(){
   const o=openOf(me.id);
-  if(o) return `<div class="card"><div class="clock-live">
+  if(o){ const long=Date.now()-new Date(o.start_at)>8*3600000;
+    return `${long?`<div class="card warn-card">⏰ 已經連續 ${zhShort(Date.now()-new Date(o.start_at))} 了，是不是忘記結束？可按「結束工作」後到紀錄頁修改結束時間。</div>`:''}
+    <div class="card"><div class="clock-live">
       <div class="since">${sessLabel(o)}・自 ${fmtDT(o.start_at)} 開始</div>
       <div class="big-t" data-since="${+new Date(o.start_at)}">${hms(Date.now()-new Date(o.start_at))}</div></div>
-      <button class="btn big stop" id="stopBtn">結束工作</button></div>`;
-  const act=st.projects.filter(p=>!p.archived); let last=localStorage.getItem(LAST_PROJ_KEY)||'';
+      <button class="btn big stop" id="stopBtn">結束工作</button></div>`; }
+  const act=clockProjects(); let last=localStorage.getItem(LAST_PROJ_KEY)||'';
   if(last && !act.find(p=>p.id===last)) last='';
   if(!last && act.length && localStorage.getItem(LAST_PROJ_KEY)===null) last=act[0].id;
   return `<div class="card">
-    <div class="row"><div style="flex:1"><label class="f" style="margin-top:0">專案</label>
-      <select id="projSel">${act.map(p=>`<option value="${p.id}" ${p.id===last?'selected':''}>${esc(p.name)}</option>`).join('')}<option value="" ${!last?'selected':''}>未指定專案</option></select></div></div>
-    <div id="taskWrap" class="${last&&st.tasks.some(t=>t.project_id===last&&!t.done)?'':'hidden'}"><label class="f">任務（選填）</label><select id="taskSel">${taskOptions(last,'')}</select></div>
+    <label class="f" style="margin-top:0">專案</label>
+    <select id="projSel">${act.map(p=>`<option value="${p.id}" ${p.id===last?'selected':''}>${esc(p.name)}</option>`).join('')}<option value="" ${!last?'selected':''}>未指定專案</option></select>
+    <div id="taskWrap" class="${hasTaskOpts(last)?'':'hidden'}"><label class="f">任務（選填）</label><select id="taskSel">${taskOptions(last,'')}</select></div>
     <button class="btn big" style="margin-top:14px" id="startBtn">開始工作</button></div>`;
 }
 
 const KINDS=[['daily_hours','day','今日','每日'],['weekly_hours','week','本週','每週'],['monthly_hours','month','本月','每月']];
+function goalReached(uid,p,f,k,excl){ const per=periodOf(k,Date.now(),0,projCut(uid,p.id)); return sumMs(st.sessions.filter(s=>s.user_id===uid&&s.project_id===p.id&&s.id!==excl),per) >= +p[f]*3600000; }
 function goalBlock(p){
+  const ppl=projPeople(p);
   return KINDS.filter(([f])=>p[f]>0).map(([f,k,lbl])=>{
-    const goal=+p[f]*3600000, myP=periodOf(k,Date.now(),0,projCut(me.id,p.id));
-    return `<div class="goal"><div class="goal-label"><span>${lbl} 目標 ${+p[f]} 小時</span><span>${rangeLabel(k,myP)}</span></div>
-      ${people().map(uid=>{ const per=periodOf(k,Date.now(),0,projCut(uid,p.id));
+    const goal=+p[f]*3600000, refU=ppl.includes(me.id)?me.id:ppl[0], refP=periodOf(k,Date.now(),0,projCut(refU,p.id));
+    return `<div class="goal"><div class="goal-label"><span>${lbl} 目標 ${+p[f]} 小時</span><span>${rangeLabel(k,refP)}</span></div>
+      ${ppl.map(uid=>{ const per=periodOf(k,Date.now(),0,projCut(uid,p.id));
         const ms=sumMs(st.sessions.filter(s=>s.user_id===uid && s.project_id===p.id),per), pct=Math.min(100,ms/goal*100), ok=ms>=goal;
-        const diff=uid!==me.id && (+per.start!==+myP.start) ? `<div class="sub-r">${rangeLabel(k,per)}（依${esc(nameOf(uid))}的切點）</div>`:'';
+        const diff=uid!==refU && (+per.start!==+refP.start) ? `<div class="sub-r">${rangeLabel(k,per)}（依${esc(nameOf(uid))}的切點）</div>`:'';
         return `<div class="prow"><span class="who">${esc(nameOf(uid))}</span><div class="track"><div class="fill" style="width:${pct}%;background:${colorOf(uid)}"></div></div>
           <span class="val ${ok?'done':''}"><b class="${ok?'done':''}">${fmtHrs(ms)}</b> / ${+p[f]} 時${ok?' ✓':''}</span></div>${diff}`; }).join('')}
     </div>`; }).join('');
 }
 function progressHTML(ps){
-  ps=ps.filter(p=>KINDS.some(([f])=>p[f]>0) || p.deadline);
-  if(!ps.length) return `<div class="card empty">還沒有設定時數目標或死限的專案<br><button class="btn sm ghost" style="margin-top:10px" onclick="st.tab='proj';render()">去設定專案</button></div>`;
-  return ps.map(p=>{ const ts=st.tasks.filter(t=>t.project_id===p.id), dn=ts.filter(t=>t.done).length;
-    return `<div class="card proj tap" data-open="${p.id}"><div class="proj-head"><span class="proj-name">${esc(p.name)}</span>${p.deadline?dueBadge(p.deadline):''}</div>
-    ${ts.length?`<div class="goal-label" style="margin-top:2px"><span>任務 ${dn}/${ts.length} 完成</span></div><div class="track thin"><div class="fill" style="width:${dn/ts.length*100}%;background:var(--accent)"></div></div>`:''}
+  ps=ps.filter(p=>KINDS.some(([f])=>p[f]>0) || projDeadline(p) || st.tasks.some(t=>t.project_id===p.id));
+  if(!ps.length) return `<div class="card empty">${st.scope==='mine'?'沒有指派給你的專案進度<br><span class="hint">可切到「總覽」看全部</span>':'還沒有設定目標或死限的專案'}</div>`;
+  return ps.map(p=>{ const ts=st.tasks.filter(t=>t.project_id===p.id), dn=ts.filter(isDone).length;
+    return `<div class="card proj tap" data-open="${p.id}"><div class="proj-head"><span class="proj-name">${esc(p.name)}</span>${dueBadge(projDeadline(p))}</div>
+    ${projAssignees(p).length?`<div class="chips">${chipsFor(projPeople(p))}</div>`:''}
+    ${ts.length?`<div class="goal-label" style="margin-top:6px"><span>任務 ${dn}/${ts.length} 完成</span></div><div class="track thin"><div class="fill" style="width:${dn/ts.length*100}%;background:var(--accent)"></div></div>`:''}
     ${goalBlock(p)}</div>`; }).join('');
 }
-
 function upcomingHTML(){
-  const items=[];
-  st.projects.filter(p=>!p.archived && p.deadline && daysLeft(p.deadline)<=7).forEach(p=>items.push({d:p.deadline,html:`<b>${esc(p.name)}</b> 專案死限`,pid:p.id}));
-  st.tasks.filter(t=>!t.done && t.due && daysLeft(t.due)<=7 && projOf(t.project_id) && !projOf(t.project_id).archived && (!t.assignee||t.assignee===me.id))
-    .forEach(t=>items.push({d:t.due,html:`${esc(t.title)} <span class="meta-i">${esc(projName(t.project_id))}</span>`,pid:t.project_id}));
+  const items=[], lim=Date.now()+7*86400000;
+  st.projects.filter(p=>!p.archived && isMine(p)).forEach(p=>{ const d=projDeadline(p); if(d && +d<=lim) items.push({d,html:`<b>${esc(p.name)}</b> 專案死限`,pid:p.id}); });
+  st.tasks.forEach(t=>{ const d=taskDue(t), p=projOf(t.project_id);
+    if(d && +d<=lim && p && !p.archived && canCheck(t) && !myChecked(t)) items.push({d,html:`${esc(t.title)} <span class="meta-i">${esc(p.name)}</span>`,pid:p.id}); });
   if(!items.length) return '';
-  items.sort((a,b)=>a.d<b.d?-1:1);
-  return `<div class="h2">7 天內到期</div><div class="card list">${items.map(i=>`<div class="rec tap" data-open="${i.pid}"><div class="main">${i.html}</div>${dueBadge(i.d)}</div>`).join('')}</div>`;
+  items.sort((a,b)=>a.d-b.d);
+  return `<div class="h2">7 天內到期（我的）</div><div class="card list">${items.map(i=>`<div class="rec tap" data-open="${i.pid}"><div class="main">${i.html}</div>${dueBadge(i.d)}</div>`).join('')}</div>`;
 }
-
 function renderHome(){
-  $('#view').innerHTML=`<div class="people" id="people">${peopleHTML()}</div>
+  const un=st.kudos.filter(k=>k.to_user===me.id && !k.read_at);
+  $('#view').innerHTML=`
+    ${un.length?`<div class="card cheer-card tap" id="goCheer"><span class="big-e">${esc(un[0].emoji||'💌')}</span><div><b>${esc(nameOf(un[0].from_user))}</b> 給了你 ${un.length} 個肯定<div class="hint" style="margin:0">點這裡看看 →</div></div></div>`:''}
+    <div class="people" id="people">${peopleHTML()}</div>
     <div class="h2">我的打卡</div><div id="clock">${clockHTML()}</div>
     ${upcomingHTML()}
-    <div class="h2">專案進度</div><div id="progress">${progressHTML(st.projects.filter(p=>!p.archived))}</div>`;
-  bindOpen();
+    <div class="h2 row" style="justify-content:space-between"><span>專案進度</span>${scopeToggle()}</div>
+    <div id="progress">${progressHTML(scoped(st.projects.filter(p=>!p.archived)))}</div>`;
+  bindOpen(); bindScope();
+  const gc=$('#goCheer'); if(gc) gc.onclick=()=>{ st.tab='cheer'; render(); };
   const ps=$('#projSel');
-  if(ps) ps.onchange=()=>{ const pid=ps.value; $('#taskSel').innerHTML=taskOptions(pid,''); $('#taskWrap').classList.toggle('hidden',!(pid && st.tasks.some(t=>t.project_id===pid&&!t.done))); };
+  if(ps) ps.onchange=()=>{ const pid=ps.value; $('#taskSel').innerHTML=taskOptions(pid,''); $('#taskWrap').classList.toggle('hidden',!hasTaskOpts(pid)); };
   const sBtn=$('#startBtn'), eBtn=$('#stopBtn');
   if(sBtn) sBtn.onclick=async()=>{
     sBtn.disabled=true; const pid=$('#projSel').value||null, tid=($('#taskSel')&&$('#taskSel').value)||null;
@@ -427,11 +534,15 @@ function renderHome(){
     await loadSessions(); render(); toast('開始工作 💪');
   };
   if(eBtn) eBtn.onclick=async()=>{
-    eBtn.disabled=true; const o=openOf(me.id), end=new Date();
+    eBtn.disabled=true; const o=openOf(me.id), end=new Date(), p=projOf(o.project_id);
+    const before=p?KINDS.filter(([f,k])=>p[f]>0 && goalReached(me.id,p,f,k,o.id)).map(x=>x[0]):[];
     const {error}=await sb.from('sessions').update({end_at:end.toISOString()}).eq('id',o.id);
     if(error){ eBtn.disabled=false; return toast('打卡失敗，請再試一次'); }
     await loadSessions(); render();
-    toast(`${fmtDT(o.start_at)} ~ ${fmtDT(end)}，共 ${zhDur(end-new Date(o.start_at))}`);
+    const msg=`${fmtDT(o.start_at)} ~ ${fmtDT(end)}，共 ${zhDur(end-new Date(o.start_at))}`;
+    const newly=p?KINDS.filter(([f,k])=>p[f]>0 && !before.includes(f) && goalReached(me.id,p,f,k)):[];
+    if(newly.length) celebrate(`🎯 達成「${esc(p.name)}」${newly.map(x=>x[2]).join('、')}目標！<br><span style="opacity:.8;font-size:13px">${msg}</span>`);
+    else toast(msg, 3200);
   };
 }
 function bindOpen(){ document.querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>{ st.tab='proj'; st.projView=el.dataset.open; render(); window.scrollTo(0,0); }); }
@@ -441,11 +552,10 @@ const RANGES=[['week','本週'],['lastweek','上週'],['month','本月'],['lastm
 function recPeriod(){ const r=st.recRange, c=userCut(me.id);
   if(r==='week') return periodOf('week',Date.now(),0,c); if(r==='lastweek') return periodOf('week',Date.now(),-1,c);
   if(r==='month') return periodOf('month',Date.now(),0,c); if(r==='lastmonth') return periodOf('month',Date.now(),-1,c);
-  return {start:new Date(0),end:new Date(8.64e15)}; }
+  return ALL_TIME; }
 function recList(){ const p=recPeriod();
   return st.sessions.filter(s=>(st.recWho==='all'||s.user_id===st.recWho) && (overlapMs(s,p)>0 || (!s.end_at && +new Date(s.start_at)>=+p.start && +new Date(s.start_at)<+p.end)))
     .sort((a,b)=>new Date(b.start_at)-new Date(a.start_at)); }
-
 function renderRecords(){
   const list=recList(), p=recPeriod(), c=userCut(me.id);
   const groups={}; list.forEach(s=>{ const k=workDateKey(s.start_at,c); (groups[k]=groups[k]||[]).push(s); });
@@ -473,74 +583,338 @@ function renderRecords(){
   $('#exp').onclick=exportCSV;
   document.querySelectorAll('.rec.tap[data-id]').forEach(el=>el.onclick=()=>openSessionModal(st.sessions.find(s=>s.id===el.dataset.id)));
 }
-
+function downloadFile(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
 function exportCSV(){
   const list=recList().slice().reverse();
   const rows=[['人員','專案','任務','開始','結束','時長','小時數','備註']].concat(list.map(s=>{ const ms=sessEnd(s)-new Date(s.start_at);
     return [nameOf(s.user_id),projName(s.project_id),taskOf(s.task_id)?.title||'',fmtFull(s.start_at),s.end_at?fmtFull(s.end_at):'進行中',zhDur(ms),hrs(ms).toFixed(2),s.note||'']; }));
-  const csv='﻿'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
-  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
   const lbl=RANGES.find(r=>r[0]===st.recRange)[1], d=new Date();
-  a.download=`工時紀錄_${lbl}_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}.csv`; a.click();
+  downloadFile(`工時紀錄_${lbl}_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}.csv`, csv, 'text/csv;charset=utf-8');
+}
+
+// ===================== 行事曆提醒 =====================
+function icsDate(d){ return new Date(d).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''); }
+function icsEscape(s){ return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
+// ---- 提醒時段（分鐘，提前多久）；會記住上次的設定 ----
+const REM_KEY='wt_reminders';
+const REM_PRESETS=[[0,'到期當下'],[10,'10 分鐘前'],[30,'30 分鐘前'],[60,'1 小時前'],[120,'2 小時前'],[1440,'1 天前'],[2880,'2 天前'],[10080,'1 週前']];
+function loadRems(){ try{ const r=JSON.parse(localStorage.getItem(REM_KEY)||'null'); if(Array.isArray(r)) return r; }catch(e){} return [1440,30]; }
+function remLabel(m){ if(m===0) return '到期當下'; if(m%10080===0) return `${m/10080} 週前`; if(m%1440===0) return `${m/1440} 天前`; if(m%60===0) return `${m/60} 小時前`; return `${m} 分鐘前`; }
+function remTrigger(m){ if(m===0) return 'PT0M'; if(m%10080===0) return `-P${m/10080}W`; if(m%1440===0) return `-P${m/1440}D`; if(m%60===0) return `-PT${m/60}H`; return `-PT${m}M`; }
+function addToCalendar(title, due, desc, rems){
+  const end=new Date(+due+30*60000);
+  const alarms=rems.map(m=>['BEGIN:VALARM','ACTION:DISPLAY',`DESCRIPTION:${icsEscape(title+'：'+(m===0?'現在到期':remLabel(m).replace('前','後到期')))}`,`TRIGGER:${remTrigger(m)}`,'END:VALARM']).flat();
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//worktime//zh-TW','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+    `UID:${Date.now()}-${Math.random().toString(36).slice(2)}@worktime`,`DTSTAMP:${icsDate(new Date())}`,
+    `DTSTART:${icsDate(due)}`,`DTEND:${icsDate(end)}`,`SUMMARY:${icsEscape('⏰ '+title)}`,`DESCRIPTION:${icsEscape(desc||'')}`,
+    ...alarms,'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  downloadFile(`提醒_${title.replace(/[\\/:*?"<>|]/g,'')}.ics`, ics, 'text/calendar;charset=utf-8');
+}
+function googleCalUrl(title, due, desc){
+  const end=new Date(+due+30*60000);
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('⏰ '+title)}&dates=${icsDate(due)}/${icsDate(end)}&details=${encodeURIComponent(desc||'')}`;
+}
+function openRemindModal(title, due, desc){
+  let rems=loadRems();
+  modal(`<h3>加到行事曆提醒</h3><p class="hint">「${esc(title)}」・${fmtFullM(due)} 到期</p>
+    <label class="f">提醒時段（可加多個）</label>
+    <div id="remList" class="rem-list"></div>
+    <div class="lbl-s" style="margin-top:10px">快速加入</div>
+    <div class="rem-presets">${REM_PRESETS.map(([m,l])=>`<button class="emo txt" data-m="${m}">＋ ${l}</button>`).join('')}</div>
+    <div class="lbl-s" style="margin-top:10px">自訂</div>
+    <div class="row" style="gap:8px"><input id="remN" type="number" ${AC} min="1" step="1" inputmode="numeric" placeholder="數字" style="flex:1">
+      <select id="remU" style="flex:1"><option value="1">分鐘前</option><option value="60">小時前</option><option value="1440" selected>天前</option><option value="10080">週前</option></select>
+      <button class="btn sm" id="remAdd">加入</button></div>
+    <div class="hint" id="remPrev"></div>
+    <button class="btn big" id="rIcs" style="margin-top:12px">加到手機行事曆</button>
+    <a class="btn big ghost" id="rG" href="${googleCalUrl(title,due,desc)}" target="_blank" rel="noopener" style="display:block;text-align:center;margin-top:10px;text-decoration:none">加到 Google 日曆</a>
+    <p class="hint">「手機行事曆」會套用上面的提醒時段（iPhone 行事曆、Android 行事曆都適用）。「Google 日曆」連結無法帶入提醒時段，會用你 Google 日曆的預設通知，加入後可在 Google 日曆裡再改。</p>
+    <div class="actions"><button class="btn ghost" id="rX">關閉</button></div>`,(el,close)=>{
+    const draw=()=>{ rems=[...new Set(rems)].sort((a,b)=>b-a);
+      el.querySelector('#remList').innerHTML=rems.length?rems.map(m=>`<span class="rem-chip">${remLabel(m)}<button data-del="${m}" aria-label="刪除">×</button></span>`).join(''):'<span class="hint" style="margin:0">尚未設定提醒（行事曆只會建立活動、不通知）</span>';
+      el.querySelector('#remPrev').innerHTML=rems.length?'會在 '+rems.map(m=>fmtDM(new Date(+due-m*60000))).join('、')+' 通知':'';
+      el.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ rems=rems.filter(x=>x!==+b.dataset.del); draw(); });
+      try{ localStorage.setItem(REM_KEY,JSON.stringify(rems)); }catch(e){} };
+    draw();
+    el.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{ rems.push(+b.dataset.m); draw(); });
+    el.querySelector('#remAdd').onclick=()=>{ const n=+el.querySelector('#remN').value, u=+el.querySelector('#remU').value;
+      if(!(n>0)) return toast('請輸入數字'); rems.push(Math.round(n*u)); el.querySelector('#remN').value=''; draw(); };
+    el.querySelector('#rIcs').onclick=()=>{ addToCalendar(title,due,desc,rems); toast('已產生行事曆檔，請點開並加入'); };
+    el.querySelector('#rX').onclick=close;
+  });
+}
+
+// ===================== 批次匯入任務 =====================
+const XLSX_URL='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+function loadXLSX(){ if(window.XLSX) return Promise.resolve(window.XLSX);
+  return new Promise((ok,no)=>{ const s=document.createElement('script'); s.src=XLSX_URL; s.onload=()=>ok(window.XLSX); s.onerror=()=>no(new Error('load')); document.head.appendChild(s); }); }
+function matchPerson(txt){
+  const t=String(txt||'').trim(); if(!t) return {ids:[],bad:[]};
+  if(/^(兩人|兩個人|全部|雙方|都要|all)$/i.test(t)) return {ids:people(),bad:[]};
+  const parts=t.split(/[、,，;；/\s]+/).filter(Boolean), ids=[], bad=[];
+  parts.forEach(p=>{ const low=p.toLowerCase();
+    const u=people().find(u=>nameOf(u).toLowerCase()===low || (p==='我'&&u===me.id) || (prof(u)?.name||'').toLowerCase().startsWith(low));
+    if(u){ if(!ids.includes(u)) ids.push(u); } else bad.push(p); });
+  return {ids,bad};
+}
+function parseDateCell(v){
+  if(v===undefined||v===null||v==='') return null;
+  if(v instanceof Date && !isNaN(v)) return v;
+  if(typeof v==='number'){ // Excel 序號日期
+    const d=new Date(Math.round((v-25569)*86400000)); return new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),d.getUTCHours(),d.getUTCMinutes()); }
+  let s=String(v).trim().replace(/[年月]/g,'/').replace(/日/g,' ').replace(/\s+/g,' ');
+  let m=s.match(/^(\d{2,4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?/);
+  if(m){ let y=+m[1]; if(y<1000) y+=1911; return new Date(y,+m[2]-1,+m[3],m[4]?+m[4]:0,m[5]?+m[5]:0,0,m[4]?1:0); } // 民國年也可
+  m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?$/);
+  if(m){ const y=new Date().getFullYear(); return new Date(y,+m[1]-1,+m[2],m[3]?+m[3]:0,m[4]?+m[4]:0,0,m[3]?1:0); }
+  return 'bad';
+}
+function parseTimeCell(v){
+  if(v===undefined||v===null||v==='') return null;
+  if(v instanceof Date && !isNaN(v)) return [v.getHours(),v.getMinutes()];
+  if(typeof v==='number' && v<1){ const mins=Math.round(v*1440); return [Math.floor(mins/60),mins%60]; }
+  const m=String(v).trim().match(/^(上午|下午)?\s*(\d{1,2})[:：](\d{2})/); if(!m) return 'bad';
+  let h=+m[2]; if(m[1]==='下午'&&h<12) h+=12; if(m[1]==='上午'&&h===12) h=0; return [h,+m[3]];
+}
+// rows: 陣列的陣列 → 預覽資料
+function buildImport(rows){
+  rows=rows.map(r=>r.map(c=>typeof c==='string'?c.trim():c)).filter(r=>r.some(c=>c!==''&&c!=null));
+  if(rows.length && /任務|名稱|title|task/i.test(String(rows[0][0]||''))) rows=rows.slice(1);
+  return rows.map(r=>{
+    const title=String(r[0]??'').trim(), who=matchPerson(r[1]), d=parseDateCell(r[2]), tm=parseTimeCell(r[3]), errs=[];
+    if(!title) errs.push('缺任務名稱');
+    if(who.bad.length) errs.push(`找不到負責人「${who.bad.join('、')}」`);
+    let due=null;
+    if(d==='bad') errs.push('到期日格式看不懂');
+    else if(d){ due=new Date(d);
+      if(tm==='bad') errs.push('到期時間格式看不懂');
+      else if(tm) due.setHours(tm[0],tm[1],0,0);
+      else if(!d.getMilliseconds() && d.getHours()===0 && d.getMinutes()===0) due.setHours(18,0,0,0); due.setMilliseconds(0); }
+    else if(tm && tm!=='bad') errs.push('有時間但缺到期日');
+    return {title, assignees:who.ids, due, errs};
+  });
+}
+function importTemplateCSV(){
+  const ex=people(), a=nameOf(ex[0]), b=ex[1]?nameOf(ex[1]):'對方';
+  const rows=[['任務名稱','負責人','到期日','到期時間'],['訪談紀錄整理',a,'2026/12/05','17:00'],['期中報告初稿',`${a}、${b}`,'2026/12/15','12:00'],['寄送會議通知',b,'2026/12/01',''],['整理參考資料','','','']];
+  downloadFile('任務匯入範本.csv','\ufeff'+rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\r\n'),'text/csv;charset=utf-8');
+}
+function openImportModal(p){
+  let parsed=[];
+  modal(`<h3>批次匯入任務</h3><p class="hint">匯入到「${esc(p.name)}」。欄位順序：<b>任務名稱｜負責人｜到期日｜到期時間</b>（後三欄可空白）</p>
+    <div class="seg2" id="impT" style="margin:6px 0 10px"><button data-m="paste" class="on">從 Excel 貼上</button><button data-m="file">上傳檔案</button></div>
+    <div id="impPaste"><textarea id="impTxt" rows="6" ${AC} placeholder="在 Excel 選取儲存格 → 複製 → 貼到這裡（第一列是標題也沒關係）"></textarea></div>
+    <div id="impFile" class="hidden"><input id="impF" type="file" accept=".xlsx,.xls,.csv,text/csv" style="width:100%;margin-top:4px"><div class="hint">支援 .xlsx、.xls、.csv，讀取第一個工作表</div></div>
+    <div class="row" style="justify-content:space-between;margin-top:6px"><a href="#" id="impTpl" class="lnk">⬇ 下載範本</a><span class="hint" style="margin:0">負責人填名字，兩人用「、」隔開或填「兩人」</span></div>
+    <div id="impPrev"></div>
+    <div class="actions"><button class="btn ghost" id="impX">取消</button><button class="btn" id="impGo" disabled>匯入</button></div>`,(el,close)=>{
+    const prev=el.querySelector('#impPrev'), go=el.querySelector('#impGo');
+    const show=()=>{ const ok=parsed.filter(r=>!r.errs.length), bad=parsed.filter(r=>r.errs.length);
+      go.disabled=!ok.length; go.textContent=ok.length?`匯入 ${ok.length} 筆`:'匯入';
+      prev.innerHTML=parsed.length?`<div class="lbl-s" style="margin-top:12px">預覽：可匯入 ${ok.length} 筆${bad.length?`，<span style="color:var(--danger)">${bad.length} 筆有問題會略過</span>`:''}</div>
+        <div class="imp-tbl">${parsed.map(r=>`<div class="imp-row ${r.errs.length?'bad':''}"><div class="main"><div>${esc(r.title||'（空白）')}</div>
+          <div class="meta" style="white-space:normal">${r.assignees.length?chipsFor(r.assignees):'<span class="chip" style="--c:var(--sub)">未指派</span>'}${r.due?`<span class="meta-i">到期 ${fmtFullM(r.due)}</span>`:''}</div>
+          ${r.errs.length?`<div class="imp-err">⚠ ${esc(r.errs.join('；'))}</div>`:''}</div></div>`).join('')}</div>
+        <div class="hint">只填日期沒填時間，預設當天 18:00 到期。</div>`:''; };
+    el.querySelectorAll('#impT button').forEach(b=>b.onclick=()=>{ el.querySelectorAll('#impT button').forEach(x=>x.classList.toggle('on',x===b));
+      el.querySelector('#impPaste').classList.toggle('hidden',b.dataset.m!=='paste'); el.querySelector('#impFile').classList.toggle('hidden',b.dataset.m!=='file'); });
+    el.querySelector('#impTxt').oninput=e=>{ const txt=e.target.value; const tab=txt.includes('\t');
+      parsed=buildImport(txt.split(/\r?\n/).map(l=>tab?l.split('\t'):l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"')))); show(); };
+    el.querySelector('#impF').onchange=async e=>{ const f=e.target.files[0]; if(!f) return;
+      prev.innerHTML='<div class="hint">讀取中…</div>';
+      try{ const X=await loadXLSX(); const buf=await f.arrayBuffer();
+        const wb=X.read(buf,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]];
+        parsed=buildImport(X.utils.sheet_to_json(ws,{header:1,raw:true,defval:''})); show(); }
+      catch(err){ prev.innerHTML='<div class="imp-err">檔案讀取失敗，請確認是 Excel 或 CSV 檔；也可以改用「從 Excel 貼上」。</div>'; } };
+    el.querySelector('#impTpl').onclick=e=>{ e.preventDefault(); importTemplateCSV(); };
+    el.querySelector('#impX').onclick=close;
+    go.onclick=async()=>{ const ok=parsed.filter(r=>!r.errs.length); if(!ok.length) return;
+      go.disabled=true; go.textContent='匯入中…';
+      const {error}=await sb.from('tasks').insert(ok.map(r=>({project_id:p.id,title:r.title.slice(0,60),assignees:r.assignees,due_at:r.due?r.due.toISOString():null})));
+      if(error){ go.disabled=false; show(); return toast('匯入失敗，請再試一次'); }
+      await loadTasks(); close(); render(); toast(`已匯入 ${ok.length} 筆任務 ✓`); };
+  });
 }
 
 // ===================== 專案列表 =====================
 function renderProjects(){
-  const act=st.projects.filter(p=>!p.archived), arc=st.projects.filter(p=>p.archived);
-  const item=p=>{ const ts=st.tasks.filter(t=>t.project_id===p.id), dn=ts.filter(t=>t.done).length;
-    return `<div class="rec tap" data-pid="${p.id}"><div class="main"><div class="row" style="gap:8px;justify-content:space-between"><b>${esc(p.name)}</b>${p.deadline?dueBadge(p.deadline):''}</div>
-    <div class="meta" style="white-space:normal">${KINDS.filter(([f])=>p[f]>0).map(([f,,,l])=>`<span class="tag">${l} ${+p[f]} 小時</span>`).join('')}${ts.length?`<span class="tag gray">任務 ${dn}/${ts.length}</span>`:''}${!KINDS.some(([f])=>p[f]>0)&&!ts.length?'未設定目標':''}</div></div>
+  const act=scoped(st.projects.filter(p=>!p.archived)), arc=scoped(st.projects.filter(p=>p.archived));
+  const item=p=>{ const ts=st.tasks.filter(t=>t.project_id===p.id), dn=ts.filter(isDone).length;
+    return `<div class="rec tap" data-pid="${p.id}"><div class="main"><div class="row" style="gap:8px;justify-content:space-between"><b>${esc(p.name)}</b>${dueBadge(projDeadline(p))}</div>
+    <div class="meta" style="white-space:normal;margin-top:3px">${projAssignees(p).length?chipsFor(projPeople(p)):'<span class="chip" style="--c:var(--sub)">兩人共用</span>'}
+      ${KINDS.filter(([f])=>p[f]>0).map(([f,,,l])=>`<span class="tag">${l} ${+p[f]} 小時</span>`).join('')}${ts.length?`<span class="tag gray">任務 ${dn}/${ts.length}</span>`:''}</div></div>
     <span style="color:var(--sub)">›</span></div>`; };
-  $('#view').innerHTML=`<div class="row" style="justify-content:space-between;margin:0 4px 10px">
-      <span class="hint" style="margin:0">點專案可看任務與進度</span><button class="btn sm" id="addP">＋ 新增專案</button></div>
-    ${act.length?`<div class="card list">${act.map(item).join('')}</div>`:`<div class="card empty">還沒有專案</div>`}
+  $('#view').innerHTML=`<div class="row" style="justify-content:space-between;margin:0 4px 10px">${scopeToggle()}<button class="btn sm" id="addP">＋ 新增專案</button></div>
+    ${act.length?`<div class="card list">${act.map(item).join('')}</div>`:`<div class="card empty">${st.scope==='mine'?'沒有指派給你的專案，可切到「總覽」看全部':'還沒有專案'}</div>`}
     ${arc.length?`<div class="h2">已封存</div><div class="card list" style="opacity:.7">${arc.map(item).join('')}</div>`:''}`;
+  bindScope();
   $('#addP').onclick=()=>openProjectModal(null);
   document.querySelectorAll('[data-pid]').forEach(el=>el.onclick=()=>{ st.projView=el.dataset.pid; render(); window.scrollTo(0,0); });
 }
 
 // ===================== 專案詳細頁 =====================
+function assigneePicker(name, selected){
+  return `<div class="pick" data-pick="${name}">${people().map(u=>`<label class="pk" style="--c:${colorOf(u)}"><input type="checkbox" value="${u}" ${selected.includes(u)?'checked':''}><span>${esc(nameOf(u))}</span></label>`).join('')}</div>`;
+}
+function pickedOf(root,name){ return [...root.querySelectorAll(`[data-pick="${name}"] input:checked`)].map(i=>i.value); }
+function taskRowHTML(t){
+  const a=taskAssignees(t), ms=sumMs(st.sessions.filter(s=>s.task_id===t.id),ALL_TIME), done=isDone(t), can=canCheck(t);
+  const people_=a.length?people().filter(u=>a.includes(u)):[];
+  const prog = a.length>1 ? `<span class="hint" style="margin:0 0 0 4px">${a.filter(u=>doneBy(t,u)).length}/${a.length} 人完成</span>`:'';
+  return `<div class="rec task" data-tid="${t.id}">
+    <input type="checkbox" class="chk" data-chk="${t.id}" ${myChecked(t)?'checked':''} ${can?'':'disabled title="只有負責人可以勾選"'}>
+    <div class="main"><div class="${done?'strike':''}">${esc(t.title)}</div>
+      <div class="meta" style="white-space:normal">${a.length?chipsFor(people_,u=>doneBy(t,u)):'<span class="chip" style="--c:var(--sub)">未指派</span>'}${prog}${ms?`<span class="meta-i">已投入 ${zhShort(ms)}</span>`:''}</div></div>
+    ${dueBadge(taskDue(t),done)}</div>`;
+}
 function renderProjectDetail(){
   const p=projOf(st.projView), ts=st.tasks.filter(t=>t.project_id===p.id);
-  const todo=ts.filter(t=>!t.done).sort((a,b)=>(a.due||'9999')<(b.due||'9999')?-1:1), done=ts.filter(t=>t.done);
-  const ov=projOverride(me.id,p.id), myCut=projCut(me.id,p.id);
-  const allTime={start:new Date(0),end:new Date(8.64e15)};
-  const taskRow=t=>{ const ms=sumMs(st.sessions.filter(s=>s.task_id===t.id),allTime);
-    return `<div class="rec task" data-tid="${t.id}">
-      <input type="checkbox" class="chk" data-chk="${t.id}" ${t.done?'checked':''}>
-      <div class="main"><div class="${t.done?'strike':''}">${esc(t.title)}</div>
-        <div class="meta">${t.assignee?`<span class="dot sm" style="background:${colorOf(t.assignee)}"></span>${esc(nameOf(t.assignee))}`:'未指派'}${ms?`・已投入 ${zhShort(ms)}`:''}</div></div>
-      ${dueBadge(t.due,t.done)}</div>`; };
+  const sortDue=(a,b)=>(+taskDue(a)||9e15)-(+taskDue(b)||9e15);
+  const todo=ts.filter(t=>!isDone(t)).sort(sortDue), done=ts.filter(isDone);
+  const ov=projOverride(me.id,p.id), myCut=projCut(me.id,p.id), dl=projDeadline(p);
   $('#view').innerHTML=`
     <div class="row" style="justify-content:space-between;margin:0 0 10px"><button class="btn sm ghost" id="back">‹ 專案</button><button class="btn sm ghost" id="editP">編輯專案</button></div>
     <div class="card">
       <div class="proj-head"><span class="proj-name" style="font-size:18px">${esc(p.name)}${p.archived?' <span class="tag gray">已封存</span>':''}</span></div>
-      <div class="kv"><span>死限</span><span>${p.deadline?`${dateYMD(p.deadline)} ${dueBadge(p.deadline)}`:'未設定'}</span></div>
-      <div class="kv"><span>累計投入</span><span>${people().map(u=>`${esc(nameOf(u))} ${zhShort(sumMs(st.sessions.filter(s=>s.user_id===u&&s.project_id===p.id),allTime))}`).join('・')}</span></div>
+      <div class="kv"><span>負責人</span><span>${projAssignees(p).length?chipsFor(projPeople(p)):'兩人共用'}</span></div>
+      <div class="kv"><span>死限</span><span>${dl?`${fmtFullM(dl)}<br>${dueBadge(dl)} <a href="#" id="remP" class="lnk">⏰ 提醒我</a>`:'未設定'}</span></div>
+      <div class="kv"><span>累計投入</span><span>${projPeople(p).map(u=>`${esc(nameOf(u))} ${zhShort(sumMs(st.sessions.filter(s=>s.user_id===u&&s.project_id===p.id),ALL_TIME))}`).join('・')}</span></div>
       <div class="kv"><span>我的切點</span><span>${ov?'本專案自訂':'跟隨我的預設'} <a href="#" id="cutP" class="lnk">修改</a></span></div>
       <div class="hint" style="margin-top:0">${cutText(myCut)}</div>
       ${goalBlock(p)}
     </div>
-    <div class="h2 row" style="justify-content:space-between"><span>子任務（${done.length}/${ts.length} 完成）</span></div>
-    <div class="card list">
-      <div class="rec"><input id="newT" type="text" placeholder="新增任務，按 Enter 送出" maxlength="60" style="flex:1"><button class="btn sm" id="addT">新增</button></div>
-      ${todo.map(taskRow).join('')}
-      ${!ts.length?'<div class="empty" style="padding:14px">還沒有任務</div>':''}
+    <div class="h2">子任務（${done.length}/${ts.length} 完成）</div>
+    <div class="card">
+      <input id="newT" type="text" ${AC} placeholder="新增任務名稱" maxlength="60">
+      <div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap;align-items:flex-end">
+        <div style="flex:1;min-width:140px"><div class="lbl-s">負責人（可複選）</div>${assigneePicker('newA',[me.id])}</div>
+        <div style="flex:1;min-width:170px"><div class="lbl-s">到期時間（選填）</div><input id="newD" type="datetime-local" ${AC}></div>
+      </div>
+      <div class="row" style="gap:8px;margin-top:10px"><button class="btn" id="addT" style="flex:2">＋ 新增任務</button><button class="btn ghost" id="impBtn" style="flex:1">📥 批次匯入</button></div>
     </div>
-    ${done.length?`<div class="h2"><a href="#" id="tglDone" class="lnk">${st.showDone?'隱藏':'顯示'}已完成（${done.length}）</a></div>${st.showDone?`<div class="card list" style="opacity:.75">${done.map(taskRow).join('')}</div>`:''}`:''}
-    <p class="hint" style="text-align:center">點任務可修改負責人、到期日或刪除</p>`;
+    <div class="card list">${todo.map(taskRowHTML).join('')||'<div class="empty" style="padding:14px">沒有進行中的任務</div>'}</div>
+    ${done.length?`<div class="h2"><a href="#" id="tglDone" class="lnk">${st.showDone?'隱藏':'顯示'}已完成（${done.length}）</a></div>${st.showDone?`<div class="card list" style="opacity:.75">${done.map(taskRowHTML).join('')}</div>`:''}`:''}
+    <p class="hint" style="text-align:center">勾選方框＝我完成了；多位負責人需全部勾選才算完成<br>點任務文字可修改、設定提醒或刪除</p>`;
   $('#back').onclick=()=>{ st.projView=null; render(); };
   $('#editP').onclick=()=>openProjectModal(p);
   $('#cutP').onclick=e=>{ e.preventDefault(); openCutModal(p); };
+  const rp=$('#remP'); if(rp) rp.onclick=e=>{ e.preventDefault(); openRemindModal(`${p.name} 專案死限`, dl, '工時同步'); };
   const tg=$('#tglDone'); if(tg) tg.onclick=e=>{ e.preventDefault(); st.showDone=!st.showDone; renderProjectDetail(); };
-  const add=async()=>{ const v=$('#newT').value.trim(); if(!v) return;
-    $('#addT').disabled=true; const {error}=await sb.from('tasks').insert({project_id:p.id,title:v}); $('#addT').disabled=false;
-    if(error) return toast('新增失敗'); await loadTasks(); renderProjectDetail(); $('#newT').focus(); };
-  $('#addT').onclick=add; $('#newT').onkeydown=e=>{ if(e.key==='Enter' && !e.isComposing) add(); };
-  document.querySelectorAll('[data-chk]').forEach(el=>{ el.onclick=e=>e.stopPropagation(); el.onchange=async()=>{
-    const {error}=await sb.from('tasks').update({done:el.checked}).eq('id',el.dataset.chk); if(error) return toast('更新失敗');
-    await loadTasks(); renderProjectDetail(); if(el.checked) toast('任務完成 ✓'); }; });
+  const v=$('#view');
+  $('#addT').onclick=async()=>{ const title=$('#newT').value.trim(); if(!title) return toast('請輸入任務名稱');
+    const assignees=pickedOf(v,'newA'), dv=$('#newD').value;
+    $('#addT').disabled=true;
+    const {error}=await sb.from('tasks').insert({project_id:p.id,title,assignees,due_at:dv?new Date(dv).toISOString():null});
+    $('#addT').disabled=false;
+    if(error) return toast('新增失敗'); await loadTasks(); renderProjectDetail(); toast('已新增任務'); };
+  $('#impBtn').onclick=()=>openImportModal(p);
+  $('#newT').onkeydown=e=>{ if(e.key==='Enter' && !e.isComposing) $('#addT').click(); };
+  document.querySelectorAll('[data-chk]').forEach(el=>{ el.onclick=e=>e.stopPropagation(); el.onchange=()=>toggleTask(taskOf(el.dataset.chk), el.checked); });
   document.querySelectorAll('[data-tid]').forEach(el=>el.onclick=()=>openTaskModal(taskOf(el.dataset.tid)));
+}
+async function toggleTask(t, on){
+  let error;
+  if(on) ({error}=await sb.from('task_done').upsert({task_id:t.id,user_id:me.id}));
+  else ({error}=await sb.from('task_done').delete().eq('task_id',t.id).eq('user_id',me.id));
+  if(!error){
+    // 同步總完成狀態：沒負責人 → 我勾即完成；有負責人 → 全部負責人都勾
+    const a=taskAssignees(t); const others=a.filter(u=>u!==me.id).every(u=>doneBy(t,u));
+    const allDone = a.length ? (on && others) : on;
+    ({error}=await sb.from('tasks').update({done:allDone}).eq('id',t.id));
+  }
+  if(error) return toast('更新失敗');
+  await Promise.all([loadTasks(),loadTaskDone()]); render();
+  if(on){ const t2=taskOf(t.id); if(isDone(t2)) celebrate(`✅ 完成任務「${esc(t.title)}」`); else toast(`你的部分完成了 ✓，等${esc(taskAssignees(t).filter(u=>!doneBy(t2,u)).map(nameOf).join('、'))}完成`); }
+}
+
+// ===================== 加油（肯定區） =====================
+// 設計依據：自我決定論（連結感、勝任感）、具體且聚焦在「努力與過程」的稱讚、即時回饋、
+// 小勝利原則（Progress Principle）、感謝表達；不做排行或比較，只呈現正向事件。
+function winsOf(uid){
+  const since=Date.now()-7*86400000, wins=[];
+  st.sessions.filter(s=>s.user_id===uid && s.end_at && +new Date(s.end_at)>=since && (sessEnd(s)-new Date(s.start_at))>=20*60000).forEach(s=>{
+    const dur=sessEnd(s)-new Date(s.start_at);
+    wins.push({ref:'session:'+s.id, t:+new Date(s.end_at), icon:'⏱', kind:'session', text:`專注工作 ${zhShort(dur)}`, sub:sessLabel(s), dur:zhShort(dur)}); });
+  st.taskDone.filter(d=>d.user_id===uid && +new Date(d.done_at)>=since).forEach(d=>{ const t=taskOf(d.task_id); if(!t) return;
+    wins.push({ref:'task:'+t.id, t:+new Date(d.done_at), icon:'✅', kind:'task', text:`完成任務「${esc(t.title)}」`, sub:esc(projName(t.project_id)), title:t.title}); });
+  st.projects.filter(p=>!p.archived && projPeople(p).includes(uid)).forEach(p=>KINDS.forEach(([f,k,lbl])=>{
+    if(p[f]>0 && goalReached(uid,p,f,k)){ const per=periodOf(k,Date.now(),0,projCut(uid,p.id));
+      const last=st.sessions.filter(s=>s.user_id===uid&&s.project_id===p.id).reduce((m,s)=>Math.max(m,sessEnd(s)),0);
+      wins.push({ref:`goal:${p.id}:${k}:${per.start.toISOString()}`, t:last, icon:'🎯', kind:'goal', text:`達成「${esc(p.name)}」${lbl}目標 ${+p[f]} 小時`, sub:rangeLabel(k,per)}); } }));
+  return wins.sort((a,b)=>b.t-a.t).slice(0,25);
+}
+function phrasesFor(w, to){
+  const n=nameOf(to);
+  if(!w) return [`今天也一起加油 💪`,`謝謝你一起做這些事 🙌`,`累了就休息一下，我們進度沒問題 ☕`,`有你一起真好 😊`];
+  if(w.kind==='session') return [`辛苦了！專注了 ${w.dur}，很穩 💪`,`看得到你的投入，謝謝你 🙏`,`記得起來動一動、喝口水 ☕`];
+  if(w.kind==='task') return [`「${w.title}」搞定了，謝謝你一步步推進 ✨`,`這塊你處理掉了，幫了大忙！`,`又往前一步了 🚶`];
+  return [`目標達成！這段時間的堅持看得見 🎯`,`一點一滴累積出來的，${n}很棒 🌟`,`照自己的節奏完成了，讚 👍`];
+}
+async function sendKudos(to, w, emoji, message){
+  const {error}=await sb.from('kudos').insert({from_user:me.id,to_user:to,ref:w?w.ref:'general',context:w?w.text.replace(/<[^>]+>/g,''):'',emoji:emoji||null,message:message||null});
+  if(error) return toast('送出失敗');
+  await loadKudos(); render(); popKudos(`已送出 ${esc(emoji||'💌')}`, `${esc(nameOf(to))} 打開 App 就會看到`);
+}
+function renderCheer(){
+  const recv=st.kudos.filter(k=>k.to_user===me.id), unreadIds=recv.filter(k=>!k.read_at).map(k=>k.id);
+  const ps=partners();
+  $('#view').innerHTML=`
+    <div class="h2">收到的肯定</div>
+    ${recv.length?`<div class="card list">${recv.slice(0,30).map(k=>`<div class="rec ${unreadIds.includes(k.id)?'unread':''}">
+        <span class="big-e">${esc(k.emoji||'💌')}</span>
+        <div class="main"><div><b>${esc(nameOf(k.from_user))}</b>${k.message?`：${esc(k.message)}`:' 給你一個肯定'}</div>
+        <div class="meta">${k.context?`為了：${esc(k.context)}・`:''}${ago(k.created_at)}</div></div>
+        <button class="btn sm ghost" data-thank="${k.id}">回 ❤️</button></div>`).join('')}</div>`
+      :`<div class="card empty">還沒有收到肯定<br><span class="hint">先給對方一個吧，善意通常會回來的 😊</span></div>`}
+    ${ps.map(u=>{ const ws=winsOf(u), sent=st.kudos.filter(k=>k.from_user===me.id&&k.to_user===u);
+      return `<div class="h2 row" style="justify-content:space-between"><span>給 ${esc(nameOf(u))} 加油</span><button class="btn sm ghost" data-gen="${u}">💌 說句話</button></div>
+      ${ws.length?`<div class="card list">${ws.map((w,i)=>{ const mine=sent.filter(k=>k.ref===w.ref);
+        return `<div class="rec win"><span class="big-e">${w.icon}</span>
+          <div class="main"><div>${w.text}</div><div class="meta">${w.sub}・${ago(w.t)}</div>
+          ${mine.length?`<div class="sent">你送了 ${mine.map(k=>esc(k.emoji||'💌')).join(' ')}${mine.some(k=>k.message)?'・含留言':''}</div>`:''}
+          <div class="emo-row">${EMOJIS.map(e=>`<button class="emo" data-u="${u}" data-w="${i}" data-e="${e}">${e}</button>`).join('')}<button class="emo txt" data-u="${u}" data-w="${i}" data-e="msg">留言</button></div></div></div>`; }).join('')}</div>`
+      :`<div class="card empty">${esc(nameOf(u))} 最近 7 天還沒有新的成果<br><span class="hint">也可以按上面的「說句話」直接鼓勵</span></div>`}`; }).join('')}
+    <p class="hint" style="text-align:center">具體說出對方「做了什麼、投入了什麼」，比「好棒」更有力量 💡</p>`;
+  const wsMap={}; ps.forEach(u=>wsMap[u]=winsOf(u));
+  document.querySelectorAll('.emo').forEach(b=>b.onclick=()=>{ const u=b.dataset.u, w=wsMap[u][+b.dataset.w];
+    if(b.dataset.e==='msg') openKudosModal(u,w); else { b.classList.add('pop'); sendKudos(u,w,b.dataset.e,null); } });
+  document.querySelectorAll('[data-gen]').forEach(b=>b.onclick=()=>openKudosModal(b.dataset.gen,null));
+  document.querySelectorAll('[data-thank]').forEach(b=>b.onclick=()=>{ const k=st.kudos.find(x=>x.id===b.dataset.thank);
+    sendKudos(k.from_user,{ref:'reply:'+k.id,text:`回覆你的${k.emoji||'留言'}`},'❤️','謝謝你 😊'); });
+  if(unreadIds.length){ sb.from('kudos').update({read_at:new Date().toISOString()}).eq('to_user',me.id).is('read_at',null).then(()=>{ st.kudos.forEach(k=>{ if(unreadIds.includes(k.id)) k.read_at=new Date().toISOString(); }); updateBadge(); }); }
+}
+function openKudosModal(to, w){
+  let emoji=w?'👏':'💪';
+  modal(`<h3>${w?'給個肯定':'對 '+esc(nameOf(to))+' 說句話'}</h3>
+    ${w?`<p class="hint">${w.icon} ${w.text}</p>`:''}
+    <div class="emo-row big">${EMOJIS.map(e=>`<button class="emo ${e===emoji?'sel':''}" data-e="${e}">${e}</button>`).join('')}</div>
+    <label class="f">快速選一句（可再修改）</label>
+    <div class="phr">${phrasesFor(w,to).map(p=>`<button class="phrase">${esc(p)}</button>`).join('')}</div>
+    <textarea id="kM" rows="3" maxlength="120" ${AC} placeholder="寫下具體的感謝或鼓勵…"></textarea>
+    <div class="actions"><button class="btn" id="kS">送出</button></div>`,(el,close)=>{
+    el.querySelectorAll('.emo').forEach(b=>b.onclick=()=>{ emoji=b.dataset.e; el.querySelectorAll('.emo').forEach(x=>x.classList.toggle('sel',x===b)); });
+    el.querySelectorAll('.phrase').forEach(b=>b.onclick=()=>{ el.querySelector('#kM').value=b.textContent; });
+    el.querySelector('#kS').onclick=async()=>{ const m=el.querySelector('#kM').value.trim(); close(); await sendKudos(to,w,emoji,m||null); };
+  });
+}
+
+// ---- 慶祝與彈出 ----
+function celebrate(msg){
+  const box=document.createElement('div'); box.className='confetti';
+  const cols=[colorOf(me.id),'#f2c94c','#e07a5f','#6c7bd9','#3bb5a3','#d6589f'];
+  for(let i=0;i<60;i++){ const s=document.createElement('i'); s.style.left=Math.random()*100+'%'; s.style.background=cols[i%cols.length];
+    s.style.animationDelay=(Math.random()*0.4)+'s'; s.style.animationDuration=(1.4+Math.random()*1.2)+'s'; s.style.transform=`rotate(${Math.random()*360}deg)`; box.appendChild(s); }
+  document.body.appendChild(box); setTimeout(()=>box.remove(),3200);
+  toast(msg, 3600);
+}
+const poppedIds=new Set();
+function popKudos(title, sub, id){
+  if(id){ if(poppedIds.has(id)) return; poppedIds.add(id); }
+  document.querySelectorAll('.kpop').forEach(e=>e.remove());
+  const d=document.createElement('div'); d.className='kpop'; d.innerHTML=`<div class="kpop-in"><div>${title}</div>${sub?`<div class="kpop-sub">${esc(sub)}</div>`:''}</div>`;
+  document.body.appendChild(d); setTimeout(()=>d.classList.add('out'),2600); setTimeout(()=>d.remove(),3100);
+  if(navigator.vibrate) try{ navigator.vibrate(30); }catch(e){}
 }
 
 // ===================== 設定 =====================
@@ -548,7 +922,7 @@ function renderSettings(){
   const c=cfg(), mc=userCut(me.id);
   $('#view').innerHTML=`<div class="card">
       <div class="set-item"><div><div class="lbl-s">我的顯示名稱</div><div style="font-weight:600">${esc(nameOf(me.id))}</div></div><button class="btn sm ghost" id="nm">修改</button></div>
-      <div class="set-item"><div><div class="lbl-s">我的代表色</div><div class="row" style="gap:6px;margin-top:2px"><span class="swatch-cur" style="background:${colorOf(me.id)}"></span><span class="hint" style="margin:0">顯示在狀態卡、進度條與紀錄</span></div></div><button class="btn sm ghost" id="clr">修改</button></div>
+      <div class="set-item"><div><div class="lbl-s">我的代表色</div><div class="row" style="gap:6px;margin-top:2px"><span class="swatch-cur" style="background:${colorOf(me.id)}"></span><span class="hint" style="margin:0">整個介面的主色、狀態卡、進度條</span></div></div><button class="btn sm ghost" id="clr">修改</button></div>
       <div class="set-item"><div><div class="lbl-s">我的預設切點</div><div>${cutText(mc)}</div><div class="hint" style="margin:2px 0 0">每月皆從 1 號的這個時間起算；各專案可另外設定</div></div><button class="btn sm ghost" id="cut">修改</button></div>
       <div class="set-item"><div><div class="lbl-s">登入帳號</div><div>${esc(me.email||'')}</div></div><button class="btn sm danger-ghost" id="lo">登出</button></div>
     </div>
@@ -572,39 +946,38 @@ function renderSettings(){
 function modal(html,onMount){
   const bg=document.createElement('div'); bg.className='modal-bg';
   bg.innerHTML=`<div class="modal">${html}</div>`; document.body.appendChild(bg);
-  const close=()=>bg.remove(); bg.onclick=e=>{ if(e.target===bg) close(); };
+  const close=()=>{ bg.remove(); }; bg.onclick=e=>{ if(e.target===bg) close(); };
   onMount(bg,close);
 }
 function wdOptions(sel){ return [1,2,3,4,5,6,0].map(d=>`<option value="${d}" ${d===sel?'selected':''}>週${WD[d]}</option>`).join(''); }
 
 function openNameModal(first){
   modal(`<h3>${first?'歡迎！先設定你的名字':'修改顯示名稱'}</h3><p class="hint">對方會看到這個名字</p>
-    <input id="nmI" type="text" maxlength="12" value="${esc(nameOf(me.id))}">
+    <input id="nmI" type="text" ${AC} maxlength="12" value="${esc(nameOf(me.id))}">
     <div class="actions"><button class="btn" id="nmS">儲存</button></div>`,(el,close)=>{
     el.querySelector('#nmS').onclick=async()=>{ const name=el.querySelector('#nmI').value.trim(); if(!name) return toast('請輸入名字');
       const {error}=await sb.from('profiles').upsert({id:me.id,name}); if(error) return toast('儲存失敗');
       await loadProfiles(); close(); render(); toast('已儲存'); };
   });
 }
-
 function openColorModal(){
   let cur=prof(me.id)?.color||'';
-  const other=people().filter(u=>u!==me.id).map(u=>colorOf(u));
-  modal(`<h3>選擇我的代表色</h3><p class="hint">兩個人用不同顏色，看起來比較清楚${other.length?`（對方目前是 <span class="swatch-cur" style="background:${other[0]};vertical-align:middle"></span>）`:''}</p>
+  const other=partners().map(u=>colorOf(u));
+  modal(`<h3>選擇我的代表色</h3><p class="hint">會變成你畫面的主色，並代表你出現在對方畫面上${other.length?`（對方目前是 <span class="swatch-cur" style="background:${other[0]};vertical-align:middle"></span>）`:''}</p>
     <div class="swatches">${SWATCHES.map(c=>`<button class="sw ${c===cur?'sel':''}" data-c="${c}" style="background:${c}" aria-label="${c}"></button>`).join('')}</div>
     <label class="f">或自訂顏色</label><input id="cc" type="color" value="${cur||'#2f9e8f'}" style="width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:4px">
     <div class="actions"><button class="btn ghost" id="cR">恢復預設</button><button class="btn" id="cOk">儲存</button></div>`,(el,close)=>{
-    const sel=c=>{ cur=c; el.querySelectorAll('.sw').forEach(b=>b.classList.toggle('sel',b.dataset.c===c)); el.querySelector('#cc').value=c; };
+    const preview=c=>document.documentElement.style.setProperty('--accent',c);
+    const sel=c=>{ cur=c; preview(c); el.querySelectorAll('.sw').forEach(b=>b.classList.toggle('sel',b.dataset.c===c)); el.querySelector('#cc').value=c; };
     el.querySelectorAll('.sw').forEach(b=>b.onclick=()=>sel(b.dataset.c));
-    el.querySelector('#cc').oninput=e=>{ cur=e.target.value; el.querySelectorAll('.sw').forEach(b=>b.classList.remove('sel')); };
+    el.querySelector('#cc').oninput=e=>{ cur=e.target.value; preview(cur); el.querySelectorAll('.sw').forEach(b=>b.classList.remove('sel')); };
     const save=async(c)=>{ const {error}=await sb.from('profiles').update({color:c}).eq('id',me.id); if(error) return toast('儲存失敗');
       await loadProfiles(); close(); render(); toast('已儲存'); };
     el.querySelector('#cOk').onclick=()=>save(cur||null);
     el.querySelector('#cR').onclick=()=>save(null);
+    el.onclick=e=>{ if(e.target===el){ el.remove(); applyTheme(); } };
   });
 }
-
-// p=null：個人預設切點；p=專案：該專案的個人切點
 function openCutModal(p){
   const ov=p?projOverride(me.id,p.id):null, cur=p?projCut(me.id,p.id):userCut(me.id);
   modal(`<h3>${p?`「${esc(p.name)}」的切點`:'我的預設切點'}</h3>
@@ -612,7 +985,7 @@ function openCutModal(p){
     ${p?`<div class="seg"><label><input type="radio" name="mode" value="def" ${ov?'':'checked'}> 跟隨我的預設<span class="hint" style="display:block;margin:0">${cutText(userCut(me.id))}</span></label>
       <label><input type="radio" name="mode" value="own" ${ov?'checked':''}> 本專案自訂</label></div>`:''}
     <div id="cutF" class="${p&&!ov?'hidden':''}">
-      <label class="f">每天從幾點開始算</label><input id="cM" type="time" value="${minToHM(cur.m)}">
+      <label class="f">每天從幾點開始算</label><input id="cM" type="time" ${AC} value="${minToHM(cur.m)}">
       <label class="f">每週從星期幾開始</label><select id="cW">${wdOptions(cur.wd)}</select>
     </div>
     <p class="hint">改了之後，過去的紀錄也會依新的切點重新歸到對應的日／週／月（原始打卡時間不變）。</p>
@@ -629,19 +1002,18 @@ function openCutModal(p){
     };
   });
 }
-
 function openSessionModal(s){
   const isNew=!s, now=new Date();
   const proj=s?s.project_id:(localStorage.getItem(LAST_PROJ_KEY)||'');
-  const projOpts=st.projects.filter(p=>!p.archived||p.id===proj).map(p=>`<option value="${p.id}" ${p.id===proj?'selected':''}>${esc(p.name)}</option>`).join('')+`<option value="" ${!proj?'selected':''}>未指定專案</option>`;
+  const projOpts=st.projects.filter(p=>(!p.archived && (st.scope==='all'||isMine(p)))||p.id===proj).map(p=>`<option value="${p.id}" ${p.id===proj?'selected':''}>${esc(p.name)}</option>`).join('')+`<option value="" ${!proj?'selected':''}>未指定專案</option>`;
   const isOpen=s && !s.end_at;
   modal(`<h3>${isNew?'補登打卡':'修改打卡'}</h3>
     <label class="f">專案</label><select id="sP">${projOpts}</select>
     <div id="sTw"><label class="f">任務（選填）</label><select id="sT">${taskOptions(proj,s?.task_id||'')}</select></div>
-    <label class="f">開始時間</label><input id="sA" type="datetime-local" step="1" value="${toInput(s?s.start_at:new Date(now-3600000))}">
-    <label class="f">結束時間${isOpen?'（留空＝仍在工作中）':''}</label><input id="sB" type="datetime-local" step="1" value="${s&&s.end_at?toInput(s.end_at):(isOpen?'':toInput(now))}">
+    <label class="f">開始時間</label><input id="sA" type="datetime-local" ${AC} step="1" value="${toInput(s?s.start_at:new Date(now-3600000))}">
+    <label class="f">結束時間${isOpen?'（留空＝仍在工作中）':''}</label><input id="sB" type="datetime-local" ${AC} step="1" value="${s&&s.end_at?toInput(s.end_at):(isOpen?'':toInput(now))}">
     <div class="hint" id="sD"></div>
-    <label class="f">備註（選填）</label><input id="sN" type="text" maxlength="60" value="${esc(s?.note||'')}">
+    <label class="f">備註（選填）</label><input id="sN" type="text" ${AC} maxlength="60" value="${esc(s?.note||'')}">
     <div class="actions">${isNew?'':'<button class="btn danger-ghost" id="sDel">刪除</button>'}<button class="btn" id="sS">儲存</button></div>`,(el,close)=>{
     const A=el.querySelector('#sA'),B=el.querySelector('#sB'),D=el.querySelector('#sD'),P=el.querySelector('#sP'),T=el.querySelector('#sT'),Tw=el.querySelector('#sTw');
     const tv=()=>Tw.classList.toggle('hidden',!P.value || !st.tasks.some(t=>t.project_id===P.value)); tv();
@@ -667,38 +1039,42 @@ function openSessionModal(s){
       await loadSessions(); close(); render(); toast('已刪除'); };
   });
 }
-
 function openTaskModal(t){
+  const due=taskDue(t);
   modal(`<h3>編輯任務</h3>
-    <label class="f">任務名稱</label><input id="tN" type="text" maxlength="60" value="${esc(t.title)}">
-    <label class="f">負責人</label><select id="tA"><option value="">未指派</option>${people().map(u=>`<option value="${u}" ${t.assignee===u?'selected':''}>${esc(nameOf(u))}</option>`).join('')}</select>
-    <label class="f">到期日（選填）</label><input id="tD" type="date" value="${t.due||''}">
-    <div class="goal-set" style="margin-top:14px"><input type="checkbox" id="tX" ${t.done?'checked':''}><span>已完成</span></div>
+    <label class="f">任務名稱</label><input id="tN" type="text" ${AC} maxlength="60" value="${esc(t.title)}">
+    <label class="f">負責人（可複選；勾兩人＝兩人都要完成）</label>${assigneePicker('tA',taskAssignees(t))}
+    <label class="f">到期時間（選填）</label><input id="tD" type="datetime-local" ${AC} value="${toInputM(due)}">
+    ${due?`<button class="btn ghost" id="tRem" style="width:100%;margin-top:10px">⏰ 加到行事曆提醒</button>`:''}
     <div class="actions"><button class="btn danger-ghost" id="tDel">刪除</button><button class="btn" id="tS">儲存</button></div>`,(el,close)=>{
     el.querySelector('#tS').onclick=async()=>{ const title=el.querySelector('#tN').value.trim(); if(!title) return toast('請輸入任務名稱');
-      const {error}=await sb.from('tasks').update({title,assignee:el.querySelector('#tA').value||null,due:el.querySelector('#tD').value||null,done:el.querySelector('#tX').checked}).eq('id',t.id);
+      const assignees=pickedOf(el,'tA'), dv=el.querySelector('#tD').value;
+      const t2={...t,assignees}; const done=assignees.length?assignees.every(u=>doneBy(t2,u)):!!t.done;
+      const {error}=await sb.from('tasks').update({title,assignees,due_at:dv?new Date(dv).toISOString():null,done}).eq('id',t.id);
       if(error) return toast('儲存失敗'); await loadTasks(); close(); render(); toast('已儲存'); };
+    const r=el.querySelector('#tRem'); if(r) r.onclick=()=>{ close(); openRemindModal(t.title, due, `${projName(t.project_id)}・工時同步`); };
     el.querySelector('#tDel').onclick=async()=>{ if(!confirm(`確定刪除任務「${t.title}」？\n（相關打卡紀錄會保留，只是不再標示任務）`)) return;
       const {error}=await sb.from('tasks').delete().eq('id',t.id); if(error) return toast('刪除失敗');
-      await Promise.all([loadTasks(),loadSessions()]); close(); render(); toast('已刪除'); };
+      await Promise.all([loadTasks(),loadSessions(),loadTaskDone()]); close(); render(); toast('已刪除'); };
   });
 }
-
 function openProjectModal(p){
   const isNew=!p;
   modal(`<h3>${isNew?'新增專案':'編輯專案'}</h3>
-    <label class="f">專案名稱</label><input id="pN" type="text" maxlength="30" value="${esc(p?.name||'')}" placeholder="例如：A 專案">
-    <label class="f">專案死限（選填）</label><input id="pD" type="date" value="${p?.deadline||''}">
+    <label class="f">專案名稱</label><input id="pN" type="text" ${AC} maxlength="30" value="${esc(p?.name||'')}" placeholder="例如：A 專案">
+    <label class="f">負責人（可複選；都不勾＝兩人共用）</label>${assigneePicker('pA',p?projAssignees(p):[me.id])}
+    <label class="f">專案死限（選填，含時間）</label><input id="pD" type="datetime-local" ${AC} value="${toInputM(p?projDeadline(p):null)}">
     <label class="f">每人時數目標（可勾選一種或多種）</label>
     ${KINDS.map(([f,,,l])=>`<div class="goal-set"><input type="checkbox" id="c_${f}" ${p&&p[f]>0?'checked':''}><span class="lbl">${l}</span>
-      <input type="number" id="v_${f}" min="0" step="0.5" inputmode="decimal" placeholder="小時" value="${p&&p[f]>0?+p[f]:''}"></div>`).join('')}
+      <input type="number" id="v_${f}" ${AC} min="0" step="0.5" inputmode="decimal" placeholder="小時" value="${p&&p[f]>0?+p[f]:''}"></div>`).join('')}
     ${isNew?'':`<div class="goal-set" style="margin-top:16px"><input type="checkbox" id="pArc" ${p.archived?'checked':''}><span>封存（不再出現在打卡選單）</span></div>`}
     <div class="actions">${isNew?'':'<button class="btn danger-ghost" id="pDel">刪除</button>'}<button class="btn" id="pS">儲存</button></div>`,(el,close)=>{
     KINDS.forEach(([f])=>{ const c=el.querySelector('#c_'+f), v=el.querySelector('#v_'+f);
       v.oninput=()=>{ c.checked=+v.value>0; }; c.onchange=()=>{ if(c.checked) v.focus(); }; });
     el.querySelector('#pS').onclick=async()=>{
       const name=el.querySelector('#pN').value.trim(); if(!name) return toast('請輸入專案名稱');
-      const row={name,deadline:el.querySelector('#pD').value||null};
+      const dv=el.querySelector('#pD').value;
+      const row={name,assignees:pickedOf(el,'pA'),deadline_at:dv?new Date(dv).toISOString():null,deadline:null};
       for(const [f,,,l] of KINDS){ const on=el.querySelector('#c_'+f).checked, v=+el.querySelector('#v_'+f).value;
         if(on && !(v>0)) return toast(`請填入${l}目標時數`); row[f]=on?v:null; }
       if(!isNew) row.archived=el.querySelector('#pArc').checked;
