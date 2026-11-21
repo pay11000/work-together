@@ -19,10 +19,10 @@
   --p0:#2f9e8f; --p1:#e07a5f; --p2:#6c7bd9; --p3:#c9a227;
   --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05);
 }
-@media (prefers-color-scheme:dark){
-  :root{ --bg:#111317; --card:#1b1e24; --text:#eceef2; --sub:#9aa1ad; --line:#2a2e36;
+@media (prefers-color-scheme:dark){html:not([data-theme=light]){ --bg:#111317; --card:#1b1e24; --text:#eceef2; --sub:#9aa1ad; --line:#2a2e36;
+    --accent-soft:color-mix(in srgb, var(--accent) 22%, transparent); --track:#2a2e36; --shadow:none; }}
+html[data-theme=dark]{ --bg:#111317; --card:#1b1e24; --text:#eceef2; --sub:#9aa1ad; --line:#2a2e36;
     --accent-soft:color-mix(in srgb, var(--accent) 22%, transparent); --track:#2a2e36; --shadow:none; }
-}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
@@ -121,7 +121,12 @@ nav button.act{color:var(--accent)}
 .dot.sm{width:7px;height:7px;display:inline-block;margin-right:4px;vertical-align:middle}
 .due{font-size:11px;padding:2px 8px;border-radius:8px;background:var(--track);color:var(--sub);white-space:nowrap;flex:none;font-variant-numeric:tabular-nums}
 .due.near{background:#fff3d6;color:#9a6b00}.due.soon{background:#ffe3d6;color:#c2501f}.due.over{background:#fde0df;color:var(--danger);font-weight:600}.due.ok{text-decoration:line-through}
-@media (prefers-color-scheme:dark){.due.near{background:#3a3020;color:#e6b84a}.due.soon{background:#3d2a22;color:#f08a5d}.due.over{background:#3d2323;color:#ff7b76}}
+@media (prefers-color-scheme:dark){html:not([data-theme=light]) .due.near{background:#3a3020;color:#e6b84a}
+html:not([data-theme=light]) .due.soon{background:#3d2a22;color:#f08a5d}
+html:not([data-theme=light]) .due.over{background:#3d2323;color:#ff7b76}}
+html[data-theme=dark] .due.near{background:#3a3020;color:#e6b84a}
+html[data-theme=dark] .due.soon{background:#3d2a22;color:#f08a5d}
+html[data-theme=dark] .due.over{background:#3d2323;color:#ff7b76}
 .tag.gray{background:var(--track);color:var(--sub)}
 .track.thin{height:5px;margin-top:4px}
 .kv{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:7px 0;border-bottom:1px dashed var(--line)}
@@ -149,7 +154,8 @@ nav button{position:relative}
 .pk input{accent-color:var(--c);width:17px;height:17px;margin:0}
 .pk:has(input:checked){border-color:var(--c);background:color-mix(in srgb, var(--c) 12%, transparent)}
 .warn-card{background:#fff3d6;color:#7a5600;font-size:14px}
-@media (prefers-color-scheme:dark){.warn-card{background:#3a3020;color:#e6b84a}}
+@media (prefers-color-scheme:dark){html:not([data-theme=light]) .warn-card{background:#3a3020;color:#e6b84a}}
+html[data-theme=dark] .warn-card{background:#3a3020;color:#e6b84a}
 .cheer-card{display:flex;gap:12px;align-items:center;background:var(--accent-soft);animation:glow 2s ease-in-out infinite}
 @keyframes glow{50%{box-shadow:0 0 0 4px var(--accent-soft)}}
 .big-e{font-size:26px;line-height:1;flex:none;width:34px;text-align:center}
@@ -218,6 +224,7 @@ input:disabled{opacity:.35}
 .up-task::before{content:"";position:absolute;left:18px;top:0;bottom:50%;width:8px;border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);border-bottom-left-radius:4px}
 .up-task + .up-proj{border-top:1px solid var(--line)}
 .up-task:last-child{padding-bottom:12px}
+.up-task{flex-wrap:wrap} .up-task>.od-acts{flex-basis:100%;margin-top:2px}
 .due-mini{font-size:11px;color:var(--sub);white-space:nowrap}
 .ex-opts{display:flex;flex-direction:column;gap:8px}
 .ex-o{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
@@ -237,7 +244,107 @@ input:disabled{opacity:.35}
 .pk-mini.on{border-color:var(--c);background:color-mix(in srgb, var(--c) 14%, transparent);color:var(--c);font-weight:700}
 .pim-g{background:var(--bg)}
 .pim-t{padding-left:28px}
+.recents{display:flex;flex-direction:column;gap:8px}
+.rc-btn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1.5px solid var(--accent);background:var(--accent-soft);color:var(--text);border-radius:14px;padding:13px 14px;font-size:15px;font-family:inherit;cursor:pointer}
+.rc-btn:active{transform:scale(.98)}
+.rc-play{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none}
+.rc-l{min-width:0;display:flex;flex-direction:column}
+.rc-l b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-t{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.more-pick{margin-top:10px}
+.more-pick summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14px;padding:6px 0;list-style:none}
+.more-pick summary::before{content:"▸ ";} .more-pick[open] summary::before{content:"▾ ";}
+.off-t{color:var(--sub);font-size:34px}
+.together{text-align:center;background:linear-gradient(90deg,color-mix(in srgb,var(--p0) 18%,transparent),color-mix(in srgb,var(--p1) 18%,transparent));border-radius:14px;padding:9px;font-weight:700;margin-bottom:10px;font-size:15px}
+.nudge{display:flex;flex-direction:column;gap:10px;border:1.5px dashed var(--accent)}
+.focus-empty{border:1.5px dashed var(--line)}
+.fc-row{align-items:center}
+.fc-pick{max-height:50vh;overflow:auto}
+.fc-opt{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.fc-opt input{width:19px;height:19px;accent-color:var(--accent);flex:none}
+.fc-opt span{flex:1}
+.gg{font-size:12px;color:var(--accent);margin:2px 0 4px 62px;font-weight:600}
+.gg.ok{color:var(--sub)}
+.od-acts{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.od-btn{white-space:nowrap;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:4px 11px;font-size:12.5px;font-family:inherit;cursor:pointer;color:var(--text)}
+.od-btn.ok{border-color:var(--accent);color:var(--accent);font-weight:600}
+.due.over{background:#fde8df;color:#b5532a;font-weight:600}
+@media (prefers-color-scheme:dark){html:not([data-theme=light]) .due.over{background:#3d2a22;color:#f08a5d}}
+html[data-theme=dark] .due.over{background:#3d2a22;color:#f08a5d}
+.dq{margin-top:6px}
+.dq-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.dq-b{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:5px 12px;font-size:13px;font-family:inherit;color:var(--text);cursor:pointer}
+.dq-b.tm{color:var(--sub)}
+.dq-b:active{border-color:var(--accent);color:var(--accent)}
+.tg-box{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tg{border:1.5px solid var(--line);background:var(--bg);border-radius:16px;padding:6px 13px;font-size:14px;font-family:inherit;color:var(--text);cursor:pointer}
+.tg.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.tg.ed{border-style:dashed}
+.tg-x{color:var(--danger);font-weight:700;margin-left:2px}
+.review{background:linear-gradient(135deg,var(--accent-soft),var(--card) 70%);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent)}
+.rv-h{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--sub)}
+.rv-h b{color:var(--text);font-size:16px}
+.rv-big{font-size:40px;font-weight:800;margin-top:6px;color:var(--accent);line-height:1.1}
+.rv-big small{font-size:16px;font-weight:600;color:var(--sub)}
+.rv-msg{font-size:14px;margin:4px 0 10px}
+.rv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rv-c{background:var(--card);border-radius:10px;padding:8px;text-align:center;border:1px solid var(--line)}
+.rv-v{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-l{font-size:11px;color:var(--sub)}
+.me-head{display:flex;gap:14px;align-items:center}
+.me-av{width:50px;height:50px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:700;flex:none}
+.me-it{align-items:center}
+.me-ic{font-size:20px;width:28px;text-align:center;flex:none}
+.me-ar{color:var(--sub);font-size:20px}
+.pm-opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;margin-top:8px;cursor:pointer}
+.pm-opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.pm-opt input{accent-color:var(--accent);margin-top:3px}
+.pm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.dq-b.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.big-prog{display:flex;align-items:baseline;gap:6px;margin:6px 0}
+.big-prog b{font-size:26px;color:var(--accent)} .big-prog span{color:var(--sub);font-size:13px}
+.cmp{margin-top:8px;font-size:13px;background:var(--accent-soft);border-radius:10px;padding:7px 10px}
+.win-acts{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.heart-btn{border:1.5px solid var(--line);background:var(--bg);border-radius:18px;padding:6px 14px;font-size:14px;font-family:inherit;color:var(--text);cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.heart-btn:active,.heart-btn.pop{transform:scale(1.12);transition:transform .15s;border-color:#e0563b}
+.toast.with-btn{pointer-events:auto;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;justify-content:center}
+.undo-btn{border:0;background:#fff;color:#1d2129;border-radius:12px;padding:4px 12px;font-weight:700;font-family:inherit;cursor:pointer;font-size:14px}
+.undo-sub{flex-basis:100%;text-align:center;font-size:11px;opacity:.7}
+.toast:not(.with-btn) .undo-sub{display:none}
+/* 大字體（預設，可在「我的 → 文字大小」切換） */
+html.big-text body{font-size:16px}
+html.big-text .hint,html.big-text .meta,html.big-text .tot,html.big-text .goal-label,html.big-text .lbl-s,html.big-text .due,html.big-text .chip,html.big-text .tag,html.big-text .rc-t,html.big-text .sub-r,html.big-text .gg,html.big-text .state,html.big-text .h2,html.big-text .cmp,html.big-text .due-mini,html.big-text .prow .val{font-size:14px!important}
+html.big-text nav button{font-size:12.5px} html.big-text nav button svg{width:25px;height:25px}
+html.big-text .btn.sm,html.big-text .od-btn,html.big-text .dq-b,html.big-text .react-btn,html.big-text .emo,html.big-text .heart-btn,html.big-text .chip-btn,html.big-text .tg{min-height:40px;padding-left:14px;padding-right:14px}
+html.big-text .rec{padding-top:14px;padding-bottom:14px}
+html.big-text .chk{width:26px!important;height:26px!important}
+html.big-text .rc-btn{padding:15px;font-size:16.5px}
+html.big-text .prow .val{width:128px}
+.rec-acts .btn{flex:1;white-space:nowrap}
+.sw-box{margin-top:14px;border-top:1px dashed var(--line);padding-top:10px}
+.sw-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.sw-btn{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:7px 12px;font-size:13.5px;font-family:inherit;color:var(--text);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sw-btn.other{color:var(--accent)}
+.mx-box{margin-top:14px;border-top:1px dashed var(--line);padding-top:10px}
+.mx-row{border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
+.mx-row select{padding:8px 10px;font-size:14px}
+.mx-ex{font-size:13px;color:var(--sub);margin-top:4px}
+.sh-tag{font-size:11px;color:var(--sub);font-weight:500}
+.sh-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.sh-chip{border:1.5px solid var(--line);background:var(--bg);border-radius:16px;padding:7px 12px;font-size:13.5px;font-family:inherit;color:var(--text);cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sh-chip.on{border-color:#5a9e4b;background:color-mix(in srgb,#5a9e4b 14%,transparent);color:#3f7f33;font-weight:700}
+@media (prefers-color-scheme:dark){html:not([data-theme=light]) .sh-chip.on{color:#8fd07e}} html[data-theme=dark] .sh-chip.on{color:#8fd07e}
+.sh-chip.add{color:var(--accent)}
+.shun-pill{background:color-mix(in srgb,#5a9e4b 12%,transparent);border-radius:12px;padding:9px 14px;margin:-2px 0 12px;font-size:14px}
+.shun-n{display:block;font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sh-free{font-size:13px;color:var(--sub);font-weight:500}
+.rv-shun{margin-top:10px;font-size:14px;text-align:center}
+.toast.sprout{background:#3f7f33}
 .hidden{display:none!important}
+
+html[data-theme=dark]{color-scheme:dark} html[data-theme=light]{color-scheme:light}
+@media (prefers-color-scheme:dark){html:not([data-theme=light]){color-scheme:dark}}
+.together-btn{font-size:17px;letter-spacing:.5px}
 </style>
 </head>
 <body>
@@ -255,6 +362,11 @@ const EMOJIS = ['👏','💪','🔥','🌟','❤️','☕'];
 const EMOJIS_ALL = ['👏','💪','🔥','🌟','❤️','☕','🙏','😊','🎉','👍','🤗','💯','✨','🥳','💖','🙌','🚀','🏆','😍','🥰','😂','🤣','😆','👌','😮','😱','👀','😢','😭','🥺','😤','🙄','😡','😑','😵','😩','💀','😓','🤔','😅','😬','🍀'];
 const AC = 'autocomplete="off" autocorrect="off" spellcheck="false"';   // 不讓瀏覽器記住輸入內容
 
+// ===================== 外觀（跟隨系統／淺色／深色） =====================
+const THEME_KEY='wt_theme';
+function themeMode(){ try{ return localStorage.getItem(THEME_KEY)||'auto'; }catch(e){ return 'auto'; } }
+function applyThemeMode(){ const m=themeMode(); if(m==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',m); }
+applyThemeMode();
 // ===================== 小工具 =====================
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -286,7 +398,7 @@ function dueBadge(d, done){
   const ms=+d-Date.now(), h=ms/3600000;
   const t=new Date(); const dayDiff=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(t.getFullYear(),t.getMonth(),t.getDate()))/86400000);
   let cls='', txt='';
-  if(ms<0){ cls='over'; txt=-h<24?`逾期 ${Math.ceil(-h)} 小時`:`逾期 ${Math.ceil(-h/24)} 天`; }
+  if(ms<0){ cls='over'; txt=-h<24?`已過期限 ${Math.ceil(-h)} 小時`:`已過期限 ${Math.ceil(-h/24)} 天`; }
   else if(h<24){ cls='soon'; txt=h<1?`剩 ${Math.max(1,Math.round(h*60))} 分鐘`:`剩 ${Math.floor(h)} 小時`; }
   else { cls=dayDiff<=3?'soon':dayDiff<=7?'near':''; txt=`剩 ${dayDiff} 天`; }
   return `<span class="due ${cls}">${fmtDM(d)}・${txt}</span>`;
@@ -304,7 +416,10 @@ function periodOf(kind, t=Date.now(), offset=0, c=DEF_CUT){
 }
 function workDateKey(t,c){ const s=shifted(t,c); return `${s.getFullYear()}-${pad(s.getMonth()+1)}-${pad(s.getDate())}`; }
 function sessEnd(s){ return s.end_at ? +new Date(s.end_at) : Date.now(); }
-function overlapMs(s,p){ const a=Math.max(+new Date(s.start_at),+p.start), b=Math.min(sessEnd(s),+p.end); return Math.max(0,b-a); }
+function overlapMs(s,p){ if(s.background) return 0; const a=Math.max(+new Date(s.start_at),+p.start), b=Math.min(sessEnd(s),+p.end); return Math.max(0,b-a)*(s.share==null?1:+s.share); }
+function rawOverlapMs(s,p){ const a=Math.max(+new Date(s.start_at),+p.start), b=Math.min(sessEnd(s),+p.end); return Math.max(0,b-a); }
+function weightedDur(s){ return s.background?0:(sessEnd(s)-new Date(s.start_at))*(s.share==null?1:+s.share); }
+function shareTag(s){ return s.background?'🌱 順手':(s.share!=null && +s.share<1)?`約 ${Math.round(+s.share*100)}%`:''; }
 function sumMs(list,p){ return list.reduce((t,s)=>t+overlapMs(s,p),0); }
 const ALL_TIME={start:new Date(0),end:new Date(8.64e15)};
 function rangeLabel(kind,p){ const last=new Date(+p.end-86400000);
@@ -312,7 +427,7 @@ function rangeLabel(kind,p){ const last=new Date(+p.end-86400000);
 
 // ===================== 狀態 =====================
 let sb=null, me=null;
-const st = { profiles:[], projects:[], sessions:[], tasks:[], pus:[], taskDone:[], kudos:[],
+const st = { profiles:[], projects:[], sessions:[], tasks:[], pus:[], taskDone:[], kudos:[], trashP:[], trashT:[], trashS:[], allTasks:[], meView:null,
   tab:'home', projView:null, moreRecv:false, moreWins:{}, freshIds:null, histN:10, showDone:false, recWho:'all', recRange:'week', scope: localStorage.getItem(SCOPE_KEY)||'mine' };
 const seenKudos=new Set();
 
@@ -321,7 +436,7 @@ function prof(uid){ return st.profiles.find(p=>p.id===uid); }
 function colorOf(uid){ const pc=prof(uid)?.color; if(pc) return pc; const ids=[...new Set([...st.profiles.map(p=>p.id), me?.id].filter(Boolean))].sort(); const i=ids.indexOf(uid); return COLORS[(i<0?0:i)%COLORS.length]; }
 function nameOf(uid){ return prof(uid)?.name || (uid===me?.id ? '我' : '對方'); }
 function projOf(pid){ return st.projects.find(p=>p.id===pid); }
-function projName(pid){ return projOf(pid)?.name || '未指定專案'; }
+function projName(pid){ return (projOf(pid)||st.trashP.find(p=>p.id===pid))?.name || '未指定專案'; }
 function taskOf(tid){ return st.tasks.find(t=>t.id===tid); }
 function people(){ const ids=st.profiles.map(p=>p.id); if(me && !ids.includes(me.id)) ids.push(me.id); return ids.sort((a,b)=>(a===me.id?-1:b===me.id?1:0)); }
 function partners(){ return people().filter(u=>u!==me.id); }
@@ -403,8 +518,9 @@ function renderLogin(){
 // ===================== 資料 =====================
 async function q(table, build){ let r=sb.from(table).select('*'); if(build) r=build(r); const {data,error}=await r; return error?null:(data||[]); }
 async function loadProfiles(){ const d=await q('profiles'); if(d) st.profiles=d; }
-async function loadProjects(){ const d=await q('projects',r=>r.order('created_at',{ascending:true})); if(d) st.projects=d; }
-async function loadTasks(){ const d=await q('tasks',r=>r.order('created_at',{ascending:true})); if(d) st.tasks=d; }
+async function loadProjects(){ const d=await q('projects',r=>r.order('created_at',{ascending:true})); if(d){ st.projects=d.filter(x=>!x.deleted_at); st.trashP=d.filter(x=>x.deleted_at); splitTasks(); } }
+function splitTasks(){ const all=st.allTasks||[], dead=new Set(st.trashP.map(x=>x.id)); st.tasks=all.filter(t=>!t.deleted_at && !dead.has(t.project_id)); st.trashT=all.filter(t=>t.deleted_at && !dead.has(t.project_id)); }
+async function loadTasks(){ const d=await q('tasks',r=>r.order('created_at',{ascending:true})); if(d){ st.allTasks=d; splitTasks(); } }
 async function loadPus(){ const d=await q('project_user_settings'); if(d) st.pus=d; }
 async function loadTaskDone(){ const d=await q('task_done'); if(d) st.taskDone=d; }
 async function loadKudos(){
@@ -421,7 +537,7 @@ async function loadSessions(){
     if(error){ toast('讀取紀錄失敗'); break; }
     all=all.concat(data||[]); if(!data||data.length<1000) break; from+=1000;
   }
-  st.sessions=all;
+  st.sessions=all.filter(x=>!x.deleted_at); st.trashS=all.filter(x=>x.deleted_at);
 }
 const LOADERS={profiles:loadProfiles,projects:loadProjects,tasks:loadTasks,project_user_settings:loadPus,sessions:loadSessions,task_done:loadTaskDone,kudos:loadKudos};
 async function loadAll(){ await Promise.all(Object.values(LOADERS).map(f=>f())); }
@@ -446,7 +562,7 @@ function subscribe(){
 
 async function startApp(){
   $('#app').innerHTML=`<div class="wrap"><div class="empty">載入中…</div></div>`;
-  await loadAll();
+  await purgeTrash(); await loadAll();
   if(!prof(me.id)){
     await sb.from('profiles').upsert({id:me.id,name:(me.email||'').split('@')[0]}); await loadProfiles();
     setTimeout(()=>openNameModal(true),300);
@@ -463,7 +579,7 @@ const ICONS={
   rec:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>',
   proj:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18"/></svg>',
   cheer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
-  set:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>'
+  me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>'
 };
 function clockText(){ const d=new Date(); return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())}（${WD[d.getDay()]}）${fmtT(d)}`; }
 function unreadCount(){ return st.kudos.filter(k=>k.to_user===me.id && !k.read_at).length; }
@@ -471,25 +587,30 @@ function updateBadge(){ const b=$('#cheerBadge'); if(!b) return; const n=unreadC
 
 function render(){
   if(!me) return;
-  applyTheme();
+  applyTheme(); applyFont();
   $('#app').innerHTML=`<div class="wrap">
     <header><h1>Work Together</h1><span class="date" id="clockNow">${clockText()}</span></header>
     <div id="view"></div></div>
     <nav><div class="in">
-      ${[['home','打卡'],['rec','紀錄'],['proj','專案'],['cheer','加油'],['set','設定']].map(([k,l])=>`<button data-tab="${k}" class="${st.tab===k?'act':''}">${ICONS[k]}${l}${k==='cheer'?'<span id="cheerBadge" class="badge hidden"></span>':''}</button>`).join('')}
+      ${[['home','今天'],['proj','專案'],['cheer','加油'],['me','我的']].map(([k,l])=>`<button data-tab="${k}" class="${st.tab===k?'act':''}">${ICONS[k]}${l}${k==='cheer'?'<span id="cheerBadge" class="badge hidden"></span>':''}</button>`).join('')}
     </div></nav>`;
-  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{ if(st.tab!==b.dataset.tab){ st.freshIds=null; st.moreRecv=false; st.histN=10; } st.tab=b.dataset.tab; st.projView=null; render(); window.scrollTo(0,0); });
+  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{ if(st.tab!==b.dataset.tab){ st.freshIds=null; st.moreRecv=false; st.histN=10; } st.tab=b.dataset.tab; st.projView=null; st.meView=null; render(); window.scrollTo(0,0); });
   updateBadge();
   if(st.tab==='proj' && st.projView && projOf(st.projView)) return renderProjectDetail();
-  ({home:renderHome,rec:renderRecords,proj:renderProjects,cheer:renderCheer,set:renderSettings})[st.tab]();
+  ({home:renderHome,proj:renderProjects,cheer:renderCheer,me:renderMe})[st.tab]();
 }
 let tickN=0;
 function tick(){
   const c=$('#clockNow'); if(c) c.textContent=clockText();
   document.querySelectorAll('[data-since]').forEach(el=>{ el.textContent=hms(Date.now()-(+el.dataset.since)); });
+  document.querySelectorAll('[data-since-z]').forEach(el=>{ el.textContent=zhShort(Date.now()-(+el.dataset.sinceZ)); });
+  document.querySelectorAll('[data-since-m]').forEach(el=>{ el.textContent=zhMin(Date.now()-(+el.dataset.sinceM)); });
+  document.querySelectorAll('[data-tog]').forEach(el=>{ el.textContent=togText(Date.now()-(+el.dataset.tog)); });
   tickN++;
+  if(tickN%5===0 && me) checkOvertime();
   if(tickN%5===0 && st.tab==='home' && !document.querySelector('.modal-bg')){
     const p=$('#people'); if(p) p.innerHTML=peopleHTML();
+    const tb=$('#togetherBox'); if(tb) tb.innerHTML=togetherHTML();
     const g=$('#progress'); if(g && st.sessions.some(s=>!s.end_at)) { g.innerHTML=progressHTML(scoped(st.projects.filter(p=>!p.archived))); bindOpen(); }
   }
 }
@@ -498,53 +619,176 @@ function bindScope(){ document.querySelectorAll('#scopeT button').forEach(b=>b.o
 function chipsFor(uids, checkFn){ return uids.map(u=>`<span class="chip" style="--c:${colorOf(u)}">${checkFn&&checkFn(u)?'✓ ':''}${esc(nameOf(u))}</span>`).join(''); }
 
 // ===================== 首頁 =====================
+const DEFAULT_TAGS=['寫稿','開會','整理資料','訪談','研究','溝通聯繫','行政'];
+function pausedOf(uid){ return prof(uid)?.paused||null; }
+function togetherSince(){ const os=people().map(openOf); return os.every(Boolean)&&os.length>1 ? Math.max(...os.map(o=>+new Date(o.start_at))) : 0; }
 function peopleHTML(){
   return people().map(uid=>{
-    const c=userCut(uid), o=openOf(uid), mine=st.sessions.filter(s=>s.user_id===uid), col=colorOf(uid);
+    const c=userCut(uid), o=openOf(uid), pz=!o&&pausedOf(uid), mine=st.sessions.filter(s=>s.user_id===uid), col=colorOf(uid);
     return `<div class="card person"><div class="bar-top" style="background:${o?col:'transparent'}"></div>
       <div class="name"><span class="dot ${o?'on':''}" style="background:${o?col:'var(--line)'};color:${col}"></span>${esc(nameOf(uid))}${uid===me.id?' <span class="me-tag">我</span>':''}</div>
-      <div class="state">${o?`工作中・${sessLabel(o)}`:'休息中'}</div>
-      ${o?`<div class="timer" data-since="${+new Date(o.start_at)}">${hms(Date.now()-new Date(o.start_at))}</div>`:`<div class="timer off">—</div>`}
+      <div class="state">${o?`工作中・${sessLabel(o)}`:pz?'休息一下 ☕':'休息中'}</div>
+      ${o?`<div class="timer" data-since="${+new Date(o.start_at)}">${hms(Date.now()-new Date(o.start_at))}</div>`:pz?`<div class="timer off">☕ <span data-since-z="${+new Date(pz.since)}">${zhShort(Date.now()-new Date(pz.since))}</span></div>`:`<div class="timer off">—</div>`}
       <div class="tot">今日 ${zhShort(sumMs(mine,periodOf('day',Date.now(),0,c)))}<br>本週 ${zhShort(sumMs(mine,periodOf('week',Date.now(),0,c)))}</div></div>`;
   }).join('');
 }
+function togText(ms){ return ms<60000?'你們一起開工了！':`你們已經一起專注 ${zhMin(ms)}`; }
+function togetherHTML(){ const t=togetherSince(); return t?`<div class="together">✨ <span data-tog="${t}">${togText(Date.now()-t)}</span></div>`:''; }
 function clockProjects(){ return scoped(st.projects.filter(p=>!p.archived)); }
 function taskOptions(pid, sel){
   const ts=st.tasks.filter(t=>t.project_id===pid && ((!isDone(t) && (st.scope==='all'||canCheck(t))) || t.id===sel));
   return `<option value="">不指定任務</option>`+ts.map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${esc(t.title)}</option>`).join('');
 }
 function hasTaskOpts(pid){ return pid && st.tasks.some(t=>t.project_id===pid && !isDone(t) && (st.scope==='all'||canCheck(t))); }
+// 最近做過的 3 個（專案＋任務）組合
+function recentCombos(){
+  const seen=new Set(), out=[];
+  for(const s of st.sessions.filter(s=>s.user_id===me.id).sort((a,b)=>new Date(b.start_at)-new Date(a.start_at))){
+    const k=(s.project_id||'')+'|'+(s.task_id||''); if(seen.has(k)) continue; seen.add(k);
+    const p=projOf(s.project_id); if(s.project_id && (!p||p.archived)) continue;
+    const t=taskOf(s.task_id); const tid=(t && !isDone(t))?t.id:null;
+    const k2=(s.project_id||'')+'|'+(tid||''); if(out.some(x=>x.k===k2)) continue;
+    out.push({k:k2,pid:s.project_id||null,tid}); if(out.length>=3) break; }
+  return out;
+}
+function comboLabel(pid,tid){ const t=taskOf(tid); return `<b>${esc(projName(pid))}</b>${t?`<span class="rc-t">${esc(t.title)}</span>`:''}`; }
 function clockHTML(){
-  const o=openOf(me.id);
-  if(o){ const long=Date.now()-new Date(o.start_at)>8*3600000;
-    return `${long?`<div class="card warn-card">⏰ 已經連續 ${zhShort(Date.now()-new Date(o.start_at))} 了，是不是忘記結束？可按「結束工作」後到紀錄頁修改結束時間。</div>`:''}
-    <div class="card"><div class="clock-live">
+  const o=openOf(me.id), pz=pausedOf(me.id);
+  if(o) return `<div class="card"><div class="clock-live">
       <div class="since">${sessLabel(o)}・自 ${fmtDT(o.start_at)} 開始</div>
       <div class="big-t" data-since="${+new Date(o.start_at)}">${hms(Date.now()-new Date(o.start_at))}</div></div>
-      <button class="btn big stop" id="stopBtn">結束工作</button></div>`; }
-  const act=clockProjects(); let last=localStorage.getItem(LAST_PROJ_KEY)||'';
+      <div class="row" style="gap:10px"><button class="btn big ghost" id="pauseBtn" style="flex:1">☕ 休息一下</button><button class="btn big stop" id="stopBtn" style="flex:1.4">結束工作</button></div>
+      ${(()=>{ const sw=switchList(); return `<div class="sw-box"><div class="lbl-s">換做另一件？點一下就切換（這段會自動結束）</div><div class="sw-row">${sw.map((c,i)=>`<button class="sw-btn" data-sw="${i}">⇄ ${esc(projName(c.pid))}${c.tid?` / ${esc(taskOf(c.tid)?.title||'')}`:''}</button>`).join('')}<button class="sw-btn other" id="swOther">其他…</button></div></div>`; })()}</div>`;
+  if(pz) return `<div class="card"><div class="clock-live">
+      <div class="since">休息中・${comboLabel(pz.project_id,pz.task_id).replace(/<[^>]+>/g,' ').trim()}</div>
+      <div class="big-t off-t">☕ <span data-since="${+new Date(pz.since)}">${hms(Date.now()-new Date(pz.since))}</span></div></div>
+      <div class="row" style="gap:10px"><button class="btn big" id="resumeBtn" style="flex:1.4">▶ 繼續工作</button><button class="btn big ghost" id="endPauseBtn" style="flex:1">今天先到這</button></div></div>`;
+  const rc=recentCombos(), act=clockProjects(); let last=localStorage.getItem(LAST_PROJ_KEY)||'';
   if(last && !act.find(p=>p.id===last)) last='';
   if(!last && act.length && localStorage.getItem(LAST_PROJ_KEY)===null) last=act[0].id;
   return `<div class="card">
-    <label class="f" style="margin-top:0">專案</label>
-    <select id="projSel">${act.map(p=>`<option value="${p.id}" ${p.id===last?'selected':''}>${esc(p.name)}</option>`).join('')}<option value="" ${!last?'selected':''}>未指定專案</option></select>
-    <div id="taskWrap" class="${hasTaskOpts(last)?'':'hidden'}"><label class="f">任務（選填）</label><select id="taskSel">${taskOptions(last,'')}</select></div>
-    <button class="btn big" style="margin-top:14px" id="startBtn">開始工作</button></div>`;
+    ${rc.length?`<div class="lbl-s" style="margin-bottom:6px">最近的工作，點一下就開始</div>
+      <div class="recents">${rc.map((c,i)=>`<button class="rc-btn" data-rc="${i}"><span class="rc-play">▶</span><span class="rc-l">${comboLabel(c.pid,c.tid)}</span></button>`).join('')}</div>`:''}
+    <details class="more-pick" ${rc.length?'':'open'}><summary>${rc.length?'選其他專案或任務':'選擇專案開始工作'}</summary>
+      <label class="f" style="margin-top:6px">專案</label>
+      <select id="projSel">${act.map(p=>`<option value="${p.id}" ${p.id===last?'selected':''}>${esc(p.name)}</option>`).join('')}<option value="" ${!last?'selected':''}>未指定專案</option></select>
+      <div id="taskWrap" class="${hasTaskOpts(last)?'':'hidden'}"><label class="f">任務（選填）</label><select id="taskSel">${taskOptions(last,'')}</select></div>
+      <button class="btn big" style="margin-top:12px" id="startBtn">開始工作</button></details></div>`;
 }
-
+function switchList(){ const o=openOf(me.id); if(!o) return [];
+  const seen=new Set(), out=[];
+  for(const s of st.sessions.filter(s=>s.user_id===me.id && !s.split_of).sort((a,b)=>new Date(b.start_at)-new Date(a.start_at))){
+    const p=projOf(s.project_id); if(s.project_id && (!p||p.archived)) continue;
+    const t=taskOf(s.task_id), tid=(t&&!isDone(t))?t.id:null, k=(s.project_id||'')+'|'+(tid||'');
+    if(seen.has(k) || ((s.project_id||null)===(o.project_id||null) && (tid||null)===(o.task_id||null))) continue;
+    seen.add(k); out.push({pid:s.project_id||null,tid}); if(out.length>=3) break; }
+  // 最近的不夠 3 個時，用其他專案補上
+  for(const p of clockProjects()){ if(out.length>=3) break; if(p.id===o.project_id && !o.task_id) continue; if(out.some(x=>x.pid===p.id)) continue; out.push({pid:p.id,tid:null}); }
+  return out;
+}
+async function switchTo(pid,tid){
+  const o=openOf(me.id);
+  if(o){ const {error}=await sb.from('sessions').update({end_at:new Date().toISOString()}).eq('id',o.id); if(error) return toast('切換失敗'); await loadSessions(); }
+  const ok=await startWork(pid,tid); if(ok) toast(`已切換到「${esc(projName(pid))}${tid?' / '+esc(taskOf(tid)?.title||''):''}」⇄`);
+}
+function openSwitchModal(){
+  const act=clockProjects();
+  modal(`<h3>切換到…</h3><label class="f">專案</label><select id="swP">${act.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}<option value="">未指定專案</option></select>
+    <div id="swTw"><label class="f">任務（選填）</label><select id="swT"></select></div>
+    <div class="actions"><button class="btn ghost" id="swX">取消</button><button class="btn" id="swGo">切換</button></div>`,(el,close)=>{
+    const P=el.querySelector('#swP'), T=el.querySelector('#swT'), W=el.querySelector('#swTw');
+    const up=()=>{ T.innerHTML=taskOptions(P.value,''); W.classList.toggle('hidden',!hasTaskOpts(P.value)); }; P.onchange=up; up();
+    el.querySelector('#swX').onclick=close; el.querySelector('#swGo').onclick=()=>{ close(); switchTo(P.value||null,T.value||null); };
+  });
+}
+function shunToday(uid){ const k=workDateKey(Date.now(),userCut(uid)); return st.sessions.filter(x=>x.user_id===uid && x.split_of && workDateKey(x.start_at,userCut(uid))===k); }
+function shunHTML(){ const xs=shunToday(me.id); if(!xs.length) return '';
+  const names=[...new Set(xs.map(x=>projName(x.project_id)+(taskOf(x.task_id)?' / '+taskOf(x.task_id).title:'')))];
+  return `<div class="shun-pill">🌱 今天順手推進了 <b>${xs.length}</b> 件<span class="shun-n">${esc(names.slice(0,3).join('、'))}${names.length>3?'…':''}</span></div>`; }
+function nudgeHTML(){
+  if(openOf(me.id)) return '';
+  const p=partners().find(u=>openOf(u)); if(!p) return '';
+  const o=openOf(p), pj=projOf(o.project_id), pick=(pj && isMine(pj))?{pid:pj.id,tid:null}:(recentCombos()[0]||{pid:null,tid:null});
+  return `<div class="card nudge"><div>👀 <b>${esc(nameOf(p))}</b> 正在專注工作，要一起嗎？</div>
+    <button class="btn together-btn" id="joinBtn" data-pid="${pick.pid||''}" data-tid="${pick.tid||''}">✨Together✨</button>
+    ${pick.pid?`<div class="hint" style="margin:-4px 0 0;text-align:center">會開始：${esc(projName(pick.pid))}${pick.tid?` / ${esc(taskOf(pick.tid)?.title||'')}`:''}</div>`:''}</div>`;
+}
+// ---- 今日重點 ----
+function todayKey(){ return workDateKey(Date.now(),userCut(me.id)); }
+function focusIds(){ const f=prof(me.id)?.focus; return f && f.d===todayKey() ? (f.ids||[]).filter(id=>taskOf(id)) : []; }
+function myOpenTasks(){ return st.tasks.filter(t=>{ const p=projOf(t.project_id); return p && !p.archived && isMine(p) && canCheck(t) && !myChecked(t); })
+  .sort((a,b)=>(+taskDue(a)||9e15)-(+taskDue(b)||9e15)); }
+function focusHTML(){
+  const ids=focusIds(), o=openOf(me.id);
+  if(!ids.length) return myOpenTasks().length?`<div class="card focus-empty tap" id="pickFocus">🎯 <b>今天想推進哪幾件？</b><div class="hint" style="margin:2px 0 0">選 1～3 件今天的重點，開工時一點就開始 →</div></div>`:'';
+  const ts=ids.map(taskOf), done=ts.filter(t=>myChecked(t)).length;
+  return `<div class="h2 row" style="justify-content:space-between"><span>🎯 今天的重點（${done}/${ts.length}）</span><a href="#" class="lnk" id="editFocus">調整</a></div>
+    <div class="card list">${ts.map(t=>{ const ck=myChecked(t), working=o&&o.task_id===t.id;
+      return `<div class="rec fc-row"><input type="checkbox" class="chk" data-fchk="${t.id}" ${ck?'checked':''}>
+        <div class="main"><div class="${ck?'strike':''}">${esc(t.title)}</div><div class="meta">${esc(projName(t.project_id))}</div></div>
+        ${ck?'':working?'<span class="tag">進行中</span>':`<button class="btn sm" data-fgo="${t.id}">▶ 開始</button>`}</div>`; }).join('')}</div>
+    ${done===ts.length?'<div class="hint" style="text-align:center;margin-top:-4px">今天的重點都完成了 🎉 剩下的時間都是加分</div>':''}`;
+}
+function openFocusModal(){
+  const cur=new Set(focusIds()), ts=myOpenTasks();
+  const groups={}; ts.forEach(t=>{ (groups[t.project_id]=groups[t.project_id]||[]).push(t); });
+  modal(`<h3>今天的重點</h3><p class="hint">選 1～3 件今天最想推進的任務</p>
+    <div class="fc-pick">${Object.keys(groups).map(pid=>`<div class="lbl-s" style="margin-top:10px">${esc(projName(pid))}</div>
+      ${groups[pid].map(t=>`<label class="fc-opt"><input type="checkbox" value="${t.id}" ${cur.has(t.id)?'checked':''}><span>${esc(t.title)}</span>${dueBadge(taskDue(t))}</label>`).join('')}`).join('')||'<div class="empty">沒有待完成的任務</div>'}</div>
+    <div class="actions"><button class="btn ghost" id="fcX">取消</button><button class="btn" id="fcS">確定</button></div>`,(el,close)=>{
+    const boxes=[...el.querySelectorAll('.fc-opt input')];
+    boxes.forEach(b=>b.onchange=()=>{ if(boxes.filter(x=>x.checked).length>3){ b.checked=false; toast('最多選 3 件，專注比較容易完成 😊'); } });
+    el.querySelector('#fcX').onclick=close;
+    el.querySelector('#fcS').onclick=async()=>{ const ids=boxes.filter(x=>x.checked).map(x=>x.value);
+      const {error}=await sb.from('profiles').update({focus:{d:todayKey(),ids}}).eq('id',me.id); if(error) return toast('儲存失敗');
+      await loadProfiles(); close(); render(); if(ids.length) toast(`今天的 ${ids.length} 個重點，加油 💪`); };
+  });
+}
+// ---- 目標 ----
 const KINDS=[['daily_hours','day','今日','每日'],['weekly_hours','week','本週','每週'],['monthly_hours','month','本月','每月']];
 function goalReached(uid,p,f,k,excl){ const per=periodOf(k,Date.now(),0,projCut(uid,p.id)); return sumMs(st.sessions.filter(s=>s.user_id===uid&&s.project_id===p.id&&s.id!==excl),per) >= +p[f]*3600000; }
-function goalBlock(p){
+function remainText(ms){ if(ms<3600000) return `${Math.max(1,Math.ceil(ms/60000))} 分鐘`; const h=Math.ceil(ms/360000)/10; return `${Number.isInteger(h)?h:h.toFixed(1)} 小時`; }
+function zhMin(ms){ const m=Math.floor(ms/60000), h=Math.floor(m/60); return h?`${h} 小時 ${m%60} 分鐘`:`${m} 分鐘`; }
+function goalBlock(p, mode='pair'){
   const ppl=projPeople(p);
+  if(mode==='self' && ppl.includes(me.id)) return goalSelf(p);
+  if(mode==='team' && ppl.length>1) return goalTeam(p);
   return KINDS.filter(([f])=>p[f]>0).map(([f,k,lbl])=>{
     const goal=+p[f]*3600000, refU=ppl.includes(me.id)?me.id:ppl[0], refP=periodOf(k,Date.now(),0,projCut(refU,p.id));
     return `<div class="goal"><div class="goal-label"><span>${lbl} 目標 ${+p[f]} 小時</span><span>${rangeLabel(k,refP)}</span></div>
       ${ppl.map(uid=>{ const per=periodOf(k,Date.now(),0,projCut(uid,p.id));
         const ms=sumMs(st.sessions.filter(s=>s.user_id===uid && s.project_id===p.id),per), pct=Math.min(100,ms/goal*100), ok=ms>=goal;
-        const diff=uid!==refU && (+per.start!==+refP.start) ? `<div class="sub-r">${rangeLabel(k,per)}（依${esc(nameOf(uid))}的切點）</div>`:'';
+        const diff=uid!==refU && (+per.start!==+refP.start) ? `<div class="sub-r">${rangeLabel(k,per)}（依${esc(nameOf(uid))}的計時設定）</div>`:'';
+        const gg=uid===me.id ? `<div class="gg ${ok?'ok':''}">${ok?`${lbl}已達標，剩下都是加分 ✨`:`還差 ${remainText(goal-ms)}就達標 💪`}</div>`:'';
         return `<div class="prow"><span class="who">${esc(nameOf(uid))}</span><div class="track"><div class="fill" style="width:${pct}%;background:${colorOf(uid)}"></div></div>
-          <span class="val ${ok?'done':''}"><b class="${ok?'done':''}">${fmtHrs(ms)}</b> / ${+p[f]} 時${ok?' ✓':''}</span></div>${diff}`; }).join('')}
+          <span class="val ${ok?'done':''}"><b class="${ok?'done':''}">${fmtHrs(ms)}</b> / ${+p[f]} 時${ok?' ✓':''}</span></div>${gg}${diff}`; }).join('')}
     </div>`; }).join('');
+}
+const PREV_LBL={day:'昨天',week:'上週',month:'上個月'};
+function goalSelf(p){
+  return KINDS.filter(([f])=>p[f]>0).map(([f,k,lbl])=>{
+    const goal=+p[f]*3600000, c=projCut(me.id,p.id), per=periodOf(k,Date.now(),0,c), prev=periodOf(k,Date.now(),-1,c);
+    const mine=st.sessions.filter(s=>s.user_id===me.id && s.project_id===p.id);
+    const ms=sumMs(mine,per), ok=ms>=goal, pct=Math.min(100,ms/goal*100);
+    const prevMs=sumMs(mine,{start:prev.start,end:new Date(+prev.start+(Date.now()-per.start))}), diff=ms-prevMs;
+    const cmp = (ms||prevMs) ? (Math.abs(diff)<360000?`跟${PREV_LBL[k]}同一時間差不多 👍`:diff>0?`📈 比${PREV_LBL[k]}同一時間多 ${remainText(diff)}`:`比${PREV_LBL[k]}同一時間少 ${remainText(-diff)}，照自己的節奏就好 🌱`) : '';
+    return `<div class="goal"><div class="goal-label"><span>${lbl} 目標 ${+p[f]} 小時</span><span>${rangeLabel(k,per)}</span></div>
+      <div class="big-prog"><b>${fmtHrs(ms)}</b><span>/ ${+p[f]} 小時</span></div>
+      <div class="track" style="height:12px"><div class="fill" style="width:${pct}%;background:${colorOf(me.id)}"></div></div>
+      <div class="gg ${ok?'ok':''}" style="margin-left:0;margin-top:6px">${ok?`${lbl}已達標，剩下都是加分 ✨`:`還差 ${remainText(goal-ms)}就達標 💪`}</div>
+      ${cmp?`<div class="cmp">${cmp}</div>`:''}</div>`; }).join('');
+}
+function goalTeam(p){
+  const ppl=projPeople(p);
+  return KINDS.filter(([f])=>p[f]>0).map(([f,k,lbl])=>{
+    const each=+p[f]*3600000, goal=each*ppl.length, myP=periodOf(k,Date.now(),0,projCut(me.id,p.id));
+    const vals=ppl.map(u=>({u,ms:sumMs(st.sessions.filter(s=>s.user_id===u && s.project_id===p.id),periodOf(k,Date.now(),0,projCut(u,p.id)))}));
+    const tot=vals.reduce((a,v)=>a+v.ms,0), ok=tot>=goal;
+    return `<div class="goal"><div class="goal-label"><span>${lbl} 我們一起的目標 ${+p[f]*ppl.length} 小時</span><span>${rangeLabel(k,myP)}</span></div>
+      <div class="big-prog"><b>${fmtHrs(tot)}</b><span>/ ${+p[f]*ppl.length} 小時</span></div>
+      <div class="track" style="height:12px;display:flex">${vals.map(v=>`<div style="width:${Math.min(100,v.ms/goal*100)}%;background:${colorOf(v.u)}"></div>`).join('')}</div>
+      <div class="row" style="gap:14px;margin-top:6px;font-size:12px;color:var(--sub);flex-wrap:wrap">${vals.map(v=>`<span><span class="dot sm" style="background:${colorOf(v.u)}"></span>${esc(nameOf(v.u))} ${fmtHrs(v.ms)} 小時</span>`).join('')}</div>
+      <div class="gg ${ok?'ok':''}" style="margin-left:0;margin-top:6px">${ok?'一起達標了！剩下都是加分 🎉':`再 ${remainText(goal-tot)}就一起達標 ✨`}</div></div>`; }).join('');
 }
 function progressHTML(ps){
   if(!ps.length) return `<div class="card empty">${st.scope==='mine'?'沒有指派給你的專案<br><span class="hint">可切到「總覽」看全部</span>':'還沒有專案'}</div>`;
@@ -552,13 +796,50 @@ function progressHTML(ps){
     return `<div class="card proj tap" data-open="${p.id}"><div class="proj-head"><span class="proj-name">${esc(p.name)}</span>${dueBadge(projDeadline(p))}</div>
     <div class="chips">${projAssignees(p).length?chipsFor(projPeople(p)):'<span class="chip" style="--c:var(--sub)">兩人共用</span>'}</div>
     ${ts.length?`<div class="goal-label" style="margin-top:6px"><span>任務 ${dn}/${ts.length} 完成</span></div><div class="track thin"><div class="fill" style="width:${dn/ts.length*100}%;background:var(--accent)"></div></div>`:''}
-    ${KINDS.some(([f])=>p[f]>0)?goalBlock(p):weekBlock(p)}</div>`; }).join('');
+    ${KINDS.some(([f])=>p[f]>0)?goalBlock(p,prof(me.id)?.progress_mode||'pair'):weekBlock(p)}</div>`; }).join('');
 }
-// 沒有設定目標的專案：顯示每人本週投入
 function weekBlock(p){
   return `<div class="goal"><div class="goal-label"><span>本週投入（未設目標）</span></div>
     ${projPeople(p).map(uid=>{ const ms=sumMs(st.sessions.filter(s=>s.user_id===uid&&s.project_id===p.id),periodOf('week',Date.now(),0,projCut(uid,p.id)));
       return `<div class="prow"><span class="who">${esc(nameOf(uid))}</span><span class="dot sm" style="background:${colorOf(uid)}"></span><span style="flex:1"></span><span class="val"><b>${zhShort(ms)}</b></span></div>`; }).join('')}</div>`;
+}
+// ---- 已過期限：一鍵處理 ----
+function isOver(d){ return d && +d<Date.now(); }
+function overdueActs(t){ return `<div class="od-acts"><button class="od-btn ok" data-odone="${t.id}">✓ 完成了</button><button class="od-btn" data-oredue="${t.id}">改期限</button></div>`; }
+function bindOverdue(root){
+  root.querySelectorAll('[data-odone]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); toggleTask(taskOf(b.dataset.odone),true); });
+  root.querySelectorAll('[data-oredue]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); openRedueModal('task',taskOf(b.dataset.oredue)); });
+  root.querySelectorAll('[data-oredue-p]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); openRedueModal('proj',projOf(b.dataset.oredueP)); });
+}
+function openRedueModal(kind,obj){
+  const cur=kind==='task'?taskDue(obj):projDeadline(obj);
+  modal(`<h3>改期限</h3><p class="hint">${kind==='task'?'任務':'專案'}「${esc(kind==='task'?obj.title:obj.name)}」${cur?`・原本 ${fmtFullM(cur)}`:''}</p>
+    <input id="rdD" type="datetime-local" ${AC} value="${toInputM(cur&&+cur>Date.now()?cur:null)}">${dueQuickHTML('rdD')}
+    <div class="actions"><button class="btn ghost" id="rdClr">清除期限</button><button class="btn" id="rdS">儲存</button></div>`,(el,close)=>{
+    bindDueQuick(el);
+    const save=async v=>{ const val=v?new Date(v).toISOString():null;
+      const {error}=kind==='task'?await sb.from('tasks').update({due_at:val}).eq('id',obj.id):await sb.from('projects').update({deadline_at:val,deadline:null}).eq('id',obj.id);
+      if(error) return toast('儲存失敗'); await Promise.all([loadTasks(),loadProjects()]); close(); render(); toast(v?`期限改到 ${fmtFullM(new Date(v))}`:'已清除期限'); };
+    el.querySelector('#rdS').onclick=()=>{ const v=el.querySelector('#rdD').value; if(!v) return toast('請選新的期限'); save(v); };
+    el.querySelector('#rdClr').onclick=()=>save(null);
+  });
+}
+// ---- 期限快捷鍵 ----
+function dueQuickHTML(id){
+  return `<div class="dq" data-for="${id}"><div class="dq-row">${[['today','今天'],['tmr','明天'],['fri','這週五'],['mon','下週一']].map(([k,l])=>`<button type="button" class="dq-b" data-d="${k}">${l}</button>`).join('')}</div>
+    <div class="dq-row">${['12:00','17:00','23:59'].map(t=>`<button type="button" class="dq-b tm" data-t="${t}">${t}</button>`).join('')}</div></div>`;
+}
+function bindDueQuick(root){
+  root.querySelectorAll('.dq').forEach(dq=>{ const inp=root.querySelector('#'+dq.dataset.for); if(!inp) return;
+    const parts=()=>{ const v=inp.value; return v?{d:v.slice(0,10),t:v.slice(11,16)}:{d:'',t:''}; };
+    const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    dq.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{ const n=new Date(), k=b.dataset.d; let d=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+      if(k==='tmr') d.setDate(d.getDate()+1);
+      if(k==='fri'){ const add=(5-d.getDay()+7)%7; d.setDate(d.getDate()+add); }
+      if(k==='mon'){ const add=((1-d.getDay()+7)%7)||7; d.setDate(d.getDate()+add); }
+      inp.value=`${iso(d)}T${parts().t||'18:00'}`; inp.dispatchEvent(new Event('change',{bubbles:true})); inp.dispatchEvent(new Event('input',{bubbles:true})); });
+    dq.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{ inp.value=`${parts().d||iso(new Date())}T${b.dataset.t}`; inp.dispatchEvent(new Event('change',{bubbles:true})); inp.dispatchEvent(new Event('input',{bubbles:true})); });
+  });
 }
 function upcomingHTML(){
   const lim=Date.now()+7*86400000, groups=[];
@@ -569,42 +850,201 @@ function upcomingHTML(){
     groups.push({p,d,pIn,ts,first:Math.min(pIn?+d:9e15, ...ts.map(t=>+taskDue(t)))}); });
   if(!groups.length) return '';
   groups.sort((a,b)=>a.first-b.first);
-  return `<div class="h2">7 天內到期（我的）</div><div class="card list">${groups.map(g=>`
-    <div class="rec tap up-proj" data-open="${g.p.id}"><div class="main up-t">${esc(g.p.name)}</div>${g.pIn?dueBadge(g.d):(g.d?`<span class="due-mini">期限 ${fmtDM(g.d)}</span>`:'')}</div>
-    ${g.ts.map(t=>`<div class="rec tap up-task" data-open="${g.p.id}"><div class="main">${esc(t.title)}</div>${dueBadge(taskDue(t))}</div>`).join('')}`).join('')}</div>`;
+  return `<div class="h2">7 天內到期（我的）</div><div class="card list" id="upList">${groups.map(g=>`
+    <div class="rec tap up-proj" data-open="${g.p.id}"><div class="main"><div class="up-t">${esc(g.p.name)}</div>${isOver(g.d)?`<div class="od-acts"><button class="od-btn" data-oredue-p="${g.p.id}">改期限</button></div>`:''}</div>${g.pIn?dueBadge(g.d):(g.d?`<span class="due-mini">期限 ${fmtDM(g.d)}</span>`:'')}</div>
+    ${g.ts.map(t=>`<div class="rec tap up-task" data-open="${g.p.id}"><div class="main">${esc(t.title)}</div>${dueBadge(taskDue(t))}${isOver(taskDue(t))?overdueActs(t):''}</div>`).join('')}`).join('')}</div>`;
+}
+// ---- 開工 / 休息 / 結束 ----
+async function startWork(pid,tid){
+  localStorage.setItem(LAST_PROJ_KEY,pid||'');
+  const {error}=await sb.from('sessions').insert({user_id:me.id,project_id:pid||null,task_id:pid?(tid||null):null,start_at:new Date().toISOString()});
+  if(error){ toast(String(error.message).includes('one_open')?'你已經在工作中了':'打卡失敗，請再試一次'); return false; }
+  if(pausedOf(me.id)) await sb.from('profiles').update({paused:null}).eq('id',me.id);
+  await Promise.all([loadSessions(),loadProfiles()]); render();
+  const partnerOn=partners().some(u=>openOf(u));
+  toast(partnerOn?'一起開工 ✨ 加油！':'開始工作 💪'); return true;
+}
+async function stopWork(pause){
+  const o=openOf(me.id); if(!o) return; const end=new Date(), p=projOf(o.project_id);
+  const before=p?KINDS.filter(([f,k])=>p[f]>0 && goalReached(me.id,p,f,k,o.id)).map(x=>x[0]):[];
+  const {error}=await sb.from('sessions').update({end_at:end.toISOString()}).eq('id',o.id);
+  if(error) return toast('打卡失敗，請再試一次');
+  await sb.from('profiles').update({paused:pause?{project_id:o.project_id,task_id:o.task_id,since:end.toISOString()}:null}).eq('id',me.id);
+  try{ localStorage.removeItem('wt_snooze_'+o.id); }catch(e){}
+  await Promise.all([loadSessions(),loadProfiles()]); render();
+  if(pause) return toast('休息一下 ☕ 計時已暫停，回來按「繼續工作」');
+  const newly=p?KINDS.filter(([f,k])=>p[f]>0 && !before.includes(f) && goalReached(me.id,p,f,k)):[];
+  if(newly.length) celebrate(`🎯 達成「${esc(p.name)}」${newly.map(x=>x[2]).join('、')}目標！`);
+  setTimeout(()=>openNoteModal(st.sessions.find(s=>s.id===o.id)||o),newly.length?900:200);
+}
+async function endFromPause(){
+  await sb.from('profiles').update({paused:null}).eq('id',me.id); await loadProfiles(); render();
+  const last=st.sessions.filter(s=>s.user_id===me.id && s.end_at).sort((a,b)=>new Date(b.end_at)-new Date(a.end_at))[0];
+  if(last) openNoteModal(last); else toast('辛苦了，今天先到這 🌙');
+}
+// ---- 這段做了什麼 ----
+function myTags(){
+  const list=prof(me.id)?.tags || DEFAULT_TAGS, cnt={};
+  st.sessions.filter(s=>s.user_id===me.id).forEach(s=>(s.tags||[]).forEach(t=>cnt[t]=(cnt[t]||0)+1));
+  return list.map((t,i)=>({t,i,c:cnt[t]||0})).sort((a,b)=>b.c-a.c||a.i-b.i).map(x=>x.t);
+}
+function celebrateSmall(msg){ const t=$('#toast'); toast(msg,3000); t.classList.add('sprout'); setTimeout(()=>t.classList.remove('sprout'),3000); }
+function openNoteModal(s){
+  let sel=new Set(s.tags||[]), editing=false, extras=[];
+  const existing=st.sessions.filter(x=>x.split_of===s.id), existingSplit=existing.filter(x=>!x.background).reduce((a,x)=>a+Math.round(+x.share*100),0);
+  const dur=zhDur(sessEnd(s)-new Date(s.start_at));
+  modal(`<h3>這段做了什麼？</h3><p class="hint">${fmtDT(s.start_at)} ~ ${s.end_at?fmtT(s.end_at):''}・共 ${dur}・${sessLabel(s)}</p>
+    <div class="row" style="justify-content:space-between;margin-top:6px"><span class="lbl-s">快速標籤（可複選，常用的會排前面）</span><a href="#" class="lnk" id="tgEdit">✎ 編輯標籤</a></div>
+    <div id="tgBox" class="tg-box"></div>
+    <div id="tgAdd" class="row hidden" style="gap:6px;margin-top:6px"><input id="tgNew" type="text" ${AC} maxlength="10" placeholder="新增標籤"><button class="btn sm" id="tgAddB">加入</button></div>
+    <input id="ntT" type="text" ${AC} maxlength="60" placeholder="一句話記下成果（選填），例如：完成問卷初稿" value="${esc(s.note||'')}" style="margin-top:12px">
+    <div class="mx-box">
+      <div class="lbl-s">🌱 這段也順手推進了…（點一下就記好，可複選）</div>
+      ${existing.length?`<div class="mx-ex">已記錄：${existing.map(x=>`${sessLabel(x)}${shareTag(x)&&!x.background?`（${shareTag(x)}）`:''}`).join('、')}</div>`:''}
+      <div class="sh-chips" id="shChips"></div>
+      <div id="shOther" class="hidden" style="margin-top:8px"><div class="row" style="gap:6px"><select id="shP" style="flex:1"></select><button class="btn sm" id="shAddO">加入</button></div><select id="shT" style="margin-top:6px"></select></div>
+      <div id="shPctWrap" class="hidden"><a href="#" class="lnk" id="shPctT" style="display:inline-block;margin-top:10px">要分時間比例？</a><div id="shPct" class="hidden"></div></div>
+      <div class="hint" id="mxSum" style="margin-top:6px"></div></div>
+    <div class="actions"><button class="btn ghost" id="ntSkip">略過</button><button class="btn" id="ntS">記下來</button></div>`,(el,close)=>{
+    const projList=st.projects.filter(p=>!p.archived && (st.scope==='all'||isMine(p)));
+    // 候選：最近做過的工作（排除這段本身與已記錄的）
+    const keyOf=(pid,tid)=>(pid||'')+'|'+(tid||'');
+    const taken=new Set([keyOf(s.project_id,s.task_id),...existing.map(x=>keyOf(x.project_id,x.task_id))]);
+    const cands=[]; for(const x of st.sessions.filter(z=>z.user_id===me.id).sort((a,b)=>new Date(b.start_at)-new Date(a.start_at))){
+      const pj=projOf(x.project_id); if(x.project_id && (!pj||pj.archived)) continue; const t=taskOf(x.task_id), tid=(t&&!isDone(t))?t.id:null, k=keyOf(x.project_id,tid);
+      if(taken.has(k) || cands.some(c=>c.k===k)) continue; cands.push({k,pid:x.project_id||null,tid}); if(cands.length>=5) break; }
+    for(const pj of projList){ if(cands.length>=5) break; const k=keyOf(pj.id,null); if(taken.has(k)||cands.some(c=>c.k===k)) continue; cands.push({k,pid:pj.id,tid:null}); }
+    const lab=c=>`${esc(projName(c.pid))}${c.tid?` / ${esc(taskOf(c.tid)?.title||'')}`:''}`;
+    const drawMx=()=>{
+      el.querySelector('#shChips').innerHTML=cands.map((c,i)=>`<button class="sh-chip ${extras.some(x=>x.k===c.k)?'on':''}" data-ci="${i}">${extras.some(x=>x.k===c.k)?'✓ ':'🌱 '}${lab(c)}</button>`).join('')+`<button class="sh-chip add" id="shMore">＋ 其他</button>`;
+      el.querySelectorAll('[data-ci]').forEach(b=>b.onclick=()=>{ const c=cands[+b.dataset.ci], i=extras.findIndex(x=>x.k===c.k);
+        if(i>=0) extras.splice(i,1); else extras.push({k:c.k,pid:c.pid,tid:c.tid,pct:0}); drawMx(); });
+      el.querySelector('#shMore').onclick=()=>{ const o=el.querySelector('#shOther'); o.classList.toggle('hidden');
+        const P=el.querySelector('#shP'), T=el.querySelector('#shT'); P.innerHTML=projList.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')+'<option value="">未指定專案</option>';
+        const up=()=>{ T.innerHTML=taskOptions(P.value,''); T.classList.toggle('hidden',!hasTaskOpts(P.value)); }; P.onchange=up; up(); };
+      el.querySelector('#shPctWrap').classList.toggle('hidden',!extras.length);
+      el.querySelector('#shPct').innerHTML=extras.map((x,i)=>`<div class="mx-row"><div style="font-size:14px">${lab(x)}</div><div class="dq-row">${[0,10,20,30,40,50].map(v=>`<button class="dq-b ${v===x.pct?'on':''}" data-xi="${i}" data-pct="${v}">${v?'約 '+v+'%':'不分時間'}</button>`).join('')}</div></div>`).join('');
+      el.querySelectorAll('[data-pct]').forEach(b=>b.onclick=()=>{ extras[+b.dataset.xi].pct=+b.dataset.pct; drawMx(); });
+      const used=existingSplit+extras.reduce((a,x)=>a+x.pct,0);
+      el.querySelector('#mxSum').innerHTML=extras.length?(used>existingSplit?`主要工作約 <b>${Math.max(0,100-used)}%</b>，順手推進的事分到約 ${used-existingSplit}%`:`順手推進 ${extras.length} 件 🌱 時數仍全部算在主要工作`)+(used>90?'<br><span style="color:var(--danger)">⚠ 主要工作至少要留 10%</span>':''):''; };
+    el.querySelector('#shAddO').onclick=()=>{ const pid=el.querySelector('#shP').value||null, tid=el.querySelector('#shT').value||null, k=keyOf(pid,tid);
+      if(k===keyOf(s.project_id,s.task_id)) return toast('這就是目前這段的工作');
+      if(!cands.some(c=>c.k===k)) cands.push({k,pid,tid}); if(!extras.some(x=>x.k===k)) extras.push({k,pid,tid,pct:0});
+      el.querySelector('#shOther').classList.add('hidden'); drawMx(); };
+    el.querySelector('#shPctT').onclick=e=>{ e.preventDefault(); el.querySelector('#shPct').classList.toggle('hidden'); };
+    drawMx();
+    const draw=()=>{ const tags=myTags(); el.querySelector('#tgBox').innerHTML=tags.map(t=>`<button class="tg ${sel.has(t)?'on':''} ${editing?'ed':''}" data-t="${esc(t)}">${esc(t)}${editing?' <span class="tg-x">×</span>':''}</button>`).join('')||'<span class="hint">還沒有標籤</span>';
+      el.querySelectorAll('.tg').forEach(b=>b.onclick=async()=>{ const t=b.dataset.t;
+        if(editing){ const list=(prof(me.id)?.tags||DEFAULT_TAGS).filter(x=>x!==t); sel.delete(t); await saveTags(list); draw(); }
+        else { sel.has(t)?sel.delete(t):sel.add(t); b.classList.toggle('on'); } }); };
+    const saveTags=async list=>{ const {error}=await sb.from('profiles').update({tags:list}).eq('id',me.id); if(error) toast('標籤儲存失敗'); else await loadProfiles(); };
+    draw();
+    el.querySelector('#tgEdit').onclick=e=>{ e.preventDefault(); editing=!editing; e.target.textContent=editing?'完成':'✎ 編輯標籤'; el.querySelector('#tgAdd').classList.toggle('hidden',!editing); draw(); };
+    const add=async()=>{ const v=el.querySelector('#tgNew').value.trim(); if(!v) return; const list=prof(me.id)?.tags||DEFAULT_TAGS;
+      if(list.includes(v)) return toast('已經有這個標籤'); await saveTags([...list,v]); el.querySelector('#tgNew').value=''; draw(); };
+    el.querySelector('#tgAddB').onclick=add; el.querySelector('#tgNew').onkeydown=e=>{ if(e.key==='Enter'&&!e.isComposing) add(); };
+    el.querySelector('#ntSkip').onclick=()=>{ close(); toast(`辛苦了！共 ${dur}`); };
+    el.querySelector('#ntS').onclick=async()=>{ const note=el.querySelector('#ntT').value.trim()||null, tags=[...sel];
+      const used=existingSplit+extras.reduce((a,x)=>a+x.pct,0);
+      if(used>90) return toast('主要工作至少要留 10%，請調低比例');
+      const {error}=await sb.from('sessions').update({note,tags,share:(100-used)/100}).eq('id',s.id); if(error) return toast('儲存失敗');
+      if(extras.length){ const end=s.end_at||new Date().toISOString();
+        const rows=extras.map(x=>({user_id:me.id,project_id:x.pid||null,task_id:x.pid?(x.tid||null):null,start_at:s.start_at,end_at:end,share:x.pct?x.pct/100:1,background:!x.pct,split_of:s.id}));
+        const r=await sb.from('sessions').insert(rows); if(r.error) toast('順手推進的紀錄儲存失敗'); }
+      await loadSessions(); close(); render();
+      if(extras.length) celebrateSmall(`記下來了 ✍️ 還順手推進了 ${extras.length} 件 🌱`); else toast(note||tags.length?'記下來了 ✍️ 又往前一步':'辛苦了！'); };
+  });
+}
+// ---- 每週回顧 ----
+function overlapBetween(a,b){ let t=0; a=a.filter(x=>!x.split_of); b=b.filter(x=>!x.split_of); a.forEach(x=>b.forEach(y=>{ const s=Math.max(+new Date(x.start_at),+new Date(y.start_at)), e=Math.min(sessEnd(x),sessEnd(y)); if(e>s) t+=e-s; })); return t; }
+function reviewData(off=-1){
+  const c=userCut(me.id), w=periodOf('week',Date.now(),off,c), w0=periodOf('week',Date.now(),off-1,c);
+  const mine=st.sessions.filter(s=>s.user_id===me.id && overlapMs(s,w)>0), prevMs=sumMs(st.sessions.filter(s=>s.user_id===me.id),w0);
+  const total=sumMs(mine,w), days=new Set(mine.map(s=>workDateKey(s.start_at,c))).size;
+  const longest=mine.filter(s=>!s.split_of&&!s.background).reduce((m,s)=>Math.max(m,sessEnd(s)-new Date(s.start_at)),0);
+  const byP={}; mine.forEach(s=>byP[s.project_id||'']=(byP[s.project_id||'']||0)+overlapMs(s,w));
+  const top=Object.entries(byP).sort((a,b)=>b[1]-a[1])[0];
+  const tasks=st.taskDone.filter(d=>d.user_id===me.id && +new Date(d.done_at)>=+w.start && +new Date(d.done_at)<+w.end).length;
+  const kudos=st.kudos.filter(k=>k.to_user===me.id && +new Date(k.created_at)>=+w.start && +new Date(k.created_at)<+w.end).length;
+  const shun=st.sessions.filter(x=>x.user_id===me.id && x.split_of && +new Date(x.start_at)>=+w.start && +new Date(x.start_at)<+w.end).length;
+  const tog=partners().reduce((t,u)=>t+overlapBetween(mine,st.sessions.filter(s=>s.user_id===u && overlapMs(s,w)>0)),0);
+  return {w,total,prevMs,days,longest,top,tasks,kudos,tog,shun,count:mine.length};
+}
+function reviewHTML(R, inModal){
+  const last=new Date(+R.w.end-86400000), diff=R.total-R.prevMs;
+  const msg = R.prevMs<=0 ? '新的一週，一起加油 💪' : diff>=1800000 ? `比前一週多 ${fmtHrs(diff)} 小時，穩穩前進 📈` : diff<=-1800000 ? `比前一週少 ${fmtHrs(-diff)} 小時，休息也是前進的一部分 🌱` : '跟前一週差不多，節奏很穩 👍';
+  const cell=(v,l)=>`<div class="rv-c"><div class="rv-v">${v}</div><div class="rv-l">${l}</div></div>`;
+  return `<div class="card review"><div class="rv-h"><b>📅 上週回顧</b><span>${R.w.start.getMonth()+1}/${R.w.start.getDate()} – ${last.getMonth()+1}/${last.getDate()}</span></div>
+    <div class="rv-big">${fmtHrs(R.total)}<small> 小時</small></div><div class="rv-msg">${msg}</div>
+    <div class="rv-grid">${cell(R.days+' 天','有工作的天數')}${cell(R.tasks+' 個','完成任務')}${cell(zhShort(R.longest),'最長專注')}${cell(R.kudos+' 個','收到肯定')}${cell(zhShort(R.tog),'一起工作')}${cell(R.top?esc(projName(R.top[0]||null)):'—','投入最多')}</div>
+    ${R.shun?`<div class="rv-shun">🌱 還順手推進了 <b>${R.shun}</b> 件事</div>`:''}
+    ${inModal?'':`<div class="row" style="gap:8px;margin-top:12px"><button class="btn ghost sm" id="rvHide" style="flex:1">收起</button><button class="btn sm" id="rvGo" style="flex:2">開始新的一週 →</button></div>`}</div>`;
+}
+function reviewWeekKey(){ return periodOf('week',Date.now(),0,userCut(me.id)).start.toISOString(); }
+function showReviewCard(){ let seen=null; try{ seen=localStorage.getItem('wt_review_seen'); }catch(e){} if(seen===reviewWeekKey()) return null; const R=reviewData(-1); return R.count?R:null; }
+function hideReview(){ try{ localStorage.setItem('wt_review_seen',reviewWeekKey()); }catch(e){} }
+function openReviewModal(){ const R=reviewData(-1); modal(`${reviewHTML(R,true)}<div class="actions"><button class="btn" id="rvX">關閉</button></div>`,(el,close)=>{ el.querySelector('#rvX').onclick=close; }); }
+// ---- 超時提醒 ----
+function checkOvertime(){
+  const o=openOf(me.id); if(!o || document.querySelector('.modal-bg')) return;
+  const h=+(prof(me.id)?.remind_hours ?? 3); if(!(h>0)) return;
+  let next=+new Date(o.start_at)+h*3600000; try{ const s=localStorage.getItem('wt_snooze_'+o.id); if(s) next=+s; }catch(e){}
+  if(Date.now()<next) return;
+  const el=Date.now()-new Date(o.start_at);
+  if(document.hidden){ notifyLocal(`已經工作 ${zhShort(el)} 了，還在做嗎？`); try{ localStorage.setItem('wt_snooze_'+o.id, Date.now()+3600000); }catch(e){} return; }
+  try{ localStorage.setItem('wt_snooze_'+o.id, Date.now()+3600000); }catch(e){}
+  modal(`<h3>⏰ 已經工作 ${zhShort(el)} 了</h3><p class="hint">${sessLabel(o)}・從 ${fmtDT(o.start_at)} 開始。還在做嗎？還是忘了按結束？</p>
+    <button class="btn big" id="otGo" style="margin-top:8px">還在做（1 小時後再提醒）</button>
+    <button class="btn big ghost" id="otPause" style="margin-top:8px">☕ 先休息一下</button>
+    <button class="btn big ghost" id="otEnd" style="margin-top:8px">結束工作（現在）</button>
+    <button class="btn big ghost" id="otFix" style="margin-top:8px">其實早就結束了，我要改時間</button>`,(m,close)=>{
+    m.querySelector('#otGo').onclick=()=>{ close(); toast('好的，繼續加油 💪'); };
+    m.querySelector('#otPause').onclick=()=>{ close(); stopWork(true); };
+    m.querySelector('#otEnd').onclick=()=>{ close(); stopWork(false); };
+    m.querySelector('#otFix').onclick=async()=>{ close(); const {error}=await sb.from('sessions').update({end_at:new Date().toISOString()}).eq('id',o.id);
+      if(error) return toast('更新失敗'); await loadSessions(); render(); openSessionModal(st.sessions.find(s=>s.id===o.id)); toast('請把結束時間改成實際結束的時間'); };
+  });
+}
+async function notifyLocal(body){
+  try{ if(!('Notification' in window) || Notification.permission!=='granted') return;
+    const reg=navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+    if(reg && reg.showNotification) reg.showNotification('Work Together',{body,icon:'icon-192.png',tag:'wt-overtime'}); else new Notification('Work Together',{body,icon:'icon-192.png'}); }catch(e){}
 }
 function renderHome(){
-  const un=st.kudos.filter(k=>k.to_user===me.id && !k.read_at);
+  const un=st.kudos.filter(k=>k.to_user===me.id && !k.read_at), R=showReviewCard();
   $('#view').innerHTML=`
     ${un.length?`<div class="card cheer-card tap" id="goCheer"><span class="big-e">${esc(un[0].emoji||'💌')}</span><div><b>${esc(nameOf(un[0].from_user))}</b> 給了你 ${un.length} 個肯定<div class="hint" style="margin:0">點這裡看看 →</div></div></div>`:''}
+    ${R?reviewHTML(R,false):''}
+    <div id="togetherBox">${togetherHTML()}</div>
     <div class="people" id="people">${peopleHTML()}</div>
+    ${nudgeHTML()}
     <div class="h2">我的打卡</div><div id="clock">${clockHTML()}</div>
+    ${shunHTML()}
+    ${focusHTML()}
     ${upcomingHTML()}
     <div class="h2 row" style="justify-content:space-between"><span>專案進度</span>${scopeToggle()}</div>
     <div id="progress">${progressHTML(scoped(st.projects.filter(p=>!p.archived)))}</div>`;
-  bindOpen(); bindScope();
+  bindOpen(); bindScope(); bindOverdue($('#view'));
   const gc=$('#goCheer'); if(gc) gc.onclick=()=>{ st.freshIds=null; st.tab='cheer'; render(); };
+  const rvH=$('#rvHide'); if(rvH) rvH.onclick=()=>{ hideReview(); render(); };
+  const rvG=$('#rvGo'); if(rvG) rvG.onclick=()=>{ hideReview(); render(); if(myOpenTasks().length) openFocusModal(); };
   const ps=$('#projSel');
   if(ps) ps.onchange=()=>{ const pid=ps.value; $('#taskSel').innerHTML=taskOptions(pid,''); $('#taskWrap').classList.toggle('hidden',!hasTaskOpts(pid)); };
-  const sBtn=$('#startBtn'), eBtn=$('#stopBtn');
-  if(sBtn) sBtn.onclick=async()=>{
-    sBtn.disabled=true; const pid=$('#projSel').value||null, tid=($('#taskSel')&&$('#taskSel').value)||null;
-    localStorage.setItem(LAST_PROJ_KEY,pid||'');
-    const {error}=await sb.from('sessions').insert({user_id:me.id,project_id:pid,task_id:pid?tid:null,start_at:new Date().toISOString()});
-    if(error){ sBtn.disabled=false; return toast(String(error.message).includes('one_open')?'你已經在工作中了':'打卡失敗，請再試一次'); }
-    await loadSessions(); render(); toast('開始工作 💪');
-  };
-  if(eBtn) eBtn.onclick=async()=>{
-    eBtn.disabled=true; const o=openOf(me.id), end=new Date(), p=projOf(o.project_id);
-    const before=p?KINDS.filter(([f,k])=>p[f]>0 && goalReached(me.id,p,f,k,o.id)).map(x=>x[0]):[];
-    const {error}=await sb.from('sessions').update({end_at:end.toISOString()}).eq('id',o.id);
-    if(error){ eBtn.disabled=false; return toast('打卡失敗，請再試一次'); }
-    await loadSessions(); render();
-    const msg=`${fmtDT(o.start_at)} ~ ${fmtDT(end)}，共 ${zhDur(end-new Date(o.start_at))}`;
-    const newly=p?KINDS.filter(([f,k])=>p[f]>0 && !before.includes(f) && goalReached(me.id,p,f,k)):[];
-    if(newly.length) celebrate(`🎯 達成「${esc(p.name)}」${newly.map(x=>x[2]).join('、')}目標！<br><span style="opacity:.8;font-size:13px">${msg}</span>`);
-    else toast(msg, 3200);
-  };
+  const rc=recentCombos(); document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=()=>{ b.disabled=true; const c=rc[+b.dataset.rc]; startWork(c.pid,c.tid); });
+  const sBtn=$('#startBtn'); if(sBtn) sBtn.onclick=()=>{ sBtn.disabled=true; startWork($('#projSel').value||null, ($('#taskSel')&&$('#taskSel').value)||null).then(ok=>{ if(!ok) sBtn.disabled=false; }); };
+  const j=$('#joinBtn'); if(j) j.onclick=()=>{ j.disabled=true; startWork(j.dataset.pid||null, j.dataset.tid||null); };
+  const eBtn=$('#stopBtn'); if(eBtn) eBtn.onclick=()=>{ eBtn.disabled=true; stopWork(false); };
+  const swl=switchList(); document.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{ b.disabled=true; const c=swl[+b.dataset.sw]; switchTo(c.pid,c.tid); });
+  const swo=$('#swOther'); if(swo) swo.onclick=openSwitchModal;
+  const pBtn=$('#pauseBtn'); if(pBtn) pBtn.onclick=()=>{ pBtn.disabled=true; stopWork(true); };
+  const rBtn=$('#resumeBtn'); if(rBtn) rBtn.onclick=()=>{ rBtn.disabled=true; const z=pausedOf(me.id); startWork(z.project_id,z.task_id); };
+  const ePz=$('#endPauseBtn'); if(ePz) ePz.onclick=()=>endFromPause();
+  const pf=$('#pickFocus'); if(pf) pf.onclick=openFocusModal;
+  const ef=$('#editFocus'); if(ef) ef.onclick=e=>{ e.preventDefault(); openFocusModal(); };
+  document.querySelectorAll('[data-fchk]').forEach(c=>c.onchange=()=>toggleTask(taskOf(c.dataset.fchk),c.checked));
+  document.querySelectorAll('[data-fgo]').forEach(b=>b.onclick=async()=>{ b.disabled=true; const t=taskOf(b.dataset.fgo), o=openOf(me.id);
+    if(o){ await sb.from('sessions').update({end_at:new Date().toISOString()}).eq('id',o.id); await loadSessions(); }
+    startWork(t.project_id,t.id); });
 }
 function bindOpen(){ document.querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>{ st.tab='proj'; st.projView=el.dataset.open; render(); window.scrollTo(0,0); }); }
 
@@ -615,33 +1055,34 @@ function recPeriod(){ const r=st.recRange, c=userCut(me.id);
   if(r==='month') return periodOf('month',Date.now(),0,c); if(r==='lastmonth') return periodOf('month',Date.now(),-1,c);
   return ALL_TIME; }
 function recList(){ const p=recPeriod();
-  return st.sessions.filter(s=>(st.recWho==='all'||s.user_id===st.recWho) && (overlapMs(s,p)>0 || (!s.end_at && +new Date(s.start_at)>=+p.start && +new Date(s.start_at)<+p.end)))
-    .sort((a,b)=>new Date(b.start_at)-new Date(a.start_at)); }
+  return st.sessions.filter(s=>(st.recWho==='all'||s.user_id===st.recWho) && (rawOverlapMs(s,p)>0 || (!s.end_at && +new Date(s.start_at)>=+p.start && +new Date(s.start_at)<+p.end)))
+    .sort((a,b)=>(new Date(b.start_at)-new Date(a.start_at)) || ((a.split_of?1:0)-(b.split_of?1:0)) || ((a.background?1:0)-(b.background?1:0))); }
 function renderRecords(){
   const list=recList(), p=recPeriod(), c=userCut(me.id);
   const groups={}; list.forEach(s=>{ const k=workDateKey(s.start_at,c); (groups[k]=groups[k]||[]).push(s); });
   const total=list.reduce((t,s)=>t+overlapMs(s,p),0);
-  $('#view').innerHTML=`<div class="filters">
+  $('#view').innerHTML=`${subHeader('📋 打卡紀錄')}<div class="filters">
       <select id="fw"><option value="all">全部人員</option>${people().map(u=>`<option value="${u}" ${st.recWho===u?'selected':''}>${esc(nameOf(u))}</option>`).join('')}</select>
       <select id="fr">${RANGES.map(([k,l])=>`<option value="${k}" ${st.recRange===k?'selected':''}>${l}</option>`).join('')}</select></div>
-    <div class="row" style="justify-content:space-between;margin:0 4px 4px">
-      <span style="font-size:13px;color:var(--sub)">合計 <b style="color:var(--text)">${zhDur(total)}</b></span>
-      <span class="row" style="gap:6px"><button class="btn sm ghost" id="exp">📤 匯出成果</button><button class="btn sm" id="add">＋ 補登</button></span></div>
+    <div style="margin:0 4px 8px;font-size:13px;color:var(--sub)">合計 <b style="color:var(--text)">${zhDur(total)}</b></div>
+    <div class="row rec-acts" style="gap:8px;margin:0 0 6px"><button class="btn sm ghost" id="rvBtn">📅 回顧</button><button class="btn sm ghost" id="exp">📤 匯出</button><button class="btn sm" id="add">＋ 補登</button></div>
     ${list.length?Object.keys(groups).map(k=>{ const [y,m,d]=k.split('-').map(Number), dd=new Date(y,m-1,d);
-      const dayTot=groups[k].reduce((t,s)=>t+(sessEnd(s)-new Date(s.start_at)),0);
+      const dayTot=groups[k].reduce((t,s)=>t+weightedDur(s),0);
       return `<div class="day-h"><span>${m}/${d}（${WD[dd.getDay()]}）</span><span>${zhShort(dayTot)}</span></div>
       <div class="card list">${groups[k].map(s=>{ const mine=s.user_id===me.id;
         const sameDay=s.end_at && new Date(s.end_at).toDateString()===new Date(s.start_at).toDateString();
         return `<div class="rec ${mine?'tap':''}" data-id="${s.id}"><span class="dot" style="background:${colorOf(s.user_id)}"></span>
           <div class="main"><div class="range">${fmtT(s.start_at)} ~ ${s.end_at?(sameDay?fmtT(s.end_at):fmtDT(s.end_at)):'<span style="color:var(--accent)">進行中</span>'}</div>
-          <div class="meta">${esc(nameOf(s.user_id))}・${sessLabel(s)}${s.note?'・'+esc(s.note):''}</div></div>
-          <div class="dur">${s.end_at?zhDur(sessEnd(s)-new Date(s.start_at)).replace(/ /g,''):`<span data-since="${+new Date(s.start_at)}">${hms(Date.now()-new Date(s.start_at))}</span>`}</div></div>`; }).join('')}</div>`; }).join('')
+          <div class="meta">${s.split_of?'↳ 順手推進・':''}${esc(nameOf(s.user_id))}・${sessLabel(s)}${(s.tags||[]).length?'・'+s.tags.map(t=>'#'+esc(t)).join(' '):''}${s.note?'・'+esc(s.note):''}</div></div>
+          <div class="dur">${s.end_at?(shareTag(s)?`<span class="sh-tag">${shareTag(s)}</span><br>`:'')+(s.background?'<span class="sh-free">不另計時</span>':zhDur(weightedDur(s)).replace(/ /g,'')):`<span data-since="${+new Date(s.start_at)}">${hms(Date.now()-new Date(s.start_at))}</span>`}</div></div>`; }).join('')}</div>`; }).join('')
       :`<div class="card empty">這段期間沒有紀錄</div>`}
-    <p class="hint" style="text-align:center">點自己的紀錄可修改或刪除・期間依「我的預設切點」（${cutText(c)}）</p>`;
+    <p class="hint" style="text-align:center">點自己的紀錄可修改或刪除・期間依「一天從幾點開始算」的設定（${cutText(c)}）</p>`;
+  bindSubBack();
   $('#fw').onchange=e=>{ st.recWho=e.target.value; renderRecords(); };
   $('#fr').onchange=e=>{ st.recRange=e.target.value; renderRecords(); };
   $('#add').onclick=()=>openSessionModal(null);
   $('#exp').onclick=openExportModal;
+  $('#rvBtn').onclick=openReviewModal;
   document.querySelectorAll('.rec.tap[data-id]').forEach(el=>el.onclick=()=>openSessionModal(st.sessions.find(s=>s.id===el.dataset.id)));
 }
 function downloadFile(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
@@ -661,7 +1102,7 @@ function exportRange(kind, from, to){
 }
 function exportData(range, uids, pid){
   const c=userCut(me.id);
-  const ss=st.sessions.filter(s=>uids.includes(s.user_id) && (pid==='all' || (s.project_id||'')===pid) && overlapMs(s,range)>0)
+  const ss=st.sessions.filter(s=>uids.includes(s.user_id) && (pid==='all' || (s.project_id||'')===pid) && rawOverlapMs(s,range)>0)
     .sort((a,b)=>new Date(a.start_at)-new Date(b.start_at));
   const todayEnd=periodOf('day',Date.now(),0,c).end;   // 圖表畫到今天為止
   const days=dayList({start:range.start,end:new Date(Math.min(+range.end,+todayEnd))},c);
@@ -671,9 +1112,9 @@ function exportData(range, uids, pid){
 async function buildExcel(D){
   const X=await loadXLSX(); const wb=X.utils.book_new(); const r2=n=>Math.round(n*100)/100;
   const names=D.uids.map(nameOf);
-  const det=[['人員','工作日','專案','任務','開始','結束','時長','期間內小時數','備註']];
+  const det=[['人員','工作日','專案','任務','類型','開始','結束','時長','期間內小時數（依比例）','備註']];
   D.ss.forEach(s=>{ const ms=overlapMs(s,D.range); const wk=workDateKey(s.start_at,D.c);
-    det.push([nameOf(s.user_id),wk.replace(/-/g,'/'),projName(s.project_id),taskOf(s.task_id)?.title||'',fmtFull(s.start_at),s.end_at?fmtFull(s.end_at):'進行中',zhDur(sessEnd(s)-new Date(s.start_at)),r2(hrs(ms)),s.note||'']); });
+    det.push([nameOf(s.user_id),wk.replace(/-/g,'/'),projName(s.project_id),taskOf(s.task_id)?.title||'',s.background?'順手推進（不另計時數）':s.split_of?`順手推進 約${Math.round(+s.share*100)}%`:(+s.share<1?`主要 約${Math.round(+s.share*100)}%`:'主要'),fmtFull(s.start_at),s.end_at?fmtFull(s.end_at):'進行中',zhDur(sessEnd(s)-new Date(s.start_at)),r2(hrs(ms)),s.note||'']); });
   const daily=[['工作日','星期',...names,'合計']];
   D.days.forEach(p=>{ const row=D.uids.map(u=>r2(hrs(sumMs(D.ss.filter(s=>s.user_id===u),p)))); const tot=r2(row.reduce((a,b)=>a+b,0));
     daily.push([`${p.start.getFullYear()}/${p.start.getMonth()+1}/${p.start.getDate()}`,'週'+WD[p.start.getDay()],...row,tot]); });
@@ -688,7 +1129,7 @@ async function buildExcel(D){
   const add=(rows,name,cols)=>{ const ws=X.utils.aoa_to_sheet(rows); ws['!cols']=cols.map(w=>({wch:w})); X.utils.book_append_sheet(wb,ws,name); };
   add(daily,'每日彙總',[12,6,...names.map(()=>10),10]);
   add(proj,'專案彙總',[18,20,...names.map(()=>10),10]);
-  add(det,'工時明細',[8,11,16,18,20,20,18,12,20]);
+  add(det,'工時明細',[8,11,16,18,14,20,20,18,14,20]);
   const out=X.write(wb,{bookType:'xlsx',type:'array'});
   return new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
 }
@@ -703,7 +1144,7 @@ function chartHeader(x,w,title,sub,D){
     x.fillStyle=cssColor(colorOf(u)); x.beginPath(); x.roundRect(lx-12,28,12,12,3); x.fill(); lx-=28; });
 }
 function niceMax(v){ if(v<=0) return 1; const p=Math.pow(10,Math.floor(Math.log10(v))); for(const m of [1,1.5,2,2.5,3,4,5,6,8,10]) if(m*p>=v) return m*p; return 10*p; }
-function rangeSub(D){ const f=d=>`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`; const a=D.days[0]?.start||D.range.start, z=(D.days[D.days.length-1]||{start:D.range.start}).start; return `${f(a)}（${WD[a.getDay()]}）～ ${f(z)}（${WD[z.getDay()]}）・${D.pid==='all'?'全部專案':projName(D.pid)}・依 ${nameOf(me.id)} 的切點（${cutText(D.c)}）`; }
+function rangeSub(D){ const f=d=>`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`; const a=D.days[0]?.start||D.range.start, z=(D.days[D.days.length-1]||{start:D.range.start}).start; return `${f(a)}（${WD[a.getDay()]}）～ ${f(z)}（${WD[z.getDay()]}）・${D.pid==='all'?'全部專案':projName(D.pid)}・依 ${nameOf(me.id)} 的計時設定（${cutText(D.c)}）`; }
 // ---- 長條圖 ----
 function barByDate(D){
   let groups=D.days.map(p=>({p,label:`${p.start.getMonth()+1}/${p.start.getDate()}`,sub:WD[p.start.getDay()]})), unit='日';
@@ -1069,7 +1510,8 @@ function taskRowHTML(t){
   return `<div class="rec task" data-tid="${t.id}">
     <input type="checkbox" class="chk" data-chk="${t.id}" ${myChecked(t)?'checked':''} ${can?'':'disabled title="只有負責人可以勾選"'}>
     <div class="main"><div class="${done?'strike':''}">${esc(t.title)}</div>
-      <div class="meta" style="white-space:normal">${a.length?chipsFor(people_,u=>doneBy(t,u)):'<span class="chip" style="--c:var(--sub)">未指派</span>'}${prog}${ms?`<span class="meta-i">已投入 ${zhShort(ms)}</span>`:''}</div></div>
+      <div class="meta" style="white-space:normal">${a.length?chipsFor(people_,u=>doneBy(t,u)):'<span class="chip" style="--c:var(--sub)">未指派</span>'}${prog}${ms?`<span class="meta-i">已投入 ${zhShort(ms)}</span>`:''}</div>
+      ${!done && can && !myChecked(t) && isOver(taskDue(t))?overdueActs(t):''}</div>
     ${dueBadge(taskDue(t),done)}</div>`;
 }
 function renderProjectDetail(){
@@ -1084,7 +1526,7 @@ function renderProjectDetail(){
       <div class="kv"><span>負責人</span><span>${projAssignees(p).length?chipsFor(projPeople(p)):'兩人共用'}</span></div>
       <div class="kv"><span>期限</span><span>${dl?`${fmtFullM(dl)}<br>${dueBadge(dl)} <a href="#" id="remP" class="lnk">⏰ 提醒我</a>`:'未設定'}</span></div>
       <div class="kv"><span>累計投入</span><span>${projPeople(p).map(u=>`${esc(nameOf(u))} ${zhShort(sumMs(st.sessions.filter(s=>s.user_id===u&&s.project_id===p.id),ALL_TIME))}`).join('・')}</span></div>
-      <div class="kv"><span>我的切點</span><span>${ov?'本專案自訂':'跟隨我的預設'} <a href="#" id="cutP" class="lnk">修改</a></span></div>
+      <div class="kv"><span>我的計時設定</span><span>${ov?'本專案自訂':'跟隨我的預設'} <a href="#" id="cutP" class="lnk">修改</a></span></div>
       <div class="hint" style="margin-top:0">${cutText(myCut)}</div>
       ${goalBlock(p)}
     </div>
@@ -1094,12 +1536,13 @@ function renderProjectDetail(){
       <div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap;align-items:flex-end">
         <div style="flex:1;min-width:140px"><div class="lbl-s">負責人（可複選）</div>${assigneePicker('newA',[me.id])}</div>
         <div style="flex:1;min-width:170px"><div class="lbl-s">到期時間（選填）</div><input id="newD" type="datetime-local" ${AC}></div>
-      </div>
+      </div>${dueQuickHTML('newD')}
       <div class="row" style="gap:8px;margin-top:10px"><button class="btn" id="addT" style="flex:2">＋ 新增任務</button><button class="btn ghost" id="impBtn" style="flex:1">📥 批次匯入</button></div>
     </div>
     <div class="card list">${todo.map(taskRowHTML).join('')||'<div class="empty" style="padding:14px">沒有進行中的任務</div>'}</div>
     ${done.length?`<div class="h2"><a href="#" id="tglDone" class="lnk">${st.showDone?'隱藏':'顯示'}已完成（${done.length}）</a></div>${st.showDone?`<div class="card list" style="opacity:.75">${done.map(taskRowHTML).join('')}</div>`:''}`:''}
     <p class="hint" style="text-align:center">勾選方框＝我完成了；多位負責人需全部勾選才算完成<br>點任務文字可修改、設定提醒或刪除</p>`;
+  bindDueQuick($('#view')); bindOverdue($('#view'));
   $('#back').onclick=()=>{ st.projView=null; render(); };
   $('#editP').onclick=()=>openProjectModal(p);
   $('#cutP').onclick=e=>{ e.preventDefault(); openCutModal(p); };
@@ -1137,9 +1580,12 @@ async function toggleTask(t, on){
 // 小勝利原則（Progress Principle）、感謝表達；不做排行或比較，只呈現正向事件。
 function winsOf(uid){
   const since=Date.now()-7*86400000, wins=[];
-  st.sessions.filter(s=>s.user_id===uid && s.end_at && +new Date(s.end_at)>=since && (sessEnd(s)-new Date(s.start_at))>=20*60000).forEach(s=>{
+  st.sessions.filter(s=>s.user_id===uid && !s.split_of && !s.background && s.end_at && +new Date(s.end_at)>=since && (sessEnd(s)-new Date(s.start_at))>=20*60000).forEach(s=>{
     const dur=sessEnd(s)-new Date(s.start_at);
     wins.push({ref:'session:'+s.id, t:+new Date(s.end_at), icon:'⏱', kind:'session', text:`專注工作 ${zhShort(dur)}`, sub:sessLabel(s), dur:zhShort(dur)}); });
+  st.sessions.filter(x=>x.user_id===uid && x.split_of && x.end_at && +new Date(x.end_at)>=since).forEach(x=>{
+    const m=st.sessions.find(z=>z.id===x.split_of);
+    wins.push({ref:'shun:'+x.id, t:+new Date(x.end_at), icon:'🌱', kind:'shun', text:`順手推進了「${esc(projName(x.project_id))}${taskOf(x.task_id)?' / '+esc(taskOf(x.task_id).title):''}」`, sub:m?`做 ${sessLabel(m)} 的時候`:''}); });
   st.taskDone.filter(d=>d.user_id===uid && +new Date(d.done_at)>=since).forEach(d=>{ const t=taskOf(d.task_id); if(!t) return;
     wins.push({ref:'task:'+t.id, t:+new Date(d.done_at), icon:'✅', kind:'task', text:`完成任務「${esc(t.title)}」`, sub:esc(projName(t.project_id)), title:t.title}); });
   st.projects.filter(p=>!p.archived && projPeople(p).includes(uid)).forEach(p=>KINDS.forEach(([f,k,lbl])=>{
@@ -1153,6 +1599,7 @@ function phrasesFor(w, to){
   if(w && w.kind==='reply') return [`謝謝你 😊`,`收到，超開心！`,`有你一起真好 🤗`,`你也辛苦了，一起加油 ☕`];
   if(!w) return [`今天也一起加油 💪`,`謝謝你一起做這些事 🙌`,`累了就休息一下，我們進度沒問題 ☕`,`有你一起真好 😊`];
   if(w.kind==='session') return [`辛苦了！專注了 ${w.dur}，很穩 💪`,`看得到你的投入，謝謝你 🙏`,`記得起來動一動、喝口水 ☕`];
+  if(w.kind==='shun') return [`一次推進兩件事，效率很好 🌱`,`連這個都順手處理了，謝謝你 🙏`,`多做的這一點點，累積起來很可觀 ✨`];
   if(w.kind==='task') return [`「${w.title}」搞定了，謝謝你一步步推進 ✨`,`這塊你處理掉了，幫了大忙！`,`又往前一步了 🚶`];
   return [`目標達成！這段時間的堅持看得見 🎯`,`一點一滴累積出來的，${n}很棒 🌟`,`照自己的節奏完成了，讚 👍`];
 }
@@ -1212,24 +1659,22 @@ function renderCheer(){
         return `<div class="rec win"><span class="big-e">${w.icon}</span>
           <div class="main"><div>${w.text}</div><div class="meta">${w.sub}・${ago(w.t)}</div>
           ${mine.length?`<div class="sent">你送了 ${mine.map(k=>esc(k.emoji||'💌')).join(' ')}${mine.some(k=>k.message)?'・含留言':''}</div>`:''}
-          <div class="emo-row">${EMOJIS.map(e=>`<button class="emo" data-u="${u}" data-w="${i}" data-e="${e}">${e}</button>`).join('')}<button class="emo txt" data-u="${u}" data-w="${i}" data-e="msg">更多／留言</button></div></div></div>`; }).join('')}</div>
+          <div class="win-acts"><button class="heart-btn" data-u="${u}" data-w="${i}">❤️ 給個愛心</button><span class="hint" style="margin:0">長按可選其他表情或留言</span></div></div></div>`; }).join('')}</div>
       ${ws.length>4?`<div class="more-row"><a href="#" class="lnk" data-morew="${u}">${st.moreWins[u]?'收起 ▲':`顯示更多（還有 ${ws.length-4} 項）▼`}</a></div>`:''}`
       :`<div class="card empty">${esc(nameOf(u))} 最近 7 天還沒有新的成果<br><span class="hint">也可以按上面的「說句話」直接鼓勵</span></div>`}`; }).join('')}
     <p class="hint" style="text-align:center">具體說出對方「做了什麼、投入了什麼」，比「好棒」更有力量 💡</p>`;
   const wsMap={}; ps.forEach(u=>wsMap[u]=winsOf(u));
-  document.querySelectorAll('.emo[data-u]').forEach(b=>b.onclick=()=>{ const u=b.dataset.u, w=wsMap[u][+b.dataset.w];
-    if(b.dataset.e==='msg') openKudosModal(u,w); else { b.classList.add('pop'); sendKudos(u,w,b.dataset.e,null); } });
+  document.querySelectorAll('.heart-btn').forEach(b=>{ const u=b.dataset.u, w=wsMap[u][+b.dataset.w];
+    b.onclick=()=>{ b.classList.add('pop'); sendKudos(u,w,'❤️',null); };
+    bindLongPress(b,()=>openEmojiBar(b,'💬 留言',e=>{ if(e==='reply'||e==='more') openKudosModal(u,w); else sendKudos(u,w,e,null); })); });
   document.querySelectorAll('[data-gen]').forEach(b=>b.onclick=()=>openKudosModal(b.dataset.gen,null));
   document.querySelectorAll('[data-morew]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const u=a.dataset.morew; st.moreWins[u]=!st.moreWins[u]; renderCheer(); });
   const hb=$('#histBar'); if(hb) hb.onclick=()=>{ st.moreRecv=!st.moreRecv; renderCheer(); };
   const hm=$('#histMore'); if(hm) hm.onclick=e=>{ e.preventDefault(); st.histN+=10; renderCheer(); };
   // 長按 / 右鍵 / 回應按鈕 → 快速表情列
   document.querySelectorAll('.rec.kd').forEach(row=>{
-    const id=row.dataset.kd; let t=null, sx=0, sy=0;
-    row.addEventListener('pointerdown',e=>{ if(e.target.closest('button,input')) return; sx=e.clientX; sy=e.clientY; t=setTimeout(()=>{ t=null; if(navigator.vibrate) try{navigator.vibrate(15);}catch(_){} openReactBar(row,id); },450); });
-    ['pointerup','pointerleave','pointercancel'].forEach(ev=>row.addEventListener(ev,()=>{ if(t){ clearTimeout(t); t=null; } }));
-    row.addEventListener('pointermove',e=>{ if(t && (Math.abs(e.clientX-sx)>8||Math.abs(e.clientY-sy)>8)){ clearTimeout(t); t=null; } });
-    row.addEventListener('contextmenu',e=>{ e.preventDefault(); openReactBar(row,id); });
+    const id=row.dataset.kd;
+    bindLongPress(row,()=>openReactBar(row,id));
     row.querySelector('[data-rbtn]').onclick=e=>{ e.stopPropagation(); openReactBar(row,id); };
     const box=row.querySelector('[data-rb]'), inp=box.querySelector('.rb-in');
     box.querySelectorAll('.chip-btn').forEach(c=>c.onclick=()=>{ inp.value=c.textContent; inp.focus(); });
@@ -1239,17 +1684,7 @@ function renderCheer(){
   if(unreadIds.length){ sb.from('kudos').update({read_at:new Date().toISOString()}).eq('to_user',me.id).is('read_at',null).then(()=>{ st.kudos.forEach(k=>{ if(unreadIds.includes(k.id)) k.read_at=new Date().toISOString(); }); updateBadge(); }); }
 }
 function openReactBar(row,id){
-  document.querySelectorAll('.react-bar').forEach(e=>e.remove());
-  const bar=document.createElement('div'); bar.className='react-bar';
-  bar.innerHTML=QUICK_REACT.map(e=>`<button data-e="${e}">${e}</button>`).join('')+`<button data-e="more" class="rb-more" title="更多表情">＋</button><button data-e="reply" class="rb-txt">💬 回覆</button>`;
-  document.body.appendChild(bar);
-  const r=row.getBoundingClientRect(), bw=Math.min(bar.offsetWidth, window.innerWidth-16);
-  bar.style.left=Math.max(8,Math.min(window.innerWidth-bw-8, r.left+r.width/2-bw/2))+'px';
-  bar.style.top=(r.top>70 ? r.top-bar.offsetHeight-6 : r.bottom+6)+'px';
-  const close=()=>{ bar.remove(); document.removeEventListener('pointerdown',outside,true); window.removeEventListener('scroll',close,true); };
-  const outside=e=>{ if(!bar.contains(e.target)) close(); };
-  setTimeout(()=>{ document.addEventListener('pointerdown',outside,true); window.addEventListener('scroll',close,true); },0);
-  bar.querySelectorAll('button').forEach(b=>b.onclick=()=>{ const e=b.dataset.e; close();
+  openEmojiBar(row,'💬 回覆',e=>{
     if(e==='reply'){ const box=row.querySelector('[data-rb]'); box.classList.remove('hidden'); box.querySelector('.rb-in').focus(); }
     else if(e==='more'){ const k=st.kudos.find(x=>x.id===id); const quote=(k.message||'').slice(0,20)+((k.message||'').length>20?'…':'');
       openKudosModal(k.from_user,{ref:'reply:'+k.id,kind:'reply',icon:'💬',text:`回覆：${esc(k.emoji||'')} ${esc(quote)}`}); }
@@ -1296,29 +1731,160 @@ function popKudos(title, sub, id){
   if(navigator.vibrate) try{ navigator.vibrate(30); }catch(e){}
 }
 
-// ===================== 設定 =====================
-function renderSettings(){
-  const c=cfg(), mc=userCut(me.id);
-  $('#view').innerHTML=`<div class="card">
-      <div class="set-item"><div><div class="lbl-s">我的顯示名稱</div><div style="font-weight:600">${esc(nameOf(me.id))}</div></div><button class="btn sm ghost" id="nm">修改</button></div>
-      <div class="set-item"><div><div class="lbl-s">我的代表色</div><div class="row" style="gap:6px;margin-top:2px"><span class="swatch-cur" style="background:${colorOf(me.id)}"></span><span class="hint" style="margin:0">整個介面的主色、狀態卡、進度條</span></div></div><button class="btn sm ghost" id="clr">修改</button></div>
-      <div class="set-item"><div><div class="lbl-s">我的預設切點</div><div>${cutText(mc)}</div><div class="hint" style="margin:2px 0 0">每月皆從 1 號的這個時間起算；各專案可另外設定</div></div><button class="btn sm ghost" id="cut">修改</button></div>
-      <div class="set-item"><div><div class="lbl-s">登入帳號</div><div>${esc(me.email||'')}</div></div><button class="btn sm danger-ghost" id="lo">登出</button></div>
-    </div>
-    <div class="card"><div style="font-weight:600">邀請另一個人</div>
-      <p class="hint">把這個連結傳給對方，打開後就不用自己填連線資訊，直接用他的帳號密碼登入即可。</p>
-      <button class="btn ghost" style="width:100%" id="share">複製設定連結</button></div>
-    <div class="card"><div style="font-weight:600">加到手機主畫面</div>
-      <p class="hint" style="margin-bottom:0">iPhone：Safari 下方「分享」→「加入主畫面」<br>Android：Chrome 右上「⋮」→「安裝應用程式」或「加到主畫面」</p></div>`;
-  $('#nm').onclick=()=>openNameModal(false);
-  $('#cut').onclick=()=>openCutModal(null);
-  $('#clr').onclick=openColorModal;
-  $('#lo').onclick=async()=>{ if(confirm('確定要登出？')){ await sb.auth.signOut(); me=null; renderLogin(); } };
-  $('#share').onclick=async()=>{
-    const token=encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify({u:c.url,k:c.key})))));
-    const url=location.origin+location.pathname+'#setup='+token;
-    try{ await navigator.clipboard.writeText(url); toast('已複製，傳給對方即可'); }catch{ prompt('請複製這個連結：',url); }
-  };
+// ===================== 我的 =====================
+const FONT_KEY='wt_font';
+function applyFont(){ let f='big'; try{ f=localStorage.getItem(FONT_KEY)||'big'; }catch(e){} document.documentElement.classList.toggle('big-text', f==='big'); }
+const PMODES={pair:['兩人並排','兩個人的進度條並排，一眼看到彼此'],self:['只看自己','只顯示自己的進度，並和上週同一時間比較'],team:['兩人合計','把兩人的時數加在一起，朝共同目標前進']};
+function meItem(id,icon,title,sub,extra){ return `<div class="rec tap me-it" id="${id}"><span class="me-ic">${icon}</span><div class="main"><b>${title}</b>${sub?`<div class="meta">${sub}</div>`:''}</div>${extra||'<span class="me-ar">›</span>'}</div>`; }
+function renderMe(){
+  if(st.meView==='rec') return renderRecords();
+  if(st.meView==='trash') return renderTrash();
+  const c=userCut(me.id), wk=periodOf('week',Date.now(),0,c), mine=st.sessions.filter(s=>s.user_id===me.id);
+  const doneWk=st.taskDone.filter(d=>d.user_id===me.id && +new Date(d.done_at)>=+wk.start).length;
+  const rh=+(prof(me.id)?.remind_hours??3), pm=prof(me.id)?.progress_mode||'pair';
+  let font='big'; try{ font=localStorage.getItem(FONT_KEY)||'big'; }catch(e){}
+  const ntf=!('Notification' in window)?'這個瀏覽器不支援':Notification.permission==='granted'?'已開啟 ✓':Notification.permission==='denied'?'已被封鎖，請到瀏覽器設定開啟':'尚未開啟，點一下開啟';
+  const trashN=trashItems().length;
+  $('#view').innerHTML=`
+    <div class="card me-head"><span class="me-av" style="background:${colorOf(me.id)}">${esc(nameOf(me.id).slice(0,1))}</span>
+      <div><b style="font-size:18px">${esc(nameOf(me.id))}</b><div class="hint" style="margin:0">本週 ${zhShort(sumMs(mine,wk))}・完成 ${doneWk} 個任務</div></div></div>
+    <div class="h2">工作紀錄</div><div class="card list">
+      ${meItem('goRec','📋','打卡紀錄','查詢、補登、修改')}
+      ${meItem('goExp','📤','匯出成果','Excel、長條圖、時段圖')}
+      ${meItem('goRv','📅','上週回顧','上週的成果整理')}
+      ${meItem('goTrash','🗑️','垃圾桶',trashN?`${trashN} 個項目・30 天後自動清除`:'刪除的東西會在這裡保留 30 天')}</div>
+    <div class="h2">設定</div><div class="card list">
+      ${meItem('goName','✏️','顯示名稱',esc(nameOf(me.id)))}
+      ${meItem('goColor','🎨','代表色','整個畫面的主色',`<span class="swatch-cur" style="background:${colorOf(me.id)};width:22px;height:22px"></span>`)}
+      ${meItem('goCut','🕕','一天從幾點開始算',cutText(c))}
+      ${meItem('goPm','📊','進度顯示方式',PMODES[pm][0])}
+      ${meItem('goTheme','🌓','外觀（深色模式）',{auto:'跟隨手機設定',light:'淺色',dark:'深色'}[themeMode()])}
+      ${meItem('goFont','🔠','文字大小',font==='big'?'大（目前）':'標準（目前）',`<span class="tag">${font==='big'?'切換成標準':'切換成大'}</span>`)}
+      ${meItem('goRem','⏰','工作太久提醒',rh>0?`連續工作超過 ${rh} 小時提醒`:'不提醒')}
+      ${meItem('goNtf','🔔','通知',ntf)}</div>
+    <div class="h2">其他</div><div class="card list">
+      ${meItem('goShare','👥','邀請另一個人','複製設定連結傳給對方')}
+      ${meItem('goTip','📱','加到手機主畫面','像 App 一樣使用')}
+      ${meItem('goOut','🚪','登出',esc(me.email||''),'')}</div>`;
+  const on=(id,fn)=>{ const e=$('#'+id); if(e) e.onclick=fn; };
+  on('goRec',()=>{ st.meView='rec'; render(); window.scrollTo(0,0); });
+  on('goExp',openExportModal); on('goRv',openReviewModal);
+  on('goTrash',()=>{ st.meView='trash'; render(); window.scrollTo(0,0); });
+  on('goName',()=>openNameModal(false)); on('goColor',openColorModal); on('goCut',()=>openCutModal(null)); on('goPm',openPmModal);
+  on('goFont',()=>{ try{ localStorage.setItem(FONT_KEY, font==='big'?'std':'big'); }catch(e){} applyFont(); renderMe(); toast(font==='big'?'已切換成標準字體':'已切換成大字體'); });
+  on('goRem',openRemindHoursModal);
+  on('goTheme',()=>{ const cur=themeMode();
+    modal(`<h3>外觀</h3><div class="pm-grid" style="grid-template-columns:repeat(3,1fr)">${[['auto','🔄 跟隨手機'],['light','☀️ 淺色'],['dark','🌙 深色']].map(([k,l])=>`<button class="dq-b ${k===cur?'on':''}" data-th="${k}" style="padding:12px 6px">${l}</button>`).join('')}</div>
+      <p class="hint">「跟隨手機」會依手機的深色模式設定自動切換。只影響這支手機。</p><div class="actions"><button class="btn ghost" id="thX">關閉</button></div>`,(el,close)=>{
+      el.querySelector('#thX').onclick=close;
+      el.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{ try{ localStorage.setItem(THEME_KEY,b.dataset.th); }catch(e){} applyThemeMode(); close(); renderMe(); toast({auto:'外觀已改成跟隨手機',light:'已切換成淺色',dark:'已切換成深色'}[b.dataset.th]); }); }); });
+  on('goNtf',async()=>{ if('Notification' in window && Notification.permission==='default'){ try{ await Notification.requestPermission(); }catch(e){} renderMe(); } });
+  on('goShare',async()=>{ const c=cfg(); const token=encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify({u:c.url,k:c.key})))));
+    const url=location.origin+location.pathname+'#setup='+token; try{ await navigator.clipboard.writeText(url); toast('已複製，傳給對方即可'); }catch{ prompt('請複製這個連結：',url); } });
+  on('goTip',()=>modal(`<h3>加到手機主畫面</h3><p>iPhone：用 Safari 開啟 → 下方「分享」→「加入主畫面」</p><p>Android：用 Chrome 開啟 → 右上「⋮」→「安裝應用程式」或「加到主畫面」</p><div class="actions"><button class="btn" id="tpX">知道了</button></div>`,(el,close)=>{ el.querySelector('#tpX').onclick=close; }));
+  on('goOut',async()=>{ if(confirm('確定要登出？')){ await sb.auth.signOut(); me=null; renderLogin(); } });
+}
+function subHeader(title){ return `<div class="row" style="justify-content:space-between;margin:0 0 10px"><button class="btn sm ghost" id="meBack">‹ 我的</button><b>${title}</b><span style="width:60px"></span></div>`; }
+function bindSubBack(){ const b=$('#meBack'); if(b) b.onclick=()=>{ st.meView=null; render(); window.scrollTo(0,0); }; }
+function openPmModal(){
+  const cur=prof(me.id)?.progress_mode||'pair';
+  modal(`<h3>進度顯示方式</h3><p class="hint">只影響你自己的首頁；專案頁仍會顯示每個人的進度</p>
+    ${Object.entries(PMODES).map(([k,[t,d]])=>`<label class="pm-opt"><input type="radio" name="pm" value="${k}" ${k===cur?'checked':''}><span><b>${t}</b><br><span class="hint" style="margin:0">${d}</span></span></label>`).join('')}
+    <div class="actions"><button class="btn" id="pmS">儲存</button></div>`,(el,close)=>{
+    el.querySelector('#pmS').onclick=async()=>{ const v=el.querySelector('input[name=pm]:checked').value;
+      const {error}=await sb.from('profiles').update({progress_mode:v}).eq('id',me.id); if(error) return toast('儲存失敗');
+      await loadProfiles(); close(); render(); toast(`已改成「${PMODES[v][0]}」`); };
+  });
+}
+function openRemindHoursModal(){
+  const cur=+(prof(me.id)?.remind_hours??3);
+  modal(`<h3>工作太久提醒</h3><p class="hint">連續工作超過設定時間，提醒你是不是忘了按結束</p>
+    <div class="pm-grid">${[0,1,2,3,4,5,6,8].map(h=>`<button class="dq-b ${h===cur?'on':''}" data-h="${h}">${h?h+' 小時':'不提醒'}</button>`).join('')}</div>
+    <div class="actions"><button class="btn ghost" id="rhX">關閉</button></div>`,(el,close)=>{
+    el.querySelector('#rhX').onclick=close;
+    el.querySelectorAll('[data-h]').forEach(b=>b.onclick=async()=>{ const {error}=await sb.from('profiles').update({remind_hours:+b.dataset.h}).eq('id',me.id); if(error) return toast('儲存失敗');
+      await loadProfiles(); close(); render(); toast('已儲存'); });
+  });
+}
+// ===================== 垃圾桶（30 天） =====================
+const TRASH_DAYS=30;
+function trashItems(){
+  const it=[];
+  st.trashP.forEach(p=>it.push({kind:'projects',id:p.id,name:p.name,icon:'📁',sub:'專案',at:p.deleted_at}));
+  st.trashT.forEach(t=>it.push({kind:'tasks',id:t.id,name:t.title,icon:'☑️',sub:`任務・${esc(projName(t.project_id))}`,at:t.deleted_at}));
+  st.trashS.filter(s=>s.user_id===me.id).forEach(s=>it.push({kind:'sessions',id:s.id,name:`${fmtDT(s.start_at)} ~ ${s.end_at?fmtT(s.end_at):''}`,icon:'⏱',sub:`打卡紀錄・${sessLabel(s)}`,at:s.deleted_at}));
+  return it.sort((a,b)=>new Date(b.at)-new Date(a.at));
+}
+function renderTrash(){
+  const it=trashItems();
+  $('#view').innerHTML=`${subHeader('🗑️ 垃圾桶')}
+    <p class="hint" style="margin:0 4px 10px">刪除的專案、任務、打卡紀錄會保留 ${TRASH_DAYS} 天，期間可以復原；之後會自動永久刪除。</p>
+    ${it.length?`<div class="card list">${it.map(x=>{ const left=Math.max(0,TRASH_DAYS-Math.floor((Date.now()-new Date(x.at))/86400000));
+      return `<div class="rec"><span class="me-ic">${x.icon}</span><div class="main"><b>${esc(x.name)}</b><div class="meta">${x.sub}・${ago(x.at)}刪除・剩 ${left} 天</div></div>
+        <div class="row" style="gap:6px;flex:none"><button class="btn sm" data-rs="${x.kind}|${x.id}">復原</button><button class="btn sm danger-ghost" data-pg="${x.kind}|${x.id}">永久刪除</button></div></div>`; }).join('')}</div>`
+      :`<div class="card empty">垃圾桶是空的</div>`}`;
+  bindSubBack();
+  document.querySelectorAll('[data-rs]').forEach(b=>b.onclick=async()=>{ const [k,id]=b.dataset.rs.split('|'); await restoreItem(k,id); });
+  document.querySelectorAll('[data-pg]').forEach(b=>b.onclick=async()=>{ const [k,id]=b.dataset.pg.split('|');
+    if(!confirm(k==='projects'?'永久刪除這個專案？它的子任務也會一起永久刪除，無法再復原。':'永久刪除？刪除後就無法復原。')) return;
+    const {error}=await sb.from(k).delete().eq('id',id); if(error) return toast('刪除失敗'); await loadAll(); render(); toast('已永久刪除'); });
+}
+async function restoreItem(kind,id){
+  const {error}=await sb.from(kind).update({deleted_at:null}).eq('id',id); if(error) return toast('復原失敗');
+  if(kind==='sessions'){ await sb.from('sessions').update({deleted_at:null}).eq('split_of',id); }
+  await loadAll();
+  if(kind==='sessions'){ const x=st.sessions.find(z=>z.id===id); if(x&&x.split_of) await recalcShare(x.split_of); }
+  render(); toast('已復原 ✓');
+}
+async function softDelete(kind,id,label){
+  const patch={deleted_at:new Date().toISOString()};
+  if(kind==='sessions'){ const s=st.sessions.find(x=>x.id===id); if(s && !s.end_at) patch.end_at=patch.deleted_at; }
+  const ex=kind==='sessions'?st.sessions.find(x=>x.id===id):null;
+  const {error}=await sb.from(kind).update(patch).eq('id',id); if(error){ toast('刪除失敗'); return false; }
+  if(kind==='sessions') await sb.from('sessions').update({deleted_at:patch.deleted_at}).eq('split_of',id);
+  if(kind==='projects' && st.projView===id) st.projView=null;
+  await loadAll(); if(ex && ex.split_of) await recalcShare(ex.split_of); render();
+  toastUndo(`已刪除「${esc(label)}」`, ()=>restoreItem(kind,id));
+  return true;
+}
+// 主要紀錄的比例＝100% 減去同時段（非背景）的比例
+async function recalcShare(mainId){
+  const m=st.sessions.find(x=>x.id===mainId); if(!m) return;
+  const used=st.sessions.filter(x=>x.split_of===mainId && !x.background).reduce((t,x)=>t+Math.round(+x.share*100),0);
+  const sh=Math.max(10,100-used)/100; if(Math.abs((+m.share||1)-sh)>0.001){ await sb.from('sessions').update({share:sh}).eq('id',mainId); await loadSessions(); }
+}
+function toastUndo(msg, onUndo){
+  const t=$('#toast'); t.innerHTML=`<span>${msg}</span><button class="undo-btn">復原</button><span class="undo-sub">也可以在「我的 → 垃圾桶」找回</span>`;
+  t.classList.add('show','with-btn'); clearTimeout(toast._t);
+  t.querySelector('.undo-btn').onclick=()=>{ t.classList.remove('show','with-btn'); onUndo(); };
+  toast._t=setTimeout(()=>t.classList.remove('show','with-btn'),6000);
+}
+async function purgeTrash(){
+  const cut=new Date(Date.now()-TRASH_DAYS*86400000).toISOString();
+  for(const k of ['sessions','tasks','projects']){ try{ await sb.from(k).delete().lt('deleted_at',cut); }catch(e){} }
+}
+// ---- 通用：長按 ----
+function bindLongPress(el, fn){
+  let t=null, sx=0, sy=0, fired=false;
+  el.addEventListener('pointerdown',e=>{ fired=false; sx=e.clientX; sy=e.clientY; t=setTimeout(()=>{ t=null; fired=true; if(navigator.vibrate) try{navigator.vibrate(15);}catch(_){} fn(); },450); });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>el.addEventListener(ev,()=>{ if(t){ clearTimeout(t); t=null; } }));
+  el.addEventListener('pointermove',e=>{ if(t && (Math.abs(e.clientX-sx)>8||Math.abs(e.clientY-sy)>8)){ clearTimeout(t); t=null; } });
+  el.addEventListener('contextmenu',e=>{ e.preventDefault(); fired=true; fn(); });
+  el.addEventListener('click',e=>{ if(fired){ e.stopImmediatePropagation(); e.preventDefault(); fired=false; } },true);
+}
+// 表情列（回應與加油共用）
+function openEmojiBar(anchor, txtLabel, cb){
+  document.querySelectorAll('.react-bar').forEach(e=>e.remove());
+  const bar=document.createElement('div'); bar.className='react-bar';
+  bar.innerHTML=QUICK_REACT.map(e=>`<button data-e="${e}">${e}</button>`).join('')+`<button data-e="more" class="rb-more" title="更多表情">＋</button><button data-e="reply" class="rb-txt">${txtLabel}</button>`;
+  document.body.appendChild(bar);
+  const r=anchor.getBoundingClientRect(), bw=Math.min(bar.offsetWidth, window.innerWidth-16);
+  bar.style.left=Math.max(8,Math.min(window.innerWidth-bw-8, r.left+r.width/2-bw/2))+'px';
+  bar.style.top=(r.top>70 ? r.top-bar.offsetHeight-6 : r.bottom+6)+'px';
+  const close=()=>{ bar.remove(); document.removeEventListener('pointerdown',outside,true); window.removeEventListener('scroll',close,true); };
+  const outside=e=>{ if(!bar.contains(e.target)) close(); };
+  setTimeout(()=>{ document.addEventListener('pointerdown',outside,true); window.addEventListener('scroll',close,true); },0);
+  bar.querySelectorAll('button').forEach(b=>b.onclick=()=>{ close(); cb(b.dataset.e); });
 }
 
 // ===================== 彈出視窗 =====================
@@ -1359,7 +1925,7 @@ function openColorModal(){
 }
 function openCutModal(p){
   const ov=p?projOverride(me.id,p.id):null, cur=p?projCut(me.id,p.id):userCut(me.id);
-  modal(`<h3>${p?`「${esc(p.name)}」的切點`:'我的預設切點'}</h3>
+  modal(`<h3>${p?`「${esc(p.name)}」的計時設定`:'一天從幾點開始算'}</h3>
     <p class="hint">${p?'只影響你自己在這個專案的每日／每週／每月時數計算。':'影響首頁今日／本週時數、紀錄頁的期間，以及沒有另外設定的專案。'}</p>
     ${p?`<div class="seg"><label><input type="radio" name="mode" value="def" ${ov?'':'checked'}> 跟隨我的預設<span class="hint" style="display:block;margin:0">${cutText(userCut(me.id))}</span></label>
       <label><input type="radio" name="mode" value="own" ${ov?'checked':''}> 本專案自訂</label></div>`:''}
@@ -1367,7 +1933,7 @@ function openCutModal(p){
       <label class="f">每天從幾點開始算</label><input id="cM" type="time" ${AC} value="${minToHM(cur.m)}">
       <label class="f">每週從星期幾開始</label><select id="cW">${wdOptions(cur.wd)}</select>
     </div>
-    <p class="hint">改了之後，過去的紀錄也會依新的切點重新歸到對應的日／週／月（原始打卡時間不變）。</p>
+    <p class="hint">改了之後，過去的紀錄也會依新的設定重新歸到對應的日／週／月（原始打卡時間不變）。</p>
     <div class="actions"><button class="btn" id="cS">儲存</button></div>`,(el,close)=>{
     const F=el.querySelector('#cutF');
     el.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=()=>F.classList.toggle('hidden',r.value==='def'&&r.checked));
@@ -1385,15 +1951,19 @@ function openSessionModal(s){
   const isNew=!s, now=new Date();
   const proj=s?s.project_id:(localStorage.getItem(LAST_PROJ_KEY)||'');
   const projOpts=st.projects.filter(p=>(!p.archived && (st.scope==='all'||isMine(p)))||p.id===proj).map(p=>`<option value="${p.id}" ${p.id===proj?'selected':''}>${esc(p.name)}</option>`).join('')+`<option value="" ${!proj?'selected':''}>未指定專案</option>`;
-  const isOpen=s && !s.end_at;
-  modal(`<h3>${isNew?'補登打卡':'修改打卡'}</h3>
+  const isOpen=s && !s.end_at, isEx=!!(s&&s.split_of), main=isEx?st.sessions.find(x=>x.id===s.split_of):null;
+  modal(`<h3>${isNew?'補登打卡':isEx?'修改順手推進':'修改打卡'}</h3>
+    ${isEx?`<p class="hint">這筆是做「${main?sessLabel(main):'主要工作'}」時順手推進的事，時間跟著主要紀錄。</p>`:''}
     <label class="f">專案</label><select id="sP">${projOpts}</select>
     <div id="sTw"><label class="f">任務（選填）</label><select id="sT">${taskOptions(proj,s?.task_id||'')}</select></div>
-    <label class="f">開始時間</label><input id="sA" type="datetime-local" ${AC} step="1" value="${toInput(s?s.start_at:new Date(now-3600000))}">
-    <label class="f">結束時間${isOpen?'（留空＝仍在工作中）':''}</label><input id="sB" type="datetime-local" ${AC} step="1" value="${s&&s.end_at?toInput(s.end_at):(isOpen?'':toInput(now))}">
+    <div class="${isEx?'hidden':''}"><label class="f">開始時間</label><input id="sA" type="datetime-local" ${AC} step="1" value="${toInput(s?s.start_at:new Date(now-3600000))}">
+    <label class="f">結束時間${isOpen?'（留空＝仍在工作中）':''}</label><input id="sB" type="datetime-local" ${AC} step="1" value="${s&&s.end_at?toInput(s.end_at):(isOpen?'':toInput(now))}"></div>
+    ${isEx?`<label class="f">時間怎麼算</label><select id="sX"><option value="bg" ${s.background?'selected':''}>不分時間（時數算在主要工作）</option>${[10,20,30,40,50].map(v=>`<option value="${v}" ${!s.background&&Math.round(+s.share*100)===v?'selected':''}>分到約 ${v}% 的時間</option>`).join('')}</select>`:''}
     <div class="hint" id="sD"></div>
     <label class="f">備註（選填）</label><input id="sN" type="text" ${AC} maxlength="60" value="${esc(s?.note||'')}">
+    ${!isNew&&!isEx&&s.end_at?`<button class="btn ghost" id="sMx" style="width:100%;margin-top:12px">✍️ 這段做了什麼／順手推進</button>`:''}
     <div class="actions">${isNew?'':'<button class="btn danger-ghost" id="sDel">刪除</button>'}<button class="btn" id="sS">儲存</button></div>`,(el,close)=>{
+    const mxB=el.querySelector('#sMx'); if(mxB) mxB.onclick=()=>{ close(); openNoteModal(s); };
     const A=el.querySelector('#sA'),B=el.querySelector('#sB'),D=el.querySelector('#sD'),P=el.querySelector('#sP'),T=el.querySelector('#sT'),Tw=el.querySelector('#sTw');
     const tv=()=>Tw.classList.toggle('hidden',!P.value || !st.tasks.some(t=>t.project_id===P.value)); tv();
     P.onchange=()=>{ T.innerHTML=taskOptions(P.value,''); tv(); };
@@ -1406,16 +1976,19 @@ function openSessionModal(s){
       if(b && b<a) return toast('結束時間不能早於開始時間');
       if(a>new Date() || (b && b>new Date(Date.now()+60000))) return toast('不能登記未來的時間');
       const row={project_id:P.value||null,task_id:P.value?(T.value||null):null,start_at:a.toISOString(),end_at:b?b.toISOString():null,note:el.querySelector('#sN').value.trim()||null};
-      const overlap=st.sessions.some(x=>x.user_id===me.id && (!s||x.id!==s.id) && +new Date(x.start_at)<+(b||new Date()) && sessEnd(x)>+a);
+      if(isEx){ delete row.start_at; delete row.end_at; const v=el.querySelector('#sX').value; row.background=v==='bg'; row.share=v==='bg'?1:+v/100;
+        const others=st.sessions.filter(x=>x.split_of===s.split_of && x.id!==s.id && !x.background).reduce((t,x)=>t+Math.round(+x.share*100),0);
+        if(!row.background && others+Math.round(row.share*100)>90) return toast('主要工作至少要留 10%'); }
+      const grp=x=>x.id===s?.id || x.split_of===s?.id || (s?.split_of && (x.id===s.split_of || x.split_of===s.split_of));
+      const overlap=!isEx && st.sessions.some(x=>x.user_id===me.id && !(s && grp(x)) && !x.split_of && +new Date(x.start_at)<+(b||new Date()) && sessEnd(x)>+a);
       if(overlap && !confirm('這段時間和你其他的打卡紀錄重疊，仍要儲存嗎？')) return;
       const {error}=isNew?await sb.from('sessions').insert({...row,user_id:me.id}):await sb.from('sessions').update(row).eq('id',s.id);
       if(error) return toast(String(error.message).includes('one_open')?'你已經有一筆進行中的打卡':'儲存失敗');
-      await loadSessions(); close(); render(); toast('已儲存');
+      if(!isNew && !isEx && st.sessions.some(x=>x.split_of===s.id)) await sb.from('sessions').update({start_at:row.start_at,end_at:row.end_at}).eq('split_of',s.id);
+      await loadSessions(); if(isEx) await recalcShare(s.split_of); close(); render(); toast('已儲存');
     };
     const del=el.querySelector('#sDel');
-    if(del) del.onclick=async()=>{ if(!confirm('確定刪除這筆紀錄？')) return;
-      const {error}=await sb.from('sessions').delete().eq('id',s.id); if(error) return toast('刪除失敗');
-      await loadSessions(); close(); render(); toast('已刪除'); };
+    if(del) del.onclick=async()=>{ close(); await softDelete('sessions',s.id,`${fmtDT(s.start_at)} 的打卡`); };
   });
 }
 function openTaskModal(t){
@@ -1423,18 +1996,17 @@ function openTaskModal(t){
   modal(`<h3>編輯任務</h3>
     <label class="f">任務名稱</label><input id="tN" type="text" ${AC} maxlength="60" value="${esc(t.title)}">
     <label class="f">負責人（可複選；勾兩人＝兩人都要完成）</label>${assigneePicker('tA',taskAssignees(t))}
-    <label class="f">到期時間（選填）</label><input id="tD" type="datetime-local" ${AC} value="${toInputM(due)}">
+    <label class="f">到期時間（選填）</label><input id="tD" type="datetime-local" ${AC} value="${toInputM(due)}">${dueQuickHTML('tD')}
     ${due?`<button class="btn ghost" id="tRem" style="width:100%;margin-top:10px">⏰ 加到行事曆提醒</button>`:''}
     <div class="actions"><button class="btn danger-ghost" id="tDel">刪除</button><button class="btn" id="tS">儲存</button></div>`,(el,close)=>{
+    bindDueQuick(el);
     el.querySelector('#tS').onclick=async()=>{ const title=el.querySelector('#tN').value.trim(); if(!title) return toast('請輸入任務名稱');
       const assignees=pickedOf(el,'tA'), dv=el.querySelector('#tD').value;
       const t2={...t,assignees}; const done=assignees.length?assignees.every(u=>doneBy(t2,u)):!!t.done;
       const {error}=await sb.from('tasks').update({title,assignees,due_at:dv?new Date(dv).toISOString():null,done}).eq('id',t.id);
       if(error) return toast('儲存失敗'); await loadTasks(); close(); render(); toast('已儲存'); };
     const r=el.querySelector('#tRem'); if(r) r.onclick=()=>{ close(); openRemindModal(t.title, due, `${projName(t.project_id)}・Work Together`); };
-    el.querySelector('#tDel').onclick=async()=>{ if(!confirm(`確定刪除任務「${t.title}」？\n（相關打卡紀錄會保留，只是不再標示任務）`)) return;
-      const {error}=await sb.from('tasks').delete().eq('id',t.id); if(error) return toast('刪除失敗');
-      await Promise.all([loadTasks(),loadSessions(),loadTaskDone()]); close(); render(); toast('已刪除'); };
+    el.querySelector('#tDel').onclick=async()=>{ close(); await softDelete('tasks',t.id,t.title); };
   });
 }
 function openProjectModal(p){
@@ -1442,7 +2014,7 @@ function openProjectModal(p){
   modal(`<h3>${isNew?'新增專案':'編輯專案'}</h3>
     <label class="f">專案名稱</label><input id="pN" type="text" ${AC} maxlength="30" value="${esc(p?.name||'')}" placeholder="例如：A 專案">
     <label class="f">負責人（可複選；都不勾＝兩人共用）</label>${assigneePicker('pA',p?projAssignees(p):[me.id])}
-    <label class="f">專案期限（選填，含時間）</label><input id="pD" type="datetime-local" ${AC} value="${toInputM(p?projDeadline(p):null)}">
+    <label class="f">專案期限（選填，含時間）</label><input id="pD" type="datetime-local" ${AC} value="${toInputM(p?projDeadline(p):null)}">${dueQuickHTML('pD')}
     <label class="f">每人時數目標（可勾選一種或多種）</label>
     ${KINDS.map(([f,,,l])=>`<div class="goal-set"><input type="checkbox" id="c_${f}" ${p&&p[f]>0?'checked':''}><span class="lbl">${l}</span>
       <input type="number" id="v_${f}" ${AC} min="0" step="0.5" inputmode="decimal" placeholder="小時" value="${p&&p[f]>0?+p[f]:''}"></div>`).join('')}
@@ -1453,6 +2025,7 @@ function openProjectModal(p){
         <div class="row" style="justify-content:space-between;margin-top:6px"><span class="hint" id="ptMsg" style="margin:0"></span><button class="btn sm" id="ptAddPaste">加入清單</button></div></div>`:''}
     ${isNew?'':`<div class="goal-set" style="margin-top:16px"><input type="checkbox" id="pArc" ${p.archived?'checked':''}><span>封存（不再出現在打卡選單）</span></div>`}
     <div class="actions">${isNew?'':'<button class="btn danger-ghost" id="pDel">刪除</button>'}<button class="btn" id="pS">儲存</button></div>`,(el,close)=>{
+    bindDueQuick(el);
     KINDS.forEach(([f])=>{ const c=el.querySelector('#c_'+f), v=el.querySelector('#v_'+f);
       v.oninput=()=>{ c.checked=+v.value>0; }; c.onchange=()=>{ if(c.checked) v.focus(); }; });
     const drawRows=()=>{ const box=el.querySelector('#ptRows'); if(!box) return;
@@ -1493,9 +2066,7 @@ function openProjectModal(p){
       render(); toast(isNew?`已建立專案${nt?`和 ${nt} 個子任務`:''} ✓`:'已儲存');
     };
     const del=el.querySelector('#pDel');
-    if(del) del.onclick=async()=>{ if(!confirm(`確定刪除「${p.name}」？\n（打卡紀錄會保留但變成「未指定專案」，子任務會一併刪除。若只是不再使用，建議改用封存）`)) return;
-      const {error}=await sb.from('projects').delete().eq('id',p.id); if(error) return toast('刪除失敗');
-      st.projView=null; await loadAll(); close(); render(); toast('已刪除'); };
+    if(del) del.onclick=async()=>{ close(); await softDelete('projects',p.id,p.name); };
   });
 }
 
