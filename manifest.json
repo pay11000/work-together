@@ -1,6 +1,6 @@
 {
-  "name": "工時同步",
-  "short_name": "工時同步",
+  "name": "Work Together",
+  "short_name": "Work Together",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

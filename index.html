@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#2f9e8f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="工時同步">
-<title>工時同步</title>
+<meta name="apple-mobile-web-app-title" content="Work Together">
+<title>Work Together</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -228,6 +228,15 @@ input:disabled{opacity:.35}
 .ex-file{border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:8px}
 .ex-file img{width:100%;border-radius:8px;border:1px solid var(--line);margin-bottom:8px;background:#fff}
 #exC input{flex:1}
+.pt-row{border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-top:8px}
+.pt-n{width:20px;flex:none;color:var(--sub);font-size:12px;text-align:center}
+.pt-t{padding:8px 10px!important;font-size:14px!important}
+.pt-x{border:0;background:none;color:var(--sub);font-size:20px;cursor:pointer;padding:0 4px;flex:none}
+.pt-d{flex:1;min-width:150px;padding:6px 8px!important;font-size:13px!important}
+.pk-mini{border:1.5px solid var(--line);background:var(--bg);color:var(--sub);border-radius:14px;padding:4px 10px;font-size:13px;cursor:pointer;font-family:inherit}
+.pk-mini.on{border-color:var(--c);background:color-mix(in srgb, var(--c) 14%, transparent);color:var(--c);font-weight:700}
+.pim-g{background:var(--bg)}
+.pim-t{padding-left:28px}
 .hidden{display:none!important}
 </style>
 </head>
@@ -359,7 +368,7 @@ async function boot(){
 function renderSetup(err){
   $('#app').innerHTML=`<div class="center-box">
     <img class="logo" src="icon-192.png" alt="">
-    <h2 style="text-align:center;margin:0 0 4px">工時同步・首次設定</h2>
+    <h2 style="text-align:center;margin:0 0 4px">Work Together・首次設定</h2>
     <p class="hint" style="text-align:center">貼上 Supabase 的連線資訊（只需設定一次）。<br>另一個人可直接用你在「設定」頁分享的連結，免填。</p>
     <div class="card">
       <label class="f">Project URL</label><input id="cu" type="url" ${AC} placeholder="https://xxxx.supabase.co">
@@ -375,7 +384,7 @@ function renderSetup(err){
 function renderLogin(){
   $('#app').innerHTML=`<div class="center-box">
     <img class="logo" src="icon-192.png" alt="">
-    <h2 style="text-align:center;margin:0 0 16px">工時同步</h2>
+    <h2 style="text-align:center;margin:0 0 16px">Work Together</h2>
     <div class="card">
       <label class="f">Email</label><input id="le" type="email" autocomplete="username">
       <label class="f">密碼</label><input id="lp" type="password" autocomplete="current-password">
@@ -464,7 +473,7 @@ function render(){
   if(!me) return;
   applyTheme();
   $('#app').innerHTML=`<div class="wrap">
-    <header><h1>工時同步</h1><span class="date" id="clockNow">${clockText()}</span></header>
+    <header><h1>Work Together</h1><span class="date" id="clockNow">${clockText()}</span></header>
     <div id="view"></div></div>
     <nav><div class="in">
       ${[['home','打卡'],['rec','紀錄'],['proj','專案'],['cheer','加油'],['set','設定']].map(([k,l])=>`<button data-tab="${k}" class="${st.tab===k?'act':''}">${ICONS[k]}${l}${k==='cheer'?'<span id="cheerBadge" class="badge hidden"></span>':''}</button>`).join('')}
@@ -904,22 +913,90 @@ function parseTimeCell(v){
   const m=String(v).trim().match(/^(上午|下午)?\s*(\d{1,2})[:：](\d{2})/); if(!m) return 'bad';
   let h=+m[2]; if(m[1]==='下午'&&h<12) h+=12; if(m[1]==='上午'&&h===12) h=0; return [h,+m[3]];
 }
-// rows: 陣列的陣列 → 預覽資料
+function uuid(){ try{ if(crypto.randomUUID) return crypto.randomUUID(); }catch(e){}
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{ const r=Math.random()*16|0; return (c==='x'?r:(r&3|8)).toString(16); }); }
+// 一列任務：[名稱, 負責人, 到期日, 到期時間]
+function parseTaskCells(r){
+  const title=String(r[0]??'').trim(), who=matchPerson(r[1]), d=parseDateCell(r[2]), tm=parseTimeCell(r[3]), errs=[];
+  if(who.bad.length) errs.push(`找不到負責人「${who.bad.join('、')}」`);
+  let due=null;
+  if(d==='bad') errs.push('到期日格式看不懂');
+  else if(d){ due=new Date(d);
+    if(tm==='bad') errs.push('到期時間格式看不懂');
+    else if(tm) due.setHours(tm[0],tm[1],0,0);
+    else if(!d.getMilliseconds() && d.getHours()===0 && d.getMinutes()===0) due.setHours(18,0,0,0); due.setMilliseconds(0); }
+  else if(tm && tm!=='bad') errs.push('有時間但缺到期日');
+  return {title, assignees:who.ids, due, errs};
+}
+function cleanRows(rows){ return rows.map(r=>r.map(c=>typeof c==='string'?c.trim():c)).filter(r=>r.some(c=>c!==''&&c!=null)); }
+function textToRows(txt){ const tab=txt.includes('\t');
+  return txt.split(/\r?\n/).map(l=>tab?l.split('\t'):l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"'))); }
+async function fileToRows(f){ const X=await loadXLSX(); const wb=X.read(await f.arrayBuffer(),{type:'array'});
+  return X.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''}); }
+// rows: 陣列的陣列 → 任務預覽
 function buildImport(rows){
-  rows=rows.map(r=>r.map(c=>typeof c==='string'?c.trim():c)).filter(r=>r.some(c=>c!==''&&c!=null));
+  rows=cleanRows(rows);
   if(rows.length && /任務|名稱|title|task/i.test(String(rows[0][0]||''))) rows=rows.slice(1);
-  return rows.map(r=>{
-    const title=String(r[0]??'').trim(), who=matchPerson(r[1]), d=parseDateCell(r[2]), tm=parseTimeCell(r[3]), errs=[];
-    if(!title) errs.push('缺任務名稱');
-    if(who.bad.length) errs.push(`找不到負責人「${who.bad.join('、')}」`);
-    let due=null;
-    if(d==='bad') errs.push('到期日格式看不懂');
-    else if(d){ due=new Date(d);
-      if(tm==='bad') errs.push('到期時間格式看不懂');
-      else if(tm) due.setHours(tm[0],tm[1],0,0);
-      else if(!d.getMilliseconds() && d.getHours()===0 && d.getMinutes()===0) due.setHours(18,0,0,0); due.setMilliseconds(0); }
-    else if(tm && tm!=='bad') errs.push('有時間但缺到期日');
-    return {title, assignees:who.ids, due, errs};
+  return rows.map(r=>{ const t=parseTaskCells(r); if(!t.title) t.errs.unshift('缺任務名稱'); return t; });
+}
+// 專案匯入：[專案名稱, 任務名稱, 負責人, 到期日, 到期時間]；專案名稱留空＝沿用上一列
+function buildProjectImport(rows){
+  rows=cleanRows(rows);
+  if(rows.length && /專案|project/i.test(String(rows[0][0]||''))) rows=rows.slice(1);
+  const groups=[]; let cur=null;
+  rows.forEach(r=>{
+    const pn=String(r[0]??'').trim();
+    if(pn){ cur=groups.find(g=>g.name===pn); if(!cur){ const ex=st.projects.find(p=>p.name.trim()===pn && !p.archived)||st.projects.find(p=>p.name.trim()===pn);
+      cur={name:pn, existing:ex||null, tasks:[], errs:[]}; groups.push(cur); } }
+    const hasTask=r.slice(1).some(c=>c!==''&&c!=null);
+    if(!cur){ groups.push(cur={name:'', existing:null, tasks:[], errs:['缺專案名稱']}); }
+    if(hasTask){ const t=parseTaskCells(r.slice(1)); if(!t.title) t.errs.unshift('缺任務名稱'); cur.tasks.push(t); }
+  });
+  return groups;
+}
+function projectTemplateCSV(){
+  const ex=people(), a=nameOf(ex[0]), b=ex[1]?nameOf(ex[1]):'對方';
+  const rows=[['專案名稱','任務名稱','負責人','到期日','到期時間'],
+    ['A 大專案','A1 需求訪談',a,'2026/12/05','17:00'],['','A2 現況盤點',b,'2026/12/10',''],['','A3 期中報告','兩人','2026/12/20','12:00'],['','A4 修正','',' ',''],['','A5 結案',a,'2026/12/31','18:00'],
+    ['B 大專案','B1 文獻回顧',b,'2026/12/08',''],['','B2 問卷設計',a,'2026/12/15',''],['','B3 資料分析','兩人','',''],['','B4 撰寫報告',a,'2027/01/10','']];
+  downloadFile('專案匯入範本.csv','\ufeff'+rows.map(r=>r.map(v=>`"${String(v).trim()}"`).join(',')).join('\r\n'),'text/csv;charset=utf-8');
+}
+function openProjectImportModal(){
+  let groups=[];
+  modal(`<h3>匯入專案與子任務</h3>
+    <p class="hint">欄位順序：<b>專案名稱｜任務名稱｜負責人｜到期日｜到期時間</b><br>同一個專案只要在第一列填專案名稱，下面幾列留空就會歸在同一個專案。已經有的專案會把任務加進去，沒有的會自動建立。</p>
+    <div class="seg2" id="pimT" style="margin:6px 0 10px"><button data-m="paste" class="on">從 Excel 貼上</button><button data-m="file">上傳檔案</button></div>
+    <div id="pimPaste"><textarea id="pimTxt" rows="6" ${AC} placeholder="在 Excel 選取儲存格 → 複製 → 貼到這裡"></textarea></div>
+    <div id="pimFile" class="hidden"><input id="pimF" type="file" accept=".xlsx,.xls,.csv,text/csv" style="width:100%;margin-top:4px"><div class="hint">支援 .xlsx、.xls、.csv，讀取第一個工作表</div></div>
+    <div class="row" style="justify-content:space-between;margin-top:6px"><a href="#" id="pimTpl" class="lnk">⬇ 下載範本</a><span class="hint" style="margin:0">負責人填名字，兩人用「、」或填「兩人」</span></div>
+    <div id="pimPrev"></div>
+    <div class="actions"><button class="btn ghost" id="pimX">取消</button><button class="btn" id="pimGo" disabled>匯入</button></div>`,(el,close)=>{
+    const prev=el.querySelector('#pimPrev'), go=el.querySelector('#pimGo');
+    const counts=()=>{ const okG=groups.filter(g=>!g.errs.length); return {np:okG.filter(g=>!g.existing).length, nt:okG.reduce((n,g)=>n+g.tasks.filter(t=>!t.errs.length).length,0),
+      bad:groups.filter(g=>g.errs.length).length+groups.reduce((n,g)=>n+g.tasks.filter(t=>t.errs.length).length,0)}; };
+    const show=()=>{ const c=counts(); go.disabled=!(c.np||c.nt); go.textContent=(c.np||c.nt)?`匯入 ${c.np} 專案・${c.nt} 任務`:'匯入';
+      prev.innerHTML=groups.length?`<div class="lbl-s" style="margin-top:12px">預覽${c.bad?`・<span style="color:var(--danger)">${c.bad} 筆有問題會略過</span>`:''}</div>
+        <div class="imp-tbl">${groups.map(g=>`<div class="imp-row pim-g ${g.errs.length?'bad':''}"><div class="row" style="justify-content:space-between;gap:8px">
+            <b>📁 ${esc(g.name||'（空白）')}</b><span class="tag ${g.existing?'gray':''}">${g.errs.length?'略過':g.existing?'加到現有專案':'新建立'}</span></div>
+            ${g.errs.length?`<div class="imp-err">⚠ ${esc(g.errs.join('；'))}</div>`:''}</div>
+          ${g.tasks.map(t=>`<div class="imp-row pim-t ${t.errs.length||g.errs.length?'bad':''}"><div>${esc(t.title||'（空白）')}</div>
+            <div class="meta" style="white-space:normal">${t.assignees.length?chipsFor(t.assignees):'<span class="chip" style="--c:var(--sub)">未指派</span>'}${t.due?`<span class="meta-i">到期 ${fmtFullM(t.due)}</span>`:''}</div>
+            ${t.errs.length?`<div class="imp-err">⚠ ${esc(t.errs.join('；'))}</div>`:''}</div>`).join('')}`).join('')}</div>
+        <div class="hint">新建立的專案預設「兩人共用」，之後可在專案裡修改負責人、期限與目標時數。只填日期沒填時間，預設 18:00。</div>`:''; };
+    el.querySelectorAll('#pimT button').forEach(b=>b.onclick=()=>{ el.querySelectorAll('#pimT button').forEach(x=>x.classList.toggle('on',x===b));
+      el.querySelector('#pimPaste').classList.toggle('hidden',b.dataset.m!=='paste'); el.querySelector('#pimFile').classList.toggle('hidden',b.dataset.m!=='file'); });
+    el.querySelector('#pimTxt').oninput=e=>{ groups=buildProjectImport(textToRows(e.target.value)); show(); };
+    el.querySelector('#pimF').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; prev.innerHTML='<div class="hint">讀取中…</div>';
+      try{ groups=buildProjectImport(await fileToRows(f)); show(); }catch(err){ prev.innerHTML='<div class="imp-err">檔案讀取失敗，請確認是 Excel 或 CSV 檔；也可以改用「從 Excel 貼上」。</div>'; } };
+    el.querySelector('#pimTpl').onclick=e=>{ e.preventDefault(); projectTemplateCSV(); };
+    el.querySelector('#pimX').onclick=close;
+    go.onclick=async()=>{ const okG=groups.filter(g=>!g.errs.length); go.disabled=true; go.textContent='匯入中…';
+      const newP=okG.filter(g=>!g.existing).map(g=>({id:uuid(),name:g.name.slice(0,30),assignees:[]}));
+      okG.filter(g=>!g.existing).forEach((g,i)=>g.pid=newP[i].id); okG.filter(g=>g.existing).forEach(g=>g.pid=g.existing.id);
+      if(newP.length){ const {error}=await sb.from('projects').insert(newP); if(error){ go.disabled=false; show(); return toast('建立專案失敗，請再試一次'); } }
+      const tasks=okG.flatMap(g=>g.tasks.filter(t=>!t.errs.length).map(t=>({project_id:g.pid,title:t.title.slice(0,60),assignees:t.assignees,due_at:t.due?t.due.toISOString():null})));
+      if(tasks.length){ const {error}=await sb.from('tasks').insert(tasks); if(error){ await loadProjects(); render(); return toast('專案已建立，但任務匯入失敗，請再試一次'); } }
+      await Promise.all([loadProjects(),loadTasks()]); close(); render(); toast(`已匯入 ${newP.length} 個新專案、${tasks.length} 個任務 ✓`); };
   });
 }
 function importTemplateCSV(){
@@ -946,8 +1023,7 @@ function openImportModal(p){
         <div class="hint">只填日期沒填時間，預設當天 18:00 到期。</div>`:''; };
     el.querySelectorAll('#impT button').forEach(b=>b.onclick=()=>{ el.querySelectorAll('#impT button').forEach(x=>x.classList.toggle('on',x===b));
       el.querySelector('#impPaste').classList.toggle('hidden',b.dataset.m!=='paste'); el.querySelector('#impFile').classList.toggle('hidden',b.dataset.m!=='file'); });
-    el.querySelector('#impTxt').oninput=e=>{ const txt=e.target.value; const tab=txt.includes('\t');
-      parsed=buildImport(txt.split(/\r?\n/).map(l=>tab?l.split('\t'):l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(c=>c.replace(/^"|"$/g,'').replace(/""/g,'"')))); show(); };
+    el.querySelector('#impTxt').oninput=e=>{ parsed=buildImport(textToRows(e.target.value)); show(); };
     el.querySelector('#impF').onchange=async e=>{ const f=e.target.files[0]; if(!f) return;
       prev.innerHTML='<div class="hint">讀取中…</div>';
       try{ const X=await loadXLSX(); const buf=await f.arrayBuffer();
@@ -972,11 +1048,12 @@ function renderProjects(){
     <div class="meta" style="white-space:normal;margin-top:3px">${projAssignees(p).length?chipsFor(projPeople(p)):'<span class="chip" style="--c:var(--sub)">兩人共用</span>'}
       ${KINDS.filter(([f])=>p[f]>0).map(([f,,,l])=>`<span class="tag">${l} ${+p[f]} 小時</span>`).join('')}${ts.length?`<span class="tag gray">任務 ${dn}/${ts.length}</span>`:''}</div></div>
     <span style="color:var(--sub)">›</span></div>`; };
-  $('#view').innerHTML=`<div class="row" style="justify-content:space-between;margin:0 4px 10px">${scopeToggle()}<button class="btn sm" id="addP">＋ 新增專案</button></div>
+  $('#view').innerHTML=`<div class="row" style="justify-content:space-between;margin:0 4px 10px">${scopeToggle()}<span class="row" style="gap:6px"><button class="btn sm ghost" id="impP">📥 匯入</button><button class="btn sm" id="addP">＋ 新增專案</button></span></div>
     ${act.length?`<div class="card list">${act.map(item).join('')}</div>`:`<div class="card empty">${st.scope==='mine'?'沒有指派給你的專案，可切到「總覽」看全部':'還沒有專案'}</div>`}
     ${arc.length?`<div class="h2">已封存</div><div class="card list" style="opacity:.7">${arc.map(item).join('')}</div>`:''}`;
   bindScope();
   $('#addP').onclick=()=>openProjectModal(null);
+  $('#impP').onclick=openProjectImportModal;
   document.querySelectorAll('[data-pid]').forEach(el=>el.onclick=()=>{ st.projView=el.dataset.pid; render(); window.scrollTo(0,0); });
 }
 
@@ -1026,7 +1103,7 @@ function renderProjectDetail(){
   $('#back').onclick=()=>{ st.projView=null; render(); };
   $('#editP').onclick=()=>openProjectModal(p);
   $('#cutP').onclick=e=>{ e.preventDefault(); openCutModal(p); };
-  const rp=$('#remP'); if(rp) rp.onclick=e=>{ e.preventDefault(); openRemindModal(`${p.name} 專案期限`, dl, '工時同步'); };
+  const rp=$('#remP'); if(rp) rp.onclick=e=>{ e.preventDefault(); openRemindModal(`${p.name} 專案期限`, dl, 'Work Together'); };
   const tg=$('#tglDone'); if(tg) tg.onclick=e=>{ e.preventDefault(); st.showDone=!st.showDone; renderProjectDetail(); };
   const v=$('#view');
   $('#addT').onclick=async()=>{ const title=$('#newT').value.trim(); if(!title) return toast('請輸入任務名稱');
@@ -1354,14 +1431,14 @@ function openTaskModal(t){
       const t2={...t,assignees}; const done=assignees.length?assignees.every(u=>doneBy(t2,u)):!!t.done;
       const {error}=await sb.from('tasks').update({title,assignees,due_at:dv?new Date(dv).toISOString():null,done}).eq('id',t.id);
       if(error) return toast('儲存失敗'); await loadTasks(); close(); render(); toast('已儲存'); };
-    const r=el.querySelector('#tRem'); if(r) r.onclick=()=>{ close(); openRemindModal(t.title, due, `${projName(t.project_id)}・工時同步`); };
+    const r=el.querySelector('#tRem'); if(r) r.onclick=()=>{ close(); openRemindModal(t.title, due, `${projName(t.project_id)}・Work Together`); };
     el.querySelector('#tDel').onclick=async()=>{ if(!confirm(`確定刪除任務「${t.title}」？\n（相關打卡紀錄會保留，只是不再標示任務）`)) return;
       const {error}=await sb.from('tasks').delete().eq('id',t.id); if(error) return toast('刪除失敗');
       await Promise.all([loadTasks(),loadSessions(),loadTaskDone()]); close(); render(); toast('已刪除'); };
   });
 }
 function openProjectModal(p){
-  const isNew=!p;
+  const isNew=!p; let trows=[{title:'',assignees:[me.id],due:null}];
   modal(`<h3>${isNew?'新增專案':'編輯專案'}</h3>
     <label class="f">專案名稱</label><input id="pN" type="text" ${AC} maxlength="30" value="${esc(p?.name||'')}" placeholder="例如：A 專案">
     <label class="f">負責人（可複選；都不勾＝兩人共用）</label>${assigneePicker('pA',p?projAssignees(p):[me.id])}
@@ -1369,10 +1446,34 @@ function openProjectModal(p){
     <label class="f">每人時數目標（可勾選一種或多種）</label>
     ${KINDS.map(([f,,,l])=>`<div class="goal-set"><input type="checkbox" id="c_${f}" ${p&&p[f]>0?'checked':''}><span class="lbl">${l}</span>
       <input type="number" id="v_${f}" ${AC} min="0" step="0.5" inputmode="decimal" placeholder="小時" value="${p&&p[f]>0?+p[f]:''}"></div>`).join('')}
+    ${isNew?`<label class="f">子任務（選填，可先留空，之後在專案裡新增）</label>
+      <div id="ptRows"></div>
+      <div class="row" style="gap:8px;margin-top:8px"><button class="btn sm ghost" id="ptAdd" style="flex:1">＋ 新增一列</button><button class="btn sm ghost" id="ptPaste" style="flex:1">📋 從 Excel 貼上</button></div>
+      <div id="ptPasteBox" class="hidden"><textarea id="ptTxt" rows="4" ${AC} placeholder="欄位：任務名稱｜負責人｜到期日｜到期時間（在 Excel 選取後複製貼上）"></textarea>
+        <div class="row" style="justify-content:space-between;margin-top:6px"><span class="hint" id="ptMsg" style="margin:0"></span><button class="btn sm" id="ptAddPaste">加入清單</button></div></div>`:''}
     ${isNew?'':`<div class="goal-set" style="margin-top:16px"><input type="checkbox" id="pArc" ${p.archived?'checked':''}><span>封存（不再出現在打卡選單）</span></div>`}
     <div class="actions">${isNew?'':'<button class="btn danger-ghost" id="pDel">刪除</button>'}<button class="btn" id="pS">儲存</button></div>`,(el,close)=>{
     KINDS.forEach(([f])=>{ const c=el.querySelector('#c_'+f), v=el.querySelector('#v_'+f);
       v.oninput=()=>{ c.checked=+v.value>0; }; c.onchange=()=>{ if(c.checked) v.focus(); }; });
+    const drawRows=()=>{ const box=el.querySelector('#ptRows'); if(!box) return;
+      box.innerHTML=trows.map((t,i)=>`<div class="pt-row" data-i="${i}">
+        <div class="row" style="gap:6px"><span class="pt-n">${i+1}</span><input class="pt-t" type="text" ${AC} maxlength="60" placeholder="子任務名稱" value="${esc(t.title)}"><button class="pt-x" title="刪除這列">×</button></div>
+        <div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap;padding-left:26px">${people().map(u=>`<button class="pk-mini ${t.assignees.includes(u)?'on':''}" data-u="${u}" style="--c:${colorOf(u)}">${esc(nameOf(u))}</button>`).join('')}
+          <input class="pt-d" type="datetime-local" ${AC} value="${toInputM(t.due)}" title="到期時間（選填）"></div></div>`).join('');
+      box.querySelectorAll('.pt-row').forEach(r=>{ const t=trows[+r.dataset.i];
+        r.querySelector('.pt-t').oninput=e=>{ t.title=e.target.value; };
+        r.querySelector('.pt-t').onkeydown=e=>{ if(e.key==='Enter'&&!e.isComposing){ e.preventDefault(); trows.splice(+r.dataset.i+1,0,{title:'',assignees:[...t.assignees],due:null}); drawRows(); el.querySelectorAll('.pt-t')[+r.dataset.i+1].focus(); } };
+        r.querySelector('.pt-d').onchange=e=>{ t.due=e.target.value?new Date(e.target.value):null; };
+        r.querySelector('.pt-x').onclick=()=>{ trows.splice(+r.dataset.i,1); if(!trows.length) trows.push({title:'',assignees:[me.id],due:null}); drawRows(); };
+        r.querySelectorAll('.pk-mini').forEach(b=>b.onclick=()=>{ const u=b.dataset.u; t.assignees=t.assignees.includes(u)?t.assignees.filter(x=>x!==u):[...t.assignees,u]; b.classList.toggle('on'); }); }); };
+    if(isNew){ drawRows();
+      el.querySelector('#ptAdd').onclick=()=>{ const last=trows[trows.length-1]; trows.push({title:'',assignees:last?[...last.assignees]:[me.id],due:null}); drawRows(); const ins=el.querySelectorAll('.pt-t'); ins[ins.length-1].focus(); };
+      el.querySelector('#ptPaste').onclick=()=>{ el.querySelector('#ptPasteBox').classList.toggle('hidden'); el.querySelector('#ptTxt').focus(); };
+      el.querySelector('#ptAddPaste').onclick=()=>{ const parsed=buildImport(textToRows(el.querySelector('#ptTxt').value)); const ok=parsed.filter(r=>!r.errs.length);
+        if(!ok.length) return toast('沒有可加入的任務，請確認欄位順序');
+        trows=trows.filter(t=>t.title.trim()).concat(ok.map(r=>({title:r.title,assignees:r.assignees,due:r.due}))); drawRows();
+        el.querySelector('#ptTxt').value=''; el.querySelector('#ptPasteBox').classList.add('hidden');
+        toast(`已加入 ${ok.length} 個任務${parsed.length>ok.length?`，${parsed.length-ok.length} 筆格式有誤已略過`:''}`); }; }
     el.querySelector('#pS').onclick=async()=>{
       const name=el.querySelector('#pN').value.trim(); if(!name) return toast('請輸入專案名稱');
       const dv=el.querySelector('#pD').value;
@@ -1380,9 +1481,16 @@ function openProjectModal(p){
       for(const [f,,,l] of KINDS){ const on=el.querySelector('#c_'+f).checked, v=+el.querySelector('#v_'+f).value;
         if(on && !(v>0)) return toast(`請填入${l}目標時數`); row[f]=on?v:null; }
       if(!isNew) row.archived=el.querySelector('#pArc').checked;
+      if(isNew) row.id=uuid();
+      const btn=el.querySelector('#pS'); btn.disabled=true;
       const {error}=isNew?await sb.from('projects').insert(row):await sb.from('projects').update(row).eq('id',p.id);
-      if(error) return toast('儲存失敗');
-      await loadProjects(); close(); render(); toast('已儲存');
+      if(error){ btn.disabled=false; return toast('儲存失敗'); }
+      let nt=0;
+      if(isNew){ const ts=trows.filter(t=>t.title.trim()).map(t=>({project_id:row.id,title:t.title.trim().slice(0,60),assignees:t.assignees,due_at:t.due?t.due.toISOString():null}));
+        if(ts.length){ const r=await sb.from('tasks').insert(ts); if(r.error) toast('專案已建立，但子任務新增失敗'); else nt=ts.length; } }
+      await Promise.all([loadProjects(),loadTasks()]); close();
+      if(isNew){ st.tab='proj'; st.projView=row.id; }
+      render(); toast(isNew?`已建立專案${nt?`和 ${nt} 個子任務`:''} ✓`:'已儲存');
     };
     const del=el.querySelector('#pDel');
     if(del) del.onclick=async()=>{ if(!confirm(`確定刪除「${p.name}」？\n（打卡紀錄會保留但變成「未指定專案」，子任務會一併刪除。若只是不再使用，建議改用封存）`)) return;
