@@ -186,6 +186,39 @@ input:disabled{opacity:.35}
 .imp-row:last-child{border-bottom:0}
 .imp-row.bad{background:color-mix(in srgb, var(--danger) 8%, transparent)}
 .imp-err{color:var(--danger);font-size:12px;margin-top:3px}
+.more-row{text-align:center;margin:-4px 0 10px}
+.emo-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.emo-grid .emo{font-size:22px;padding:6px 0;text-align:center}
+.up-row{align-items:center}
+.up-ic{font-size:18px;flex:none;width:24px;text-align:center}
+.up-t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec .due{align-self:center}
+.pill-new{font-size:11px;background:var(--danger);color:#fff;border-radius:10px;padding:1px 8px;font-weight:700}
+.hist-bar{display:flex;justify-content:space-between;align-items:center;background:var(--card);border-radius:12px;padding:11px 16px;margin:0 0 10px;font-size:14px;color:var(--sub);box-shadow:var(--shadow)}
+.rec.kd{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;position:relative}
+.react-btn{border:1px solid var(--line);background:var(--bg);color:var(--sub);border-radius:14px;font-size:12px;padding:4px 10px;cursor:pointer;flex:none;align-self:center;font-family:inherit}
+.react-bar{position:fixed;z-index:35;display:flex;gap:2px;background:var(--card);border-radius:24px;padding:5px 6px;box-shadow:0 6px 24px rgba(0,0,0,.18);border:1px solid var(--line);animation:kin2 .18s ease-out;max-width:calc(100vw - 16px);flex-wrap:wrap;justify-content:center}
+@keyframes kin2{from{transform:scale(.8);opacity:0}to{transform:none;opacity:1}}
+.react-bar button{border:0;background:none;font-size:22px;padding:4px 3px;cursor:pointer;border-radius:50%;line-height:1}
+.react-bar button:active{transform:scale(1.3)}
+.react-bar .rb-more{font-size:18px;color:var(--sub);width:34px}
+.react-bar .rb-txt{font-size:13px;color:var(--accent);font-weight:700;padding:4px 10px;border-radius:14px;font-family:inherit}
+.my-reacts{margin-top:5px;display:flex;flex-wrap:wrap;gap:4px}
+.react-pill{font-size:13px;background:var(--accent-soft);border-radius:12px;padding:1px 8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rp-t{font-size:12px;color:var(--text)}
+.reply-box{margin-top:8px;-webkit-user-select:text;user-select:text}
+.reply-box input{padding:8px 10px;font-size:14px}
+.rb-send{white-space:nowrap;flex:none}
+.phr-inline{display:flex;flex-wrap:wrap;gap:5px}
+.chip-btn{border:1px dashed var(--line);background:var(--bg);border-radius:14px;padding:4px 10px;font-size:12.5px;font-family:inherit;color:var(--text);cursor:pointer}
+.up-proj{padding-bottom:6px;border-bottom:0!important}
+.up-proj + .up-proj{border-top:1px solid var(--line)}
+.up-proj .up-t{font-weight:700}
+.up-task{padding:7px 14px 7px 30px;font-size:14px;border-bottom:0!important;position:relative}
+.up-task::before{content:"";position:absolute;left:18px;top:0;bottom:50%;width:8px;border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);border-bottom-left-radius:4px}
+.up-task + .up-proj{border-top:1px solid var(--line)}
+.up-task:last-child{padding-bottom:12px}
+.due-mini{font-size:11px;color:var(--sub);white-space:nowrap}
 .hidden{display:none!important}
 </style>
 </head>
@@ -201,6 +234,7 @@ const COLORS = ['var(--p0)','var(--p1)','var(--p2)','var(--p3)'];
 const SWATCHES = ['#2f9e8f','#e07a5f','#6c7bd9','#c9a227','#d6589f','#3d8bd9','#7a9e3b','#8e6cc9','#e0563b','#5f6b7a'];
 const WD = ['日','一','二','三','四','五','六'];
 const EMOJIS = ['👏','💪','🔥','🌟','❤️','☕'];
+const EMOJIS_ALL = ['👏','💪','🔥','🌟','❤️','☕','🙏','😊','🎉','👍','🤗','💯','✨','🥳','🫶','🙌','🚀','🏆','😍','🥰','😂','🤣','😆','👌','😮','😱','👀','😢','🥲','🥺','😤','🙄','😡','😑','😵','🫠','💀','😮‍💨','🤔','😅','🍀','🌈'];
 const AC = 'autocomplete="off" autocorrect="off" spellcheck="false"';   // 不讓瀏覽器記住輸入內容
 
 // ===================== 小工具 =====================
@@ -225,7 +259,7 @@ function hmToMin(s){ const [h,m]=String(s||'').split(':').map(Number); return (h
 function cutText(c){ return `每天 ${minToHM(c.m)} 起算・每週從週${WD[c.wd]}開始`; }
 function ago(t){ const s=(Date.now()-new Date(t))/1000; if(s<60) return '剛剛'; if(s<3600) return `${Math.floor(s/60)} 分鐘前`; if(s<86400) return `${Math.floor(s/3600)} 小時前`; return `${Math.floor(s/86400)} 天前`; }
 
-// ---- 死限 / 到期（含時間）----
+// ---- 期限 / 到期（含時間）----
 function legacyDate(s){ if(!s) return null; const [y,m,d]=String(s).split('-').map(Number); return new Date(y,m-1,d,23,59); }
 function projDeadline(p){ return p.deadline_at ? new Date(p.deadline_at) : legacyDate(p.deadline); }
 function taskDue(t){ return t.due_at ? new Date(t.due_at) : legacyDate(t.due); }
@@ -261,7 +295,7 @@ function rangeLabel(kind,p){ const last=new Date(+p.end-86400000);
 // ===================== 狀態 =====================
 let sb=null, me=null;
 const st = { profiles:[], projects:[], sessions:[], tasks:[], pus:[], taskDone:[], kudos:[],
-  tab:'home', projView:null, showDone:false, recWho:'all', recRange:'week', scope: localStorage.getItem(SCOPE_KEY)||'mine' };
+  tab:'home', projView:null, moreRecv:false, moreWins:{}, freshIds:null, histN:10, showDone:false, recWho:'all', recRange:'week', scope: localStorage.getItem(SCOPE_KEY)||'mine' };
 const seenKudos=new Set();
 
 function cfg(){ try{ return JSON.parse(localStorage.getItem(CFG_KEY)||'null'); }catch{ return null; } }
@@ -426,7 +460,7 @@ function render(){
     <nav><div class="in">
       ${[['home','打卡'],['rec','紀錄'],['proj','專案'],['cheer','加油'],['set','設定']].map(([k,l])=>`<button data-tab="${k}" class="${st.tab===k?'act':''}">${ICONS[k]}${l}${k==='cheer'?'<span id="cheerBadge" class="badge hidden"></span>':''}</button>`).join('')}
     </div></nav>`;
-  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{ st.tab=b.dataset.tab; st.projView=null; render(); window.scrollTo(0,0); });
+  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{ if(st.tab!==b.dataset.tab){ st.freshIds=null; st.moreRecv=false; st.histN=10; } st.tab=b.dataset.tab; st.projView=null; render(); window.scrollTo(0,0); });
   updateBadge();
   if(st.tab==='proj' && st.projView && projOf(st.projView)) return renderProjectDetail();
   ({home:renderHome,rec:renderRecords,proj:renderProjects,cheer:renderCheer,set:renderSettings})[st.tab]();
@@ -495,22 +529,31 @@ function goalBlock(p){
     </div>`; }).join('');
 }
 function progressHTML(ps){
-  ps=ps.filter(p=>KINDS.some(([f])=>p[f]>0) || projDeadline(p) || st.tasks.some(t=>t.project_id===p.id));
-  if(!ps.length) return `<div class="card empty">${st.scope==='mine'?'沒有指派給你的專案進度<br><span class="hint">可切到「總覽」看全部</span>':'還沒有設定目標或死限的專案'}</div>`;
+  if(!ps.length) return `<div class="card empty">${st.scope==='mine'?'沒有指派給你的專案<br><span class="hint">可切到「總覽」看全部</span>':'還沒有專案'}</div>`;
   return ps.map(p=>{ const ts=st.tasks.filter(t=>t.project_id===p.id), dn=ts.filter(isDone).length;
     return `<div class="card proj tap" data-open="${p.id}"><div class="proj-head"><span class="proj-name">${esc(p.name)}</span>${dueBadge(projDeadline(p))}</div>
-    ${projAssignees(p).length?`<div class="chips">${chipsFor(projPeople(p))}</div>`:''}
+    <div class="chips">${projAssignees(p).length?chipsFor(projPeople(p)):'<span class="chip" style="--c:var(--sub)">兩人共用</span>'}</div>
     ${ts.length?`<div class="goal-label" style="margin-top:6px"><span>任務 ${dn}/${ts.length} 完成</span></div><div class="track thin"><div class="fill" style="width:${dn/ts.length*100}%;background:var(--accent)"></div></div>`:''}
-    ${goalBlock(p)}</div>`; }).join('');
+    ${KINDS.some(([f])=>p[f]>0)?goalBlock(p):weekBlock(p)}</div>`; }).join('');
+}
+// 沒有設定目標的專案：顯示每人本週投入
+function weekBlock(p){
+  return `<div class="goal"><div class="goal-label"><span>本週投入（未設目標）</span></div>
+    ${projPeople(p).map(uid=>{ const ms=sumMs(st.sessions.filter(s=>s.user_id===uid&&s.project_id===p.id),periodOf('week',Date.now(),0,projCut(uid,p.id)));
+      return `<div class="prow"><span class="who">${esc(nameOf(uid))}</span><span class="dot sm" style="background:${colorOf(uid)}"></span><span style="flex:1"></span><span class="val"><b>${zhShort(ms)}</b></span></div>`; }).join('')}</div>`;
 }
 function upcomingHTML(){
-  const items=[], lim=Date.now()+7*86400000;
-  st.projects.filter(p=>!p.archived && isMine(p)).forEach(p=>{ const d=projDeadline(p); if(d && +d<=lim) items.push({d,html:`<b>${esc(p.name)}</b> 專案死限`,pid:p.id}); });
-  st.tasks.forEach(t=>{ const d=taskDue(t), p=projOf(t.project_id);
-    if(d && +d<=lim && p && !p.archived && canCheck(t) && !myChecked(t)) items.push({d,html:`${esc(t.title)} <span class="meta-i">${esc(p.name)}</span>`,pid:p.id}); });
-  if(!items.length) return '';
-  items.sort((a,b)=>a.d-b.d);
-  return `<div class="h2">7 天內到期（我的）</div><div class="card list">${items.map(i=>`<div class="rec tap" data-open="${i.pid}"><div class="main">${i.html}</div>${dueBadge(i.d)}</div>`).join('')}</div>`;
+  const lim=Date.now()+7*86400000, groups=[];
+  st.projects.filter(p=>!p.archived && isMine(p)).forEach(p=>{
+    const d=projDeadline(p), pIn=d && +d<=lim;
+    const ts=st.tasks.filter(t=>t.project_id===p.id && taskDue(t) && +taskDue(t)<=lim && canCheck(t) && !myChecked(t)).sort((a,b)=>taskDue(a)-taskDue(b));
+    if(!pIn && !ts.length) return;
+    groups.push({p,d,pIn,ts,first:Math.min(pIn?+d:9e15, ...ts.map(t=>+taskDue(t)))}); });
+  if(!groups.length) return '';
+  groups.sort((a,b)=>a.first-b.first);
+  return `<div class="h2">7 天內到期（我的）</div><div class="card list">${groups.map(g=>`
+    <div class="rec tap up-proj" data-open="${g.p.id}"><div class="main up-t">${esc(g.p.name)}</div>${g.pIn?dueBadge(g.d):(g.d?`<span class="due-mini">期限 ${fmtDM(g.d)}</span>`:'')}</div>
+    ${g.ts.map(t=>`<div class="rec tap up-task" data-open="${g.p.id}"><div class="main">${esc(t.title)}</div>${dueBadge(taskDue(t))}</div>`).join('')}`).join('')}</div>`;
 }
 function renderHome(){
   const un=st.kudos.filter(k=>k.to_user===me.id && !k.read_at);
@@ -522,7 +565,7 @@ function renderHome(){
     <div class="h2 row" style="justify-content:space-between"><span>專案進度</span>${scopeToggle()}</div>
     <div id="progress">${progressHTML(scoped(st.projects.filter(p=>!p.archived)))}</div>`;
   bindOpen(); bindScope();
-  const gc=$('#goCheer'); if(gc) gc.onclick=()=>{ st.tab='cheer'; render(); };
+  const gc=$('#goCheer'); if(gc) gc.onclick=()=>{ st.freshIds=null; st.tab='cheer'; render(); };
   const ps=$('#projSel');
   if(ps) ps.onchange=()=>{ const pid=ps.value; $('#taskSel').innerHTML=taskOptions(pid,''); $('#taskWrap').classList.toggle('hidden',!hasTaskOpts(pid)); };
   const sBtn=$('#startBtn'), eBtn=$('#stopBtn');
@@ -778,7 +821,7 @@ function renderProjectDetail(){
     <div class="card">
       <div class="proj-head"><span class="proj-name" style="font-size:18px">${esc(p.name)}${p.archived?' <span class="tag gray">已封存</span>':''}</span></div>
       <div class="kv"><span>負責人</span><span>${projAssignees(p).length?chipsFor(projPeople(p)):'兩人共用'}</span></div>
-      <div class="kv"><span>死限</span><span>${dl?`${fmtFullM(dl)}<br>${dueBadge(dl)} <a href="#" id="remP" class="lnk">⏰ 提醒我</a>`:'未設定'}</span></div>
+      <div class="kv"><span>期限</span><span>${dl?`${fmtFullM(dl)}<br>${dueBadge(dl)} <a href="#" id="remP" class="lnk">⏰ 提醒我</a>`:'未設定'}</span></div>
       <div class="kv"><span>累計投入</span><span>${projPeople(p).map(u=>`${esc(nameOf(u))} ${zhShort(sumMs(st.sessions.filter(s=>s.user_id===u&&s.project_id===p.id),ALL_TIME))}`).join('・')}</span></div>
       <div class="kv"><span>我的切點</span><span>${ov?'本專案自訂':'跟隨我的預設'} <a href="#" id="cutP" class="lnk">修改</a></span></div>
       <div class="hint" style="margin-top:0">${cutText(myCut)}</div>
@@ -799,7 +842,7 @@ function renderProjectDetail(){
   $('#back').onclick=()=>{ st.projView=null; render(); };
   $('#editP').onclick=()=>openProjectModal(p);
   $('#cutP').onclick=e=>{ e.preventDefault(); openCutModal(p); };
-  const rp=$('#remP'); if(rp) rp.onclick=e=>{ e.preventDefault(); openRemindModal(`${p.name} 專案死限`, dl, '工時同步'); };
+  const rp=$('#remP'); if(rp) rp.onclick=e=>{ e.preventDefault(); openRemindModal(`${p.name} 專案期限`, dl, '工時同步'); };
   const tg=$('#tglDone'); if(tg) tg.onclick=e=>{ e.preventDefault(); st.showDone=!st.showDone; renderProjectDetail(); };
   const v=$('#view');
   $('#addT').onclick=async()=>{ const title=$('#newT').value.trim(); if(!title) return toast('請輸入任務名稱');
@@ -846,6 +889,7 @@ function winsOf(uid){
 }
 function phrasesFor(w, to){
   const n=nameOf(to);
+  if(w && w.kind==='reply') return [`謝謝你 😊`,`收到，超開心！`,`有你一起真好 🤗`,`你也辛苦了，一起加油 ☕`];
   if(!w) return [`今天也一起加油 💪`,`謝謝你一起做這些事 🙌`,`累了就休息一下，我們進度沒問題 ☕`,`有你一起真好 😊`];
   if(w.kind==='session') return [`辛苦了！專注了 ${w.dur}，很穩 💪`,`看得到你的投入，謝謝你 🙏`,`記得起來動一動、喝口水 ☕`];
   if(w.kind==='task') return [`「${w.title}」搞定了，謝謝你一步步推進 ✨`,`這塊你處理掉了，幫了大忙！`,`又往前一步了 🚶`];
@@ -856,42 +900,100 @@ async function sendKudos(to, w, emoji, message){
   if(error) return toast('送出失敗');
   await loadKudos(); render(); popKudos(`已送出 ${esc(emoji||'💌')}`, `${esc(nameOf(to))} 打開 App 就會看到`);
 }
+const QUICK_REACT=['❤️','👍','😂','🤗','🙏','😮','😢','😤','🙄'];
+function reactionsTo(k){ return st.kudos.filter(x=>x.ref==='reply:'+k.id); }
+function kudoRow(k){
+  const reps=reactionsTo(k), myReacts=reps.filter(x=>x.from_user===me.id);
+  return `<div class="rec kd ${st.freshIds.includes(k.id)?'unread':''}" data-kd="${k.id}">
+    <span class="big-e">${esc(k.emoji||'💌')}</span>
+    <div class="main"><div><b>${esc(nameOf(k.from_user))}</b>${k.message?`：${esc(k.message)}`:' 給你一個肯定'}</div>
+      <div class="meta">${k.context?`${k.ref&&k.ref.startsWith('reply:')?'':'為了：'}${esc(k.context)}・`:''}${ago(k.created_at)}</div>
+      ${myReacts.length?`<div class="my-reacts">${myReacts.map(x=>`<span class="react-pill" title="${esc(x.message||'')}">${esc(x.emoji||'💬')}${x.message?` <span class="rp-t">${esc(x.message)}</span>`:''}</span>`).join('')}</div>`:''}
+      <div class="reply-box hidden" data-rb="${k.id}">
+        <div class="phr-inline">${['謝謝你 😊','收到，超開心！','你也辛苦了 ☕'].map(p=>`<button class="chip-btn">${p}</button>`).join('')}</div>
+        <div class="row" style="gap:6px;margin-top:6px"><input type="text" ${AC} maxlength="120" placeholder="輸入回覆…" class="rb-in"><button class="btn sm rb-send">送出</button></div>
+      </div>
+    </div>
+    <button class="react-btn" data-rbtn="${k.id}" aria-label="回應">回應</button></div>`;
+}
 function renderCheer(){
-  const recv=st.kudos.filter(k=>k.to_user===me.id), unreadIds=recv.filter(k=>!k.read_at).map(k=>k.id);
+  const recv=st.kudos.filter(k=>k.to_user===me.id);
+  if(!st.freshIds) st.freshIds=recv.filter(k=>!k.read_at).map(k=>k.id);
+  recv.filter(k=>!k.read_at && !st.freshIds.includes(k.id)).forEach(k=>st.freshIds.push(k.id));
+  const fresh=recv.filter(k=>st.freshIds.includes(k.id)), hist=recv.filter(k=>!st.freshIds.includes(k.id));
+  const unreadIds=recv.filter(k=>!k.read_at).map(k=>k.id);
   const ps=partners();
   $('#view').innerHTML=`
-    <div class="h2">收到的肯定</div>
-    ${recv.length?`<div class="card list">${recv.slice(0,30).map(k=>`<div class="rec ${unreadIds.includes(k.id)?'unread':''}">
-        <span class="big-e">${esc(k.emoji||'💌')}</span>
-        <div class="main"><div><b>${esc(nameOf(k.from_user))}</b>${k.message?`：${esc(k.message)}`:' 給你一個肯定'}</div>
-        <div class="meta">${k.context?`為了：${esc(k.context)}・`:''}${ago(k.created_at)}</div></div>
-        <button class="btn sm ghost" data-thank="${k.id}">回 ❤️</button></div>`).join('')}</div>`
-      :`<div class="card empty">還沒有收到肯定<br><span class="hint">先給對方一個吧，善意通常會回來的 😊</span></div>`}
+    <div class="h2 row" style="justify-content:space-between"><span>收到的肯定</span>${fresh.length?`<span class="pill-new">${fresh.length} 則新的</span>`:''}</div>
+    ${fresh.length?`<div class="card list">${fresh.map(kudoRow).join('')}</div>`:`<div class="card empty" style="padding:14px">${recv.length?'沒有新的肯定':'還沒有收到肯定<br><span class="hint">先給對方一個吧，善意通常會回來的 😊</span>'}</div>`}
+    ${hist.length?`<div class="hist-bar tap" id="histBar"><span>📜 歷史紀錄（${hist.length}）</span><span>${st.moreRecv?'收起 ▲':'展開 ▼'}</span></div>
+      ${st.moreRecv?`<div class="card list">${hist.slice(0,st.histN).map(kudoRow).join('')}</div>${hist.length>st.histN?`<div class="more-row"><a href="#" class="lnk" id="histMore">再顯示 10 則 ▼</a></div>`:''}`:''}`:''}
+    ${fresh.length||hist.length?`<p class="hint" style="text-align:center;margin-top:0">長按訊息（電腦按右鍵）或點「回應」可以快速回覆</p>`:''}
     ${ps.map(u=>{ const ws=winsOf(u), sent=st.kudos.filter(k=>k.from_user===me.id&&k.to_user===u);
       return `<div class="h2 row" style="justify-content:space-between"><span>給 ${esc(nameOf(u))} 加油</span><button class="btn sm ghost" data-gen="${u}">💌 說句話</button></div>
-      ${ws.length?`<div class="card list">${ws.map((w,i)=>{ const mine=sent.filter(k=>k.ref===w.ref);
+      ${ws.length?`<div class="card list">${ws.map((w,i)=>{ if(i>=4 && !st.moreWins[u]) return ''; const mine=sent.filter(k=>k.ref===w.ref);
         return `<div class="rec win"><span class="big-e">${w.icon}</span>
           <div class="main"><div>${w.text}</div><div class="meta">${w.sub}・${ago(w.t)}</div>
           ${mine.length?`<div class="sent">你送了 ${mine.map(k=>esc(k.emoji||'💌')).join(' ')}${mine.some(k=>k.message)?'・含留言':''}</div>`:''}
-          <div class="emo-row">${EMOJIS.map(e=>`<button class="emo" data-u="${u}" data-w="${i}" data-e="${e}">${e}</button>`).join('')}<button class="emo txt" data-u="${u}" data-w="${i}" data-e="msg">留言</button></div></div></div>`; }).join('')}</div>`
+          <div class="emo-row">${EMOJIS.map(e=>`<button class="emo" data-u="${u}" data-w="${i}" data-e="${e}">${e}</button>`).join('')}<button class="emo txt" data-u="${u}" data-w="${i}" data-e="msg">更多／留言</button></div></div></div>`; }).join('')}</div>
+      ${ws.length>4?`<div class="more-row"><a href="#" class="lnk" data-morew="${u}">${st.moreWins[u]?'收起 ▲':`顯示更多（還有 ${ws.length-4} 項）▼`}</a></div>`:''}`
       :`<div class="card empty">${esc(nameOf(u))} 最近 7 天還沒有新的成果<br><span class="hint">也可以按上面的「說句話」直接鼓勵</span></div>`}`; }).join('')}
     <p class="hint" style="text-align:center">具體說出對方「做了什麼、投入了什麼」，比「好棒」更有力量 💡</p>`;
   const wsMap={}; ps.forEach(u=>wsMap[u]=winsOf(u));
-  document.querySelectorAll('.emo').forEach(b=>b.onclick=()=>{ const u=b.dataset.u, w=wsMap[u][+b.dataset.w];
+  document.querySelectorAll('.emo[data-u]').forEach(b=>b.onclick=()=>{ const u=b.dataset.u, w=wsMap[u][+b.dataset.w];
     if(b.dataset.e==='msg') openKudosModal(u,w); else { b.classList.add('pop'); sendKudos(u,w,b.dataset.e,null); } });
   document.querySelectorAll('[data-gen]').forEach(b=>b.onclick=()=>openKudosModal(b.dataset.gen,null));
-  document.querySelectorAll('[data-thank]').forEach(b=>b.onclick=()=>{ const k=st.kudos.find(x=>x.id===b.dataset.thank);
-    sendKudos(k.from_user,{ref:'reply:'+k.id,text:`回覆你的${k.emoji||'留言'}`},'❤️','謝謝你 😊'); });
+  document.querySelectorAll('[data-morew]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const u=a.dataset.morew; st.moreWins[u]=!st.moreWins[u]; renderCheer(); });
+  const hb=$('#histBar'); if(hb) hb.onclick=()=>{ st.moreRecv=!st.moreRecv; renderCheer(); };
+  const hm=$('#histMore'); if(hm) hm.onclick=e=>{ e.preventDefault(); st.histN+=10; renderCheer(); };
+  // 長按 / 右鍵 / 回應按鈕 → 快速表情列
+  document.querySelectorAll('.rec.kd').forEach(row=>{
+    const id=row.dataset.kd; let t=null, sx=0, sy=0;
+    row.addEventListener('pointerdown',e=>{ if(e.target.closest('button,input')) return; sx=e.clientX; sy=e.clientY; t=setTimeout(()=>{ t=null; if(navigator.vibrate) try{navigator.vibrate(15);}catch(_){} openReactBar(row,id); },450); });
+    ['pointerup','pointerleave','pointercancel'].forEach(ev=>row.addEventListener(ev,()=>{ if(t){ clearTimeout(t); t=null; } }));
+    row.addEventListener('pointermove',e=>{ if(t && (Math.abs(e.clientX-sx)>8||Math.abs(e.clientY-sy)>8)){ clearTimeout(t); t=null; } });
+    row.addEventListener('contextmenu',e=>{ e.preventDefault(); openReactBar(row,id); });
+    row.querySelector('[data-rbtn]').onclick=e=>{ e.stopPropagation(); openReactBar(row,id); };
+    const box=row.querySelector('[data-rb]'), inp=box.querySelector('.rb-in');
+    box.querySelectorAll('.chip-btn').forEach(c=>c.onclick=()=>{ inp.value=c.textContent; inp.focus(); });
+    const send=()=>{ const m=inp.value.trim(); if(!m) return toast('請輸入回覆'); replyKudos(id,'💬',m); };
+    box.querySelector('.rb-send').onclick=send; inp.onkeydown=e=>{ if(e.key==='Enter'&&!e.isComposing) send(); };
+  });
   if(unreadIds.length){ sb.from('kudos').update({read_at:new Date().toISOString()}).eq('to_user',me.id).is('read_at',null).then(()=>{ st.kudos.forEach(k=>{ if(unreadIds.includes(k.id)) k.read_at=new Date().toISOString(); }); updateBadge(); }); }
 }
+function openReactBar(row,id){
+  document.querySelectorAll('.react-bar').forEach(e=>e.remove());
+  const bar=document.createElement('div'); bar.className='react-bar';
+  bar.innerHTML=QUICK_REACT.map(e=>`<button data-e="${e}">${e}</button>`).join('')+`<button data-e="more" class="rb-more" title="更多表情">＋</button><button data-e="reply" class="rb-txt">💬 回覆</button>`;
+  document.body.appendChild(bar);
+  const r=row.getBoundingClientRect(), bw=Math.min(bar.offsetWidth, window.innerWidth-16);
+  bar.style.left=Math.max(8,Math.min(window.innerWidth-bw-8, r.left+r.width/2-bw/2))+'px';
+  bar.style.top=(r.top>70 ? r.top-bar.offsetHeight-6 : r.bottom+6)+'px';
+  const close=()=>{ bar.remove(); document.removeEventListener('pointerdown',outside,true); window.removeEventListener('scroll',close,true); };
+  const outside=e=>{ if(!bar.contains(e.target)) close(); };
+  setTimeout(()=>{ document.addEventListener('pointerdown',outside,true); window.addEventListener('scroll',close,true); },0);
+  bar.querySelectorAll('button').forEach(b=>b.onclick=()=>{ const e=b.dataset.e; close();
+    if(e==='reply'){ const box=row.querySelector('[data-rb]'); box.classList.remove('hidden'); box.querySelector('.rb-in').focus(); }
+    else if(e==='more'){ const k=st.kudos.find(x=>x.id===id); const quote=(k.message||'').slice(0,20)+((k.message||'').length>20?'…':'');
+      openKudosModal(k.from_user,{ref:'reply:'+k.id,kind:'reply',icon:'💬',text:`回覆：${esc(k.emoji||'')} ${esc(quote)}`}); }
+    else replyKudos(id,e,null); });
+}
+async function replyKudos(id, emoji, message){
+  const k=st.kudos.find(x=>x.id===id); if(!k) return;
+  const quote=(k.message||k.emoji||'').slice(0,20)+((k.message||'').length>20?'…':'');
+  const {error}=await sb.from('kudos').insert({from_user:me.id,to_user:k.from_user,ref:'reply:'+k.id,context:`回覆你的 ${k.emoji||''}「${quote}」`,emoji,message:message||null});
+  if(error) return toast('送出失敗');
+  await loadKudos(); renderCheer(); popKudos(`已回覆 ${esc(emoji)}`, message||'');
+}
 function openKudosModal(to, w){
-  let emoji=w?'👏':'💪';
-  modal(`<h3>${w?'給個肯定':'對 '+esc(nameOf(to))+' 說句話'}</h3>
+  let emoji=w?(w.kind==='reply'?'❤️':'👏'):'💪';
+  modal(`<h3>${w?(w.kind==='reply'?'回覆 '+esc(nameOf(to)):'給個肯定'):'對 '+esc(nameOf(to))+' 說句話'}</h3>
     ${w?`<p class="hint">${w.icon} ${w.text}</p>`:''}
-    <div class="emo-row big">${EMOJIS.map(e=>`<button class="emo ${e===emoji?'sel':''}" data-e="${e}">${e}</button>`).join('')}</div>
+    <label class="f" style="margin-top:4px">選一個表情</label>
+    <div class="emo-grid">${EMOJIS_ALL.map(e=>`<button class="emo ${e===emoji?'sel':''}" data-e="${e}">${e}</button>`).join('')}</div>
     <label class="f">快速選一句（可再修改）</label>
     <div class="phr">${phrasesFor(w,to).map(p=>`<button class="phrase">${esc(p)}</button>`).join('')}</div>
-    <textarea id="kM" rows="3" maxlength="120" ${AC} placeholder="寫下具體的感謝或鼓勵…"></textarea>
+    <textarea id="kM" rows="3" maxlength="120" ${AC} placeholder="寫下具體的感謝或鼓勵…（可留空，只送表情）"></textarea>
     <div class="actions"><button class="btn" id="kS">送出</button></div>`,(el,close)=>{
     el.querySelectorAll('.emo').forEach(b=>b.onclick=()=>{ emoji=b.dataset.e; el.querySelectorAll('.emo').forEach(x=>x.classList.toggle('sel',x===b)); });
     el.querySelectorAll('.phrase').forEach(b=>b.onclick=()=>{ el.querySelector('#kM').value=b.textContent; });
@@ -1063,7 +1165,7 @@ function openProjectModal(p){
   modal(`<h3>${isNew?'新增專案':'編輯專案'}</h3>
     <label class="f">專案名稱</label><input id="pN" type="text" ${AC} maxlength="30" value="${esc(p?.name||'')}" placeholder="例如：A 專案">
     <label class="f">負責人（可複選；都不勾＝兩人共用）</label>${assigneePicker('pA',p?projAssignees(p):[me.id])}
-    <label class="f">專案死限（選填，含時間）</label><input id="pD" type="datetime-local" ${AC} value="${toInputM(p?projDeadline(p):null)}">
+    <label class="f">專案期限（選填，含時間）</label><input id="pD" type="datetime-local" ${AC} value="${toInputM(p?projDeadline(p):null)}">
     <label class="f">每人時數目標（可勾選一種或多種）</label>
     ${KINDS.map(([f,,,l])=>`<div class="goal-set"><input type="checkbox" id="c_${f}" ${p&&p[f]>0?'checked':''}><span class="lbl">${l}</span>
       <input type="number" id="v_${f}" ${AC} min="0" step="0.5" inputmode="decimal" placeholder="小時" value="${p&&p[f]>0?+p[f]:''}"></div>`).join('')}
