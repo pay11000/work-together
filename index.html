@@ -408,7 +408,7 @@ html[data-theme=dark] .shun-tag{background:#25331d;color:#b5dd9c}
 .ring{position:relative;width:180px;height:180px;margin:8px auto 12px}
 .ring svg{width:180px;height:180px;transform:rotate(-90deg)}
 .ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring .c b{font-size:48px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}.ring .c span{color:var(--sub);font-size:14px;margin-top:4px}
+.ring .c b{font-size:40px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}.ring .c span{color:var(--sub);font-size:14px;margin-top:4px}
 .mins{font-size:56px;font-weight:800;margin:10px 0 12px;font-variant-numeric:tabular-nums}.mins small{font-size:20px;color:var(--sub);font-weight:700;margin-left:4px}
 .done-next{width:100%;margin-top:10px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:14px;padding:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer}
 .sw-link{display:inline-block;margin-top:10px;color:var(--sub);font-size:13.5px}
@@ -454,6 +454,46 @@ html[data-theme=dark] .rec.win.gold{background:linear-gradient(90deg,#3a3016,tra
 .ms h3{font-size:24px;margin:8px 0 6px;letter-spacing:1px}.ms p{color:var(--sub);margin:4px 0;font-size:15px;line-height:1.6}
 .ms .sh{background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:8px;font-size:13px;margin:12px 0 4px}
 .toast .undo-sub:empty{display:none}
+
+.today-tot{font-size:13.5px;color:var(--sub);text-align:center;margin:-2px 0 10px;font-variant-numeric:tabular-nums}
+.today-tot b{color:var(--text);font-size:15px}
+.stp-in{width:64px;text-align:center;font-size:20px;font-weight:800;padding:6px 4px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--text);-moz-appearance:textfield}
+.stp-in::-webkit-outer-spin-button,.stp-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ov-end{display:inline-block;margin-top:14px;color:var(--sub);font-size:14.5px;text-decoration:underline}
+.ov-snd{margin-top:12px;border:1.5px dashed var(--accent);background:transparent;color:var(--accent);border-radius:12px;padding:8px 14px;font-size:14px;font-family:inherit;cursor:pointer}
+@media(min-width:900px){
+  .wrap.wide{max-width:1080px}
+  .home-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+  .home-grid .col-b>.h2:first-child{margin-top:0}
+  .home-grid.solo{display:block;max-width:600px;margin:0 auto}
+  .home-grid .col-b .h2{margin-top:4px}
+  .ring-ov .em{width:160px;height:160px;font-size:90px}
+}
+
+.foc{color:var(--sub);font-size:14px;margin:-2px 0 12px;font-variant-numeric:tabular-nums}.foc b{color:var(--text);font-size:16px}
+.foc-l{color:var(--sub);font-size:14px;margin-top:14px}
+.mins.hms{font-size:52px;margin:2px 0 14px;letter-spacing:1px}
+.add-row{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:14px}
+.add-row a{color:var(--accent);font-weight:700}.add-row span{color:var(--sub);font-size:12.5px}
+
+.awake-tip{margin-top:10px;font-size:12.5px;color:var(--sub)}
+
+/* 特大：整個畫面等比例放大 */
+html.xl-text body{zoom:1.14}
+@supports not (zoom:1){ html.xl-text body{font-size:18px} }
+
+.pkr-body{max-height:62vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.pkr-sec{font-size:13px;color:var(--sub);font-weight:700;margin:12px 2px 6px}
+.pkr-grp{background:var(--bg);border-radius:14px;padding:2px 12px;margin-bottom:8px}
+.pkr-row,.pkr-head{display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer}
+.pkr-grp>.pkr-row+.pkr-row,.pkr-sub .pkr-row{border-top:1px solid var(--line)}
+.pkr-t{flex:1;min-width:0}.pkr-t b{display:block;font-size:15.5px;line-height:1.35;word-break:break-word}.pkr-t small{display:block;color:var(--sub);font-size:12.5px;margin-top:1px}
+.pkr-head .pkr-t b{font-size:16.5px}
+.pkr-xp{width:26px;height:26px;flex:none;border:0;background:none;color:var(--sub);font-size:15px;cursor:pointer;padding:0}
+.pkr-sub{margin-left:36px;border-top:1px solid var(--line)}
+.pkr-sub .pkr-row:first-child{border-top:0}
+.pkr-row.cur{opacity:.55;cursor:default}
+.pkr-now{font-size:12px;color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:3px 8px;flex:none}
 </style>
 </head>
 <body>
@@ -693,7 +733,9 @@ function ckSVG(){ return '<svg viewBox="0 0 30 30"><circle class="bx" cx="15" cy
 const SND_LIST=[['loud','明顯提醒','嗶嗶嗶連續三聲，最不容易錯過'],['melody','小段旋律','圓圓暖暖的木琴，叮咚叮咚往上走'],['long','連續長音','柔和的長音慢慢浮出來，不吵人'],['beep','一聲短促','「嗶」一聲，乾淨俐落'],['soft','小聲提醒','低低柔柔，適合辦公室'],['vib','只震動','不響，只有畫面＋震動'],['quiet','只要畫面','不響也不震，安靜跳出提醒']];
 const SND_GAP={loud:1400,melody:2800,long:3400,beep:2500,soft:3500,vib:3000,quiet:3000};
 const Snd={ ac:null, buf:{}, active:[],
-  ctx(){ try{ this.ac=this.ac||new (window.AudioContext||window.webkitAudioContext)(); if(this.ac.state==='suspended') this.ac.resume(); }catch(e){} return this.ac; },
+  ctx(){ try{ if(navigator.audioSession && navigator.audioSession.type!=='playback') navigator.audioSession.type='playback';   // iPhone：靜音鍵打開也要響
+      this.ac=this.ac||new (window.AudioContext||window.webkitAudioContext)(); if(this.ac.state==='suspended') this.ac.resume(); }catch(e){} return this.ac; },
+  ready(){ return !!(this.ac && this.ac.state==='running'); },
   bus(){ const a=this.ctx(); if(!a) return null; const g=a.createGain(); g._n=[]; g.connect(a.destination); this.active.push(g); return g; },
   hush(){ const a=this.ac; if(!a) return; const t=a.currentTime; this.active.forEach(g=>{ try{ g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value,t); g.gain.linearRampToValueAtTime(0,t+.04); }catch(e){} g._n.forEach(n=>{ try{ n.stop(t+.05); }catch(e){} }); }); this.active=[]; },
   tone(B,f,t0,dur,vol,type){ const a=this.ac, o=a.createOscillator(), g=a.createGain(); o.type=type||'sine'; o.frequency.value=f;
@@ -714,7 +756,7 @@ const POMO_PRESETS={'25':{focus:25,brk:5,rounds:4,long:15},'50':{focus:50,brk:10
 const REST_EMO=['☕','🍵','🧋','🍪','🛋️','😌','🌿','🎧','🐱','🌙'], START_EMO=['🍅','⏰','🚀','💪','🔥','🌱','✨','🎯','📚','✏️'];
 function pcfg(){ const c=prof(me.id)?.pomo_cfg||{};
   return { mine:{focus:40,brk:8,rounds:4,long:20,...(c.mine||{})}, msg:c.msg||'起來走走、喝口水 💧', last:c.last||'none', auto:!!c.auto,
-    rest:c.rest||'☕', start:c.start||'🍅', sound:c.sound||'melody', vib:c.vib!==false }; }
+    rest:c.rest||'☕', start:c.start||'🍅', sound:c.sound||'melody', vib:c.vib!==false, awake:!!c.awake }; }
 async function savePcfg(patch){ const c={...(prof(me.id)?.pomo_cfg||{}),...patch}; const p=prof(me.id); if(p) p.pomo_cfg=c;
   const {error}=await sb.from('profiles').update({pomo_cfg:c}).eq('id',me.id); if(error) toast('設定儲存失敗'); }
 function presetOf(key){ return key==='mine'?{...pcfg().mine}:POMO_PRESETS[key]?{...POMO_PRESETS[key]}:null; }
@@ -726,6 +768,7 @@ async function addTomato(){ const n=tomatoToday()+1, v={d:todayKey(),n}; const p
 function tomRow(done,total){ const e=pcfg().start; let h=''; for(let i=0;i<total;i++) h+= i<done?e:`<span class="off">${e}</span>`; return `<div class="toms">${h}</div>`; }
 function ringHTML(pct,big,small,col){ const C=2*Math.PI*60, off=C*(1-Math.max(0,Math.min(1,pct)));
   return `<div class="ring"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="var(--track)" stroke-width="10"/><circle data-ring cx="70" cy="70" r="60" fill="none" stroke="${col||'var(--accent)'}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg><div class="c"><b data-left>${big}</b><span>${small}</span></div></div>`; }
+function mmss(ms){ ms=Math.max(0,Math.ceil(ms/1000)); const h=Math.floor(ms/3600), m=Math.floor(ms%3600/60), x=ms%60; return h?`${h}:${pad(m)}:${pad(x)}`:`${m}:${pad(x)}`; }
 function minsLeft(end){ return Math.max(0,Math.ceil((end-Date.now())/60000)); }
 
 // ---- 推播（手機鎖螢幕也會響）----
@@ -748,6 +791,10 @@ async function enablePush(){
     const j=sub.toJSON(); const {error}=await sb.from('push_subs').upsert({user_id:me.id,endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,ua:navigator.userAgent.slice(0,180)},{onConflict:'endpoint'});
     if(error) throw error; toast('推播已開啟 ✓ 可以按「送一則測試」試試'); return true;
   }catch(e){ toast('開啟推播失敗：'+esc(e.message||e)); return false; } }
+async function disablePush(){
+  try{ const reg=await navigator.serviceWorker.getRegistration(); const sub=reg&&await reg.pushManager.getSubscription();
+    if(sub){ const ep=sub.endpoint; await sub.unsubscribe(); await sb.from('push_subs').delete().eq('endpoint',ep); }
+    toast('這支裝置已關閉推播'); }catch(e){ toast('關閉失敗：'+esc(e.message||e)); } }
 async function testPush(){ await pushJob('test',Date.now()+3000,'🔔 測試推播','收到這則，代表鎖螢幕提醒設定好了！',1); toast('已排好，約 30 秒內會收到（可以先把手機鎖起來）',4000); }
 
 // ---- 響鈴畫面（時間到／休息結束）----
@@ -758,7 +805,10 @@ function ringStart(o){
   ringStop(); const c=pcfg();
   const el=document.createElement('div'); el.className='ring-ov';
   el.innerHTML=`${o.toms||''}<div class="rnd" style="margin-bottom:20px">${o.rnd||''}</div><div class="em">${o.emoji}</div><h2>${o.title}</h2><p>${esc(o.sub||'')}</p>
-    <button class="btn big" data-r="1">${o.b1}</button><button class="btn big ghost" data-r="2">${o.b2}</button><div class="rt" id="rgT">${c.sound==='quiet'?'':'🔔 響鈴中・按任一個按鈕就停'}</div>`;
+    <button class="btn big" data-r="1">${o.b1}</button><button class="btn big ghost" data-r="2">${o.b2}</button>
+    <a href="#" class="ov-end" data-r="3">${o.b3||'結束這段工作'}</a>
+    ${c.sound!=='quiet'&&c.sound!=='vib'&&!Snd.ready()?'<button class="ov-snd" id="rgSnd">🔈 沒聲音？點這裡開聲音</button>':''}
+    <div class="rt" id="rgT">${c.sound==='quiet'?'':'🔔 響鈴中・按任一個按鈕就停'}</div>`;
   document.body.appendChild(el);
   const loop=()=>{ Snd.play(c.sound); if(c.vib && c.sound!=='quiet' && navigator.vibrate) try{ navigator.vibrate([250,120,250]); }catch(e){} };
   loop(); const iv=setInterval(loop,SND_GAP[c.sound]||3000);
@@ -768,9 +818,15 @@ function ringStart(o){
   ringing={el,iv,auto,kind:o.kind};
   el.querySelector('[data-r="1"]').onclick=()=>{ ringStop(); o.on1(); };
   el.querySelector('[data-r="2"]').onclick=()=>{ ringStop(); o.on2(); };
+  el.querySelector('[data-r="3"]').onclick=e=>{ e.preventDefault(); ringStop(); o.on3(); };
+  const sn=el.querySelector('#rgSnd'); if(sn) sn.onclick=()=>{ Snd.ctx(); setTimeout(()=>{ Snd.play(c.sound); if(Snd.ready()) sn.remove(); },150); };
 }
 function ringStop(){ if(!ringing) return; clearInterval(ringing.iv); clearTimeout(ringing.auto); Snd.hush(); if(navigator.vibrate) try{ navigator.vibrate(0); }catch(e){}
-  ringing.el.remove(); ringing=null; keepAwake(false); flashTitle(null); }
+  ringing.el.remove(); ringing=null; if(!awakeWanted()) keepAwake(false); flashTitle(null); }
+// 不想用推播：番茄鐘進行中，讓螢幕一直亮著（App 要開在畫面上），時間到就由 App 自己響
+function awakeWanted(){ return !!(me && pcfg().awake && prun() && (openOf(me.id)||pausedOf(me.id))); }
+function awakeTick(){ if(document.hidden) { wakeLock=null; return; } if(awakeWanted()){ if(!wakeLock) keepAwake(true); } else if(wakeLock && !ringing) keepAwake(false); }
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) setTimeout(awakeTick,300); });
 
 // ---- 番茄鐘流程 ----
 function brkLenOf(r){ return (r.round % r.p.rounds===0) ? r.p.long : r.p.brk; }
@@ -781,13 +837,14 @@ async function startPomo(key, pid, tid, intent){
 }
 async function pomoFocusEnd(){
   const r=prun(); if(!r||r.phase!=='focus'||ringing) return;
-  if(r.cnt<r.round){ r.cnt=r.round; await setRun(r); await addTomato(); }
+  if(r.cnt<r.round){ const {data}=await sb.from('profiles').select('*').eq('id',me.id); const fresh=data&&data[0]&&data[0].pomo_run;
+    if(!fresh || (fresh.cnt||0)<r.round){ r.cnt=r.round; await setRun(r); await addTomato(); } else r.cnt=fresh.cnt; }
   pushJob('pomo',Date.now()+60000,`${pcfg().rest} ${r.p.focus} 分鐘到了`,`第 ${r.round} 輪完成，${pcfg().msg}`);   // 沒按掉的話，1 分鐘後推播
   const bl=brkLenOf(r);
   ringStart({kind:'focus', emoji:pcfg().rest, title:`${r.p.focus} 分鐘到了`, sub:pcfg().msg, flash:`${pcfg().rest} 休息時間到`,
     toms:tomRow(r.round,r.p.rounds), rnd:`第 ${r.round} / ${r.p.rounds} 輪`,
     b1:`休息 ${bl} 分鐘`, b2:'再做一下（5 分鐘）',
-    on1:()=>pomoBreak(), on2:async()=>{ r.end=Date.now()+5*60000; await setRun(r); pushJob('pomo',r.end,`${pcfg().rest} 該休息囉`,pcfg().msg); render(); toast('好，再 5 分鐘 💪'); } });
+    on1:()=>pomoBreak(), on3:()=>stopWork(false), on2:async()=>{ r.end=Date.now()+5*60000; await setRun(r); pushJob('pomo',r.end,`${pcfg().rest} 該休息囉`,pcfg().msg); render(); toast('好，再 5 分鐘 💪'); } });
 }
 async function pomoBreak(){
   const r=prun(); if(!r) return stopWork(true);
@@ -802,7 +859,7 @@ async function pomoBreakEnd(){
   ringStart({kind:'break', emoji:pcfg().start, title:'休息結束', sub:`準備好就開始第 ${r.round+1} 輪`, flash:`${pcfg().start} 休息結束`,
     toms:tomRow(r.round,r.p.rounds), rnd:`已完成 ${r.round} 輪`,
     b1:`▶ 開始第 ${r.round+1} 輪`, b2:'再休息 3 分鐘',
-    on1:()=>pomoResume(), on2:async()=>{ r.end=Date.now()+3*60000; await setRun(r); pushJob('pomo',r.end,`${pcfg().start} 休息結束`,`準備好就回來，開始第 ${r.round+1} 輪`); render(); } });
+    on1:()=>pomoResume(), on3:()=>endFromPause(), on2:async()=>{ r.end=Date.now()+3*60000; await setRun(r); pushJob('pomo',r.end,`${pcfg().start} 休息結束`,`準備好就回來，開始第 ${r.round+1} 輪`); render(); } });
 }
 async function pomoResume(pid,tid){
   const r=prun(), z=pausedOf(me.id); if(!r) return;
@@ -816,7 +873,9 @@ function lastIntent(pid,tid){ const s=st.sessions.filter(x=>x.user_id===me.id &&
   return s&&s.intent||null; }
 async function pomoClear(){ if(prun()){ await setRun(null); } pushCancel('pomo'); }
 function pomoTick(){
-  if(!me) return; const r=prun(); if(!r) return;
+  if(!me) return; const r=prun();
+  if(ringing && ringing.kind!=='test'){ const still=r && r.phase===ringing.kind && Date.now()>=r.end; if(!still) ringStop(); }
+  if(!r) return;
   const o=openOf(me.id), z=pausedOf(me.id);
   if(r.phase==='focus' && o && Date.now()>=r.end) pomoFocusEnd();
   else if(r.phase==='break' && z && !o && Date.now()>=r.end) pomoBreakEnd();
@@ -838,7 +897,7 @@ function updateBadge(){ const b=$('#cheerBadge'); if(!b) return; const n=unreadC
 function render(){
   if(!me) return;
   applyTheme(); applyFont();
-  $('#app').innerHTML=`<div class="wrap">
+  $('#app').innerHTML=`<div class="wrap ${st.tab==='home'?'wide':''}">
     <header><h1>Work Together</h1><span class="date" id="clockNow">${clockText()}</span></header>
     <div id="view"></div></div>
     <nav><div class="in">
@@ -856,10 +915,11 @@ function tick(){
   document.querySelectorAll('[data-since-z]').forEach(el=>{ el.textContent=zhShort(Date.now()-(+el.dataset.sinceZ)); });
   document.querySelectorAll('[data-since-m]').forEach(el=>{ el.textContent=zhMin(Date.now()-(+el.dataset.sinceM)); });
   document.querySelectorAll('[data-tog]').forEach(el=>{ el.textContent=togText(Date.now()-(+el.dataset.tog)); });
+  document.querySelectorAll('[data-today]').forEach(el=>{ const st0=+el.dataset.tstart; if(st0) el.textContent=zhDur(+el.dataset.today+Date.now()-st0); });
   document.querySelectorAll('[data-min-since]').forEach(el=>{ el.textContent=Math.floor((Date.now()-(+el.dataset.minSince))/60000); });
-  const rr=me&&prun(); if(rr){ const L=document.querySelector('[data-left]'); if(L) L.textContent=minsLeft(rr.end);
+  const rr=me&&prun(); if(rr){ const L=document.querySelector('[data-left]'); if(L) L.textContent=mmss(rr.end-Date.now());
     const R=document.querySelector('[data-ring]'); if(R){ const tot=(rr.phase==='focus'?rr.p.focus:brkLenOf(rr))*60000, C=2*Math.PI*60; R.setAttribute('stroke-dashoffset',C*(1-Math.max(0,Math.min(1,(rr.end-Date.now())/tot)))); } }
-  pomoTick();
+  pomoTick(); if(tickN%3===0) awakeTick();
   tickN++;
   if(tickN%5===0 && me) checkOvertime();
   if(tickN%5===0 && st.tab==='home' && !document.querySelector('.modal-bg')){
@@ -899,10 +959,9 @@ function shunHTML(){ const xs=shunToday(me.id); if(!xs.length) return '';
 function nudgeHTML(){
   if(openOf(me.id)) return '';
   const p=partners().find(u=>openOf(u)); if(!p) return '';
-  const o=openOf(p), pj=projOf(o.project_id), pick=(pj && isMine(pj))?{pid:pj.id,tid:null}:(recentCombos()[0]||{pid:null,tid:null});
   return `<div class="card nudge"><div>👀 <b>${esc(nameOf(p))}</b> 正在專注工作，要一起嗎？</div>
-    <button class="btn together-btn" id="joinBtn" data-pid="${pick.pid||''}" data-tid="${pick.tid||''}">✨Together✨</button>
-    ${pick.pid?`<div class="hint" style="margin:-4px 0 0;text-align:center">會開始：${esc(projName(pick.pid))}${pick.tid?` / ${esc(taskOf(pick.tid)?.title||'')}`:''}</div>`:''}</div>`;
+    <button class="btn together-btn" id="joinBtn" data-u="${p}">✨Together✨</button>
+    <div class="hint" style="margin:-4px 0 0;text-align:center">一起開工就好，做同一件或做自己的都可以</div></div>`;
 }
 // ---- 今日重點 ----
 function todayKey(){ return workDateKey(Date.now(),userCut(me.id)); }
@@ -962,8 +1021,13 @@ function todayCardHTML(){
     ${!hasAny?(myOpenTasks().length?`<button class="btn ghost" id="pickFocus" style="width:100%;margin:4px 0 2px">＋ 選今天的重點</button>`:''):(!ids.length?`<div class="hint" style="margin:4px 0 0">今天的重點都完成了，剩下的時間都是加分 ✨</div>`:'')}
     ${trayHTML()}
     <div class="lab">${rc.length?'最近做的':'開始工作'}</div>
-    <div class="rcs">${rc.map((c,i)=>`<button data-rc="${i}">${esc(comboText(c.pid,c.tid))}</button>`).join('')}<button class="o" id="rcOther">${rc.length?'其他…':'選要做的…'}</button></div></div>`;
+    <div class="rcs">${rc.map((c,i)=>`<button data-rc="${i}">${esc(comboText(c.pid,c.tid))}</button>`).join('')}<button class="o" id="rcOther">${rc.length?'其他…':'選要做的…'}</button></div>
+    <div class="add-row"><a href="#" id="addSess">＋ 補登一段工作</a><span>忘了打卡？事後補上</span></div></div>`;
 }
+function todayLive(){ const c=userCut(me.id), per=periodOf('day',Date.now(),0,c), o=openOf(me.id);
+  const base=sumMs(st.sessions.filter(s=>s.user_id===me.id && (!o||s.id!==o.id)),per);
+  return o?{base,start:Math.max(+new Date(o.start_at),+per.start)}:{base,start:0}; }
+function todayTotHTML(){ const t=todayLive(); return `<span data-today="${t.base}" data-tstart="${t.start}">${zhDur(t.base+(t.start?Date.now()-t.start:0))}</span>`; }
 function myWeekGoal(){ return st.projects.filter(p=>!p.archived && isMine(p) && +p.weekly_hours>0).reduce((a,p)=>a+(+p.weekly_hours),0); }
 function statsHTML(){
   const c=userCut(me.id), mine=st.sessions.filter(s=>s.user_id===me.id), wg=myWeekGoal();
@@ -978,8 +1042,8 @@ function workHTML(o){
   const r=prun(), pend=shunPend(o.id), t=taskOf(o.task_id);
   let mid;
   if(r && r.phase==='focus'){ const tot=r.p.focus*60000, left=r.end-Date.now();
-    mid=`${tomRow(r.round-1,r.p.rounds)}<div class="rnd">第 ${r.round} / ${r.p.rounds} 輪</div>${ringHTML(left/tot,minsLeft(r.end),'分鐘後休息')}`; }
-  else mid=`<div class="mins"><span data-min-since="${+new Date(o.start_at)}">${Math.floor((Date.now()-new Date(o.start_at))/60000)}</span><small>分鐘</small></div>`;
+    mid=`${tomRow(r.round-1,r.p.rounds)}<div class="rnd">第 ${r.round} / ${r.p.rounds} 輪</div>${ringHTML(left/tot,mmss(r.end-Date.now()),'後休息')}<div class="foc">這段已專注 <b data-since="${+new Date(o.start_at)}">${hms(Date.now()-new Date(o.start_at))}</b></div>`; }
+  else mid=`<div class="foc-l">這段已專注</div><div class="mins hms" data-since="${+new Date(o.start_at)}">${hms(Date.now()-new Date(o.start_at))}</div>`;
   return `<div class="card wk"><div class="wk-name">${esc(workTitle(o.project_id,o.task_id))}</div>${t?`<div class="wk-proj">${esc(projName(o.project_id))}</div>`:''}
     ${o.intent?`<div class="wk-intent">🎯 ${esc(o.intent)}</div>`:''}
     <div style="margin-top:10px">${pend.map(x=>`<span class="shun-tag">🌱 ${esc(comboText(x.pid,x.tid))}</span>`).join('')}<button class="shun-add" id="shunAdd">🌱 ${pend.length?'＋':'順手推進'}</button></div>
@@ -987,13 +1051,14 @@ function workHTML(o){
     ${mid}
     <div class="row" style="gap:10px"><button class="btn big ghost" id="pauseBtn" style="flex:1">休息</button><button class="btn big stop" id="stopBtn" style="flex:1.4">結束工作</button></div>
     ${t&&canCheck(t)?`<button class="done-next" id="doneNext">✓ 完成了，換下一件</button>`:''}
-    <a href="#" class="sw-link" id="swOther">⇄ 換做別的</a></div>`;
+    <a href="#" class="sw-link" id="swOther">⇄ 換做別的</a>
+    ${r&&pcfg().awake?'<div class="awake-tip">🔆 番茄鐘進行中，螢幕會保持亮著（App 請留在畫面上）</div>':''}</div>`;
 }
 function breakHTML(z){
   const r=prun(); let mid;
   if(r && r.phase==='break'){ const tot=brkLenOf(r)*60000, left=r.end-Date.now();
-    mid=`${tomRow(r.round,r.p.rounds)}<div class="rnd">已完成 ${r.round} 輪</div>${ringHTML(left/tot,minsLeft(r.end),'分鐘後叫你','#e9a23b')}`; }
-  else mid=`<div class="mins" style="color:var(--sub)">☕ <span data-min-since="${+new Date(z.since)}">${Math.floor((Date.now()-new Date(z.since))/60000)}</span><small>分鐘</small></div>`;
+    mid=`${tomRow(r.round,r.p.rounds)}<div class="rnd">已完成 ${r.round} 輪</div>${ringHTML(left/tot,mmss(r.end-Date.now()),'後叫你','#e9a23b')}`; }
+  else mid=`<div class="foc-l">已休息</div><div class="mins hms" style="color:var(--sub)" data-since="${+new Date(z.since)}">${hms(Date.now()-new Date(z.since))}</div>`;
   const since=+new Date(z.since)-3*3600000, got=st.kudos.filter(k=>k.to_user===me.id && +new Date(k.created_at)>=since).slice(0,4);
   return `<div class="card wk"><div style="font-size:22px;font-weight:800">休息中</div><div class="hint" style="margin:2px 0 0">${esc(comboText(z.project_id,z.task_id))}・休息時間不算工時</div>${mid}
     <div class="row" style="gap:10px"><button class="btn big" id="resumeBtn" style="flex:1.4">▶ ${r?`繼續第 ${r.round+1} 輪`:'繼續工作'}</button><button class="btn big ghost" id="endPauseBtn" style="flex:1">今天先到這</button></div></div>
@@ -1001,15 +1066,16 @@ function breakHTML(z){
 }
 function renderHome(){
   const un=st.kudos.filter(k=>k.to_user===me.id && !k.read_at), R=showReviewCard(), o=openOf(me.id), z=!o&&pausedOf(me.id);
-  if(o){ $('#view').innerHTML=presHTML()+workHTML(o); bindHome(); return; }
-  $('#view').innerHTML=`
+  if(o){ $('#view').innerHTML=`<div class="home-grid solo">${presHTML()+workHTML(o)}</div>`; bindHome(); return; }
+  $('#view').innerHTML=`<div class="home-grid"><div class="col-a">
     ${un.length&&!z?`<div class="card cheer-card tap" id="goCheer"><span class="big-e">${esc(un[0].emoji||'💌')}</span><div><b>${esc(nameOf(un[0].from_user))}</b> 給了你 ${un.length} 個肯定<div class="hint" style="margin:0">點這裡看看 →</div></div></div>`:''}
     ${R&&!z?reviewHTML(R,false):''}
     ${z?'':nudgeHTML()}
     ${presHTML()}
     ${z?breakHTML(z):todayCardHTML()+statsHTML()+shunHTML()}
+    </div><div class="col-b">
     ${upcomingHTML()}
-    ${z?'':`<div class="h2 row" style="justify-content:space-between"><span>專案進度</span>${scopeToggle()}</div><div id="progress">${progressHTML(scoped(st.projects.filter(p=>!p.archived)))}</div>`}`;
+    ${z?'':`<div class="h2 row" style="justify-content:space-between"><span>專案進度</span>${scopeToggle()}</div><div id="progress">${progressHTML(scoped(st.projects.filter(p=>!p.archived)))}</div>`}</div></div>`;
   bindHome(); st.newDone=null;
 }
 function bindHome(){
@@ -1018,12 +1084,13 @@ function bindHome(){
   on('goCheer',()=>{ st.freshIds=null; st.tab='cheer'; render(); });
   on('rvHide',()=>{ hideReview(); render(); });
   on('rvGo',()=>{ hideReview(); render(); if(myOpenTasks().length) openFocusModal(); });
-  const j=$('#joinBtn'); if(j) j.onclick=()=>{ j.disabled=true; goWork(j.dataset.pid||null, j.dataset.tid||null); };
+  const j=$('#joinBtn'); if(j) j.onclick=()=>openTogether(j.dataset.u);
   on('pickFocus',openFocusModal);
   const ef=$('#editFocus'); if(ef) ef.onclick=e=>{ e.preventDefault(); openFocusModal(); };
   document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{ const [p,t]=b.dataset.go.split('|'); goWork(p||null,t||null); });
   const rc=recentCombos(); document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=()=>{ const c=rc[+b.dataset.rc]; goWork(c.pid,c.tid); });
   on('rcOther',()=>openPicker((p,t)=>goWork(p,t)));
+  const as=$('#addSess'); if(as) as.onclick=e=>{ e.preventDefault(); openSessionModal(null); };
   document.querySelectorAll('[data-fck]').forEach(b=>b.onclick=()=>checkA(b));
   const tr=$('#tray'); if(tr) tr.onclick=e=>{ const u=e.target.closest('[data-undo]'); if(u){ e.preventDefault(); e.stopPropagation(); toggleTask(taskOf(u.dataset.undo),false,{quiet:true}); return; } st.trayOpen=!st.trayOpen; renderHome(); };
   // 工作中
@@ -1046,6 +1113,24 @@ function checkA(b){
   if(navigator.vibrate) try{ navigator.vibrate(15); }catch(e){}
   setTimeout(()=>{ row.classList.add('gone'); },480);
   setTimeout(()=>{ st.newDone=t.id; toggleTask(t,true,{quiet:true}); },700);
+}
+// ✨Together✨：一起開工，做什麼自己選
+function openTogether(u){
+  const o=openOf(u); if(!o) return;
+  const pj=projOf(o.project_id), t=taskOf(o.task_id), same=pj && isMine(pj) ? {pid:pj.id, tid:(t&&canCheck(t)&&!myChecked(t))?t.id:null} : null;
+  const opts=[]; const seen=new Set(); const add=(pid,tid,why)=>{ const k=(pid||'')+'|'+(tid||''); if(seen.has(k)) return; seen.add(k); opts.push({pid,tid,why}); };
+  if(same) add(same.pid,same.tid,`跟 ${nameOf(u)} 做同一件`);
+  focusIds().map(taskOf).filter(x=>x&&!myChecked(x)).forEach(x=>add(x.project_id,x.id,'我的今日重點'));
+  recentCombos().forEach(c=>add(c.pid,c.tid,'我最近做的'));
+  const list=opts.slice(0,5);
+  modal(`<h3 style="margin:0 0 2px">✨ 一起開工！</h3><div class="hint" style="margin:0 0 10px">${esc(nameOf(u))} 正在做「${esc(comboText(o.project_id,o.task_id))}」。你想做什麼？</div>
+    ${list.map((x,i)=>`<div class="${i===0?'nx-big':'nx-row'}" data-tg="${i}" style="${i===0?'margin-bottom:6px':''}"><div style="flex:1"><b style="font-size:${i===0?17:15.5}px">${esc(workTitle(x.pid,x.tid))}</b><div class="meta">${esc(x.why)}${x.tid?'・'+esc(projName(x.pid)):''}</div></div>${playBtn('',i!==0)}</div>`).join('')}
+    <div class="rcs" style="margin-top:12px"><button class="o" id="tgO">其他…</button></div>
+    <div class="actions"><button class="btn ghost" id="tgX">取消</button></div>`,(el,close)=>{
+    el.querySelectorAll('[data-tg]').forEach(b=>b.onclick=()=>{ const x=list[+b.dataset.tg]; close(); goWork(x.pid,x.tid); });
+    el.querySelector('#tgO').onclick=()=>{ close(); openPicker((p2,t2)=>goWork(p2,t2)); };
+    el.querySelector('#tgX').onclick=close;
+  });
 }
 // 開始做：選番茄鐘（工作中直接切換；休息中＝開始下一輪）
 async function goWork(pid,tid){
@@ -1082,31 +1167,47 @@ async function beginWork(pid,tid,key,intent){
 function openCustomPomo(pid,tid,intent){
   const c=pcfg(); const v={...c.mine}; let msg=c.msg, auto=c.auto;
   const LIM={focus:[1,120,5],brk:[1,30,1],rounds:[1,8,1],long:[1,60,5]};
-  modal(`<h3 style="margin:0 0 4px">自訂番茄鐘</h3><div class="hint" style="margin:0 0 6px">改好會自動存成「我的」，下次一鍵選</div>
+  modal(`<h3 style="margin:0 0 4px">${pid===false?'我的番茄':'自訂番茄鐘'}</h3><div class="hint" style="margin:0 0 6px">改好會自動存成「我的」，下次一鍵選</div>
     <div id="cpS" style="background:var(--bg);border-radius:14px;padding:2px 12px 6px"></div>
     <div class="lab">休息時要對自己說的話</div><input type="text" id="cpM" ${AC} maxlength="30" value="${esc(msg)}">
     <div class="hint" style="margin:4px 2px 0">時間到的提醒畫面會顯示這句</div>
     <div class="swrow"><span>休息完自動開始下一輪</span><button class="tg2 ${auto?'on':''}" id="cpA"><i></i></button></div>
-    <button class="btn big" id="cpGo">▶ 開始</button>`,(el,close)=>{
-    const draw=()=>{ el.querySelector('#cpS').innerHTML=[['focus','專注','分'],['brk','休息','分'],['rounds','幾輪後長休息','輪'],['long','長休息','分']].map(([k,l,u])=>`<div class="stp"><span>${l}</span><span class="ct"><button data-d="-1" data-k="${k}">−</button><b>${v[k]}</b><span class="hint" style="margin:0;width:16px">${u}</span><button data-d="1" data-k="${k}">＋</button></span></div>`).join('');
+    <button class="btn big" id="cpGo">${pid===false?'儲存':'▶ 開始'}</button>`,(el,close)=>{
+    const draw=()=>{ el.querySelector('#cpS').innerHTML=[['focus','專注','分'],['brk','休息','分'],['rounds','幾輪後長休息','輪'],['long','長休息','分']].map(([k,l,u])=>`<div class="stp"><span>${l}</span><span class="ct"><button data-d="-1" data-k="${k}">−</button><input class="stp-in" type="number" inputmode="numeric" data-in="${k}" min="${LIM[k][0]}" max="${LIM[k][1]}" value="${v[k]}"><span class="hint" style="margin:0;width:16px">${u}</span><button data-d="1" data-k="${k}">＋</button></span></div>`).join('');
+      el.querySelectorAll('#cpS [data-in]').forEach(inp=>{ const k=inp.dataset.in, fix=()=>{ const n=Math.round(+inp.value); if(!isNaN(n)&&inp.value!==''){ v[k]=Math.min(LIM[k][1],Math.max(LIM[k][0],n)); } inp.value=v[k]; };
+        inp.oninput=()=>{ const n=Math.round(+inp.value); if(inp.value!==''&&!isNaN(n)&&n>=LIM[k][0]&&n<=LIM[k][1]) v[k]=n; }; inp.onblur=fix; inp.onchange=fix; inp.onfocus=()=>inp.select(); });
       el.querySelectorAll('#cpS [data-k]').forEach(b=>b.onclick=()=>{ const k=b.dataset.k, d=+b.dataset.d, [a,z,s0]=LIM[k]; const s=(s0===5&&(v[k]<5||(v[k]===5&&d<0)))?1:s0; v[k]=Math.min(z,Math.max(a,v[k]+s*d)); draw(); }); };
     draw();
     el.querySelector('#cpA').onclick=e=>{ auto=!auto; e.currentTarget.classList.toggle('on',auto); };
-    el.querySelector('#cpGo').onclick=async()=>{ msg=el.querySelector('#cpM').value.trim()||'起來走走、喝口水 💧';
-      await savePcfg({mine:v,msg,auto,last:'mine'}); close(); if(pid!==false) await beginWork(pid,tid,'mine',intent); else { render(); toast('已存成「我的」番茄 🍅'); } };
+    el.querySelector('#cpGo').onclick=async()=>{ el.querySelectorAll('#cpS [data-in]').forEach(i=>i.onblur&&i.onblur()); msg=el.querySelector('#cpM').value.trim()||'起來走走、喝口水 💧';
+      await savePcfg({mine:v,msg,auto,last:'mine'}); close(); if(pid!==false) await beginWork(pid,tid,'mine',intent); else { render(); toast('已儲存 ✓'); } };
   });
 }
 // 選要做的（專案或子任務，點 ▶ 直接開始）
-function openPicker(onPick){
-  const ps=clockProjects(), open=new Set(ps.length?[ps[0].id]:[]);
-  modal(`<h3 style="margin:0 0 2px">選要做的</h3><div class="hint" style="margin:0 0 6px">點專案或子任務，直接開始</div><div class="pk" id="pkL"></div>
+function openPicker(onPick, title){
+  const o=openOf(me.id), cur=o?(o.project_id||'')+'|'+(o.task_id||''):'';
+  const ps=clockProjects(), rc=recentCombos(cur?[cur]:[]);
+  const tasksOf=p=>st.tasks.filter(t=>t.project_id===p.id && !myChecked(t) && (st.scope==='all'||canCheck(t))).sort((a,b)=>orderKey(a)-orderKey(b));
+  const open=new Set(ps.filter(p=>tasksOf(p).length).slice(0,1).map(p=>p.id));
+  if(o && o.project_id) open.add(o.project_id);
+  const row=(pid,tid,label,sub,cls)=>{ const k=(pid||'')+'|'+(tid||''), isCur=k===cur;
+    return `<div class="pkr-row ${cls||''} ${isCur?'cur':''}" ${isCur?'':`data-pk="${k}"`}><div class="pkr-t"><b>${esc(label)}</b>${sub?`<small>${esc(sub)}</small>`:''}</div>${isCur?'<span class="pkr-now">目前</span>':playBtn('',true)}</div>`; };
+  modal(`<h3 style="margin:0 0 2px">${title||(o?'換做別的':'選要做的')}</h3><div class="hint" style="margin:0 0 8px">點一下就開始，可以選整個專案或某個子任務</div>
+    <div class="pkr-body" id="pkL"></div>
     <div class="actions"><button class="btn ghost" id="pkX">取消</button></div>`,(el,close)=>{
-    const draw=()=>{ el.querySelector('#pkL').innerHTML=ps.map(p=>{ const ts=st.tasks.filter(t=>t.project_id===p.id && !myChecked(t) && (st.scope==='all'||canCheck(t))).sort((a,b)=>orderKey(a)-orderKey(b)), ex=open.has(p.id);
-        return `<div class="pj"><span>${esc(p.name)}</span>${ts.length?`<span class="xp" data-xp="${p.id}">${ex?'▴ 收起':`▾ ${ts.length} 個子任務`}</span>`:''}${playBtn(`data-pk="${p.id}|"`,true)}</div>
-          ${ex?ts.map(t=>`<div class="tk2"><span>${esc(t.title)}</span>${playBtn(`data-pk="${p.id}|${t.id}"`,true)}</div>`).join(''):''}`; }).join('')+
-        `<div class="pj"><span style="color:var(--sub)">未指定專案</span>${playBtn('data-pk="|"',true)}</div>`;
-      el.querySelectorAll('[data-xp]').forEach(x=>x.onclick=()=>{ const id=x.dataset.xp; open.has(id)?open.delete(id):open.add(id); draw(); });
-      el.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{ const [p,t]=b.dataset.pk.split('|'); close(); onPick(p||null,t||null); }); };
+    const draw=()=>{
+      let h='';
+      if(rc.length) h+=`<div class="pkr-sec">最近做的</div><div class="pkr-grp">${rc.map(c=>row(c.pid,c.tid,workTitle(c.pid,c.tid),c.tid?projName(c.pid):'整個專案')).join('')}</div>`;
+      h+=`<div class="pkr-sec">全部專案</div>`;
+      h+=ps.map(p=>{ const ts=tasksOf(p), ex=open.has(p.id);
+        return `<div class="pkr-grp"><div class="pkr-head">${ts.length?`<button class="pkr-xp" data-xp="${p.id}" aria-label="展開">${ex?'▾':'▸'}</button>`:'<span class="pkr-xp"></span>'}
+            <div class="pkr-t" ${ts.length?`data-xp="${p.id}"`:''}><b>${esc(p.name)}</b><small>${ts.length?`${ts.length} 個子任務`:'沒有未完成的子任務'}</small></div>
+            ${(p.id+'|')===cur?'<span class="pkr-now">目前</span>':playBtn(`data-pk="${p.id}|"`,true)}</div>
+          ${ex&&ts.length?`<div class="pkr-sub">${ts.map(t=>row(p.id,t.id,t.title,'')).join('')}</div>`:''}</div>`; }).join('');
+      h+=`<div class="pkr-grp">${row(null,null,'不指定專案','單純計時','')}</div>`;
+      el.querySelector('#pkL').innerHTML=h;
+      el.querySelectorAll('[data-xp]').forEach(x=>x.onclick=e=>{ e.stopPropagation(); const id=x.dataset.xp; open.has(id)?open.delete(id):open.add(id); draw(); });
+      el.querySelectorAll('[data-pk]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const [p,t]=b.dataset.pk.split('|'); close(); onPick(p||null,t||null); }); };
     draw(); el.querySelector('#pkX').onclick=close;
   });
 }
@@ -2215,7 +2316,9 @@ function popKudos(title, sub, id){
 
 // ===================== 我的 =====================
 const FONT_KEY='wt_font';
-function applyFont(){ let f='big'; try{ f=localStorage.getItem(FONT_KEY)||'big'; }catch(e){} document.documentElement.classList.toggle('big-text', f==='big'); }
+const FONTS={std:'標準',big:'大',xl:'特大'};
+function applyFont(){ let f='big'; try{ f=localStorage.getItem(FONT_KEY)||'big'; }catch(e){} if(!FONTS[f]) f='big';
+  document.documentElement.classList.toggle('big-text', f!=='std'); document.documentElement.classList.toggle('xl-text', f==='xl'); }
 const PMODES={pair:['兩人並排','兩個人的進度條並排，一眼看到彼此'],self:['只看自己','只顯示自己的進度，並和上週同一時間比較'],team:['兩人合計','把兩人的時數加在一起，朝共同目標前進']};
 function meItem(id,icon,title,sub,extra){ return `<div class="rec tap me-it" id="${id}"><span class="me-ic">${icon}</span><div class="main"><b>${title}</b>${sub?`<div class="meta">${sub}</div>`:''}</div>${extra||'<span class="me-ar">›</span>'}</div>`; }
 function renderMe(){
@@ -2242,7 +2345,7 @@ function renderMe(){
       ${meItem('goCut','🕕','一天從幾點開始算',cutText(c))}
       ${meItem('goPm','📊','進度顯示方式',PMODES[pm][0])}
       ${meItem('goTheme','🌓','外觀（深色模式）',{auto:'跟隨手機設定',light:'淺色',dark:'深色'}[themeMode()])}
-      ${meItem('goFont','🔠','文字大小',font==='big'?'大（目前）':'標準（目前）',`<span class="tag">${font==='big'?'切換成標準':'切換成大'}</span>`)}
+      ${meItem('goFont','🔠','文字大小',`${FONTS[font]||'大'}（目前）`)}
       ${meItem('goPomo','🍅','番茄鐘與提醒',`${pcfg().start} 我的番茄 ${presetLabel(pcfg().mine)}・${SND_LIST.find(x=>x[0]===pcfg().sound)?.[1]||''}`)}
       ${meItem('goRem','⏰','工作太久提醒',rh>0?`連續工作超過 ${rh} 小時提醒`:'不提醒')}
       ${meItem('goNtf','🔔','通知',ntf)}</div>
@@ -2256,7 +2359,12 @@ function renderMe(){
   on('goExp',openExportModal); on('goRv',openReviewModal);
   on('goTrash',()=>{ st.meView='trash'; render(); window.scrollTo(0,0); });
   on('goName',()=>openNameModal(false)); on('goColor',openColorModal); on('goCut',()=>openCutModal(null)); on('goPm',openPmModal);
-  on('goFont',()=>{ try{ localStorage.setItem(FONT_KEY, font==='big'?'std':'big'); }catch(e){} applyFont(); renderMe(); toast(font==='big'?'已切換成標準字體':'已切換成大字體'); });
+  on('goFont',()=>modal(`<h3>文字大小</h3><p class="hint">只影響這支手機／這台電腦</p><div id="fzL"></div><div class="actions"><button class="btn" id="fzX">完成</button></div>`,(el,close)=>{
+    const draw=()=>{ let cur='big'; try{ cur=localStorage.getItem(FONT_KEY)||'big'; }catch(e){}
+      el.querySelector('#fzL').innerHTML=Object.entries(FONTS).map(([k,n])=>`<div class="opt" data-fz="${k}">${radioSVG(k===cur)}<div class="t"><b style="font-size:${{std:15,big:17,xl:19.5}[k]}px">${n}</b><small>${{std:'一般大小，畫面放得下比較多東西',big:'預設，比較好讀',xl:'整個畫面放大，按鈕也更大'}[k]}</small></div></div>`).join('');
+      el.querySelectorAll('[data-fz]').forEach(r=>r.onclick=()=>{ try{ localStorage.setItem(FONT_KEY,r.dataset.fz); }catch(e){} applyFont(); draw(); }); };
+    draw(); el.querySelector('#fzX').onclick=()=>{ close(); renderMe(); };
+  }));
   on('goRem',openRemindHoursModal);
   on('goPomo',()=>{ st.meView='pomo'; render(); window.scrollTo(0,0); });
   on('goAbout',()=>modal(`<h3>關於 Work Together</h3><p class="hint" style="font-size:14px">版本 v17（2026/11）<br>兩個人一起工作、互相加油的小工具。</p>
@@ -2288,12 +2396,16 @@ function renderPomoSettings(){
       ${SND_LIST.map(([k,n,d])=>`<div class="opt" data-snd="${k}">${radioSVG(k===c.sound)}<div class="t"><b>${n}</b><small>${d}</small></div>${k==='vib'||k==='quiet'?'':playBtn(`data-prev="${k}"`,true)}</div>`).join('')}
       <div class="swrow" style="margin:10px 0"><span>震動（Android 手機）</span><button class="tg2 ${c.vib?'on':''}" id="pmVib"><i></i></button></div>
       <div class="hint" style="margin:0 0 10px">沒人按的話，響 5 分鐘會自動停（畫面會留著）。iPhone 的網頁 App 不能震動。</div></div>
-    <div class="h2">手機鎖螢幕也提醒（推播）</div><div class="card" id="pushCard"><div class="hint" style="margin:0">檢查中…</div></div>`;
+    <div class="h2">手機也要準時響</div>
+    <div class="card"><div class="swrow" style="margin:0 0 6px"><span><b>螢幕保持亮著</b>（不用推播）</span><button class="tg2 ${c.awake?'on':''}" id="pmAwake"><i></i></button></div>
+      <div class="hint" style="margin:0">番茄鐘進行中，手機螢幕不會自動暗掉，App 留在畫面上，時間到就會響。適合把手機立在桌上。比較耗電，記得插電。</div></div>
+    <div class="card" id="pushCard"><div class="hint" style="margin:0">檢查中…</div></div>`;
   bindSubBack();
   const on=(id,fn)=>{ const e=$('#'+id); if(e) e.onclick=fn; };
   on('pmEdit',()=>openCustomPomo(false));
   on('pmAuto',async()=>{ await savePcfg({auto:!c.auto}); renderPomoSettings(); });
   on('pmVib',async()=>{ await savePcfg({vib:!c.vib}); renderPomoSettings(); });
+  on('pmAwake',async()=>{ await savePcfg({awake:!c.awake}); renderPomoSettings(); awakeTick(); toast(!c.awake?'番茄鐘進行中，螢幕會保持亮著 🔆':'已關閉'); });
   document.querySelectorAll('[data-ic]').forEach(b=>b.onclick=()=>{ st.icWhich=b.dataset.ic; renderPomoSettings(); });
   document.querySelectorAll('[data-em]').forEach(b=>b.onclick=async()=>{ await savePcfg(st.icWhich==='start'?{start:b.dataset.em}:{rest:b.dataset.em}); renderPomoSettings(); });
   document.querySelectorAll('[data-snd]').forEach(r=>r.onclick=async e=>{ if(e.target.closest('[data-prev]')) return; Snd.hush(); await savePcfg({sound:r.dataset.snd}); renderPomoSettings(); });
@@ -2303,10 +2415,11 @@ function renderPomoSettings(){
 async function drawPushCard(){
   const box=$('#pushCard'); if(!box) return; const s=await pushStatus(), E=notifyEnv();
   const txt={on:'已開啟 ✓ 手機鎖起來也會準時響、震動、亮起',off:'還沒開啟',denied:'通知被瀏覽器封鎖了，要到瀏覽器設定打開',unsupported:E.ios&&!E.standalone?'iPhone 要先把 App「加到主畫面」，再從主畫面打開':'這個瀏覽器不支援推播'}[s];
-  box.innerHTML=`<div style="font-size:15px">${txt}</div><div class="hint">沒按掉的話，每 1 分鐘再提醒一次，最多 5 次。</div>
-    <div class="row" style="gap:8px;margin-top:10px">${s==='off'?'<button class="btn" id="psOn" style="flex:1">開啟推播</button>':''}${s==='on'?'<button class="btn ghost" id="psTest" style="flex:1">送一則測試</button>':''}</div>`;
+  box.innerHTML=`<div style="font-size:15px"><b>推播</b>（手機鎖起來也會跳通知）：${txt}</div><div class="hint">只用在番茄鐘「時間到／休息結束」。沒按掉的話，每 1 分鐘再提醒一次，最多 5 次。</div>
+    <div class="row" style="gap:8px;margin-top:10px">${s==='off'?'<button class="btn" id="psOn" style="flex:1">開啟推播</button>':''}${s==='on'?'<button class="btn ghost" id="psTest" style="flex:1">送一則測試</button><button class="btn ghost" id="psOff" style="flex:1">關閉推播</button>':''}</div>`;
   const a=$('#psOn'); if(a) a.onclick=async()=>{ a.disabled=true; await enablePush(); drawPushCard(); };
   const t=$('#psTest'); if(t) t.onclick=()=>testPush();
+  const f=$('#psOff'); if(f) f.onclick=async()=>{ f.disabled=true; await disablePush(); drawPushCard(); };
 }
 
 function subHeader(title){ return `<div class="row" style="justify-content:space-between;margin:0 0 10px"><button class="btn sm ghost" id="meBack">‹ 我的</button><b>${title}</b><span style="width:60px"></span></div>`; }
