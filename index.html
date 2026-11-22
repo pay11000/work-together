@@ -508,7 +508,7 @@ html.xl-text body{zoom:1.14}
   nav button:hover:not(.act){background:var(--track)}
   nav .badge{position:static;margin-left:auto}
   html.big-text nav button{font-size:16px}
-  .wrap{max-width:none;margin:0 0 0 224px;padding:26px 40px 48px}
+  .wrap,.wrap.wide{max-width:none;margin:0 0 0 224px;padding:26px 40px 48px}
   .wrap>header,.wrap>#view{max-width:1100px;margin-left:auto;margin-right:auto}
   .t-me>header,.t-me>#view{max-width:980px}
   header{margin:0 0 20px}
@@ -516,10 +516,7 @@ html.xl-text body{zoom:1.14}
   header .date{font-size:13.5px}
   .home-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
   .home-grid.solo{max-width:620px}
-  /* 專案列表：兩欄卡片 */
-  .proj-list{display:grid;grid-template-columns:1fr 1fr;column-gap:0}
-  .proj-list>.rec{border-bottom:1px solid var(--line)}
-  .proj-list>.rec:nth-child(odd){border-right:1px solid var(--line)}
+  .t-proj>header,.t-proj>#view{max-width:860px}
   /* 專案詳細：左資訊、右子任務 */
   .pd-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:24px;align-items:start}
   .pd-b>.h2:first-child{margin-top:0}
@@ -596,6 +593,19 @@ html[data-theme=dark] .shun-add.think{color:#a9b8d8}
   .wrap>#offBar{max-width:1100px;margin-left:auto;margin-right:auto}
   .endc{left:calc(224px + 24px);bottom:24px}
 }
+
+/* v18.1 */
+.bd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bd-grid.eg{grid-template-columns:repeat(3,1fr)}
+.bd{background:var(--bg);border-radius:14px;padding:10px 6px;text-align:center}.bd .e{font-size:28px;line-height:1.2}.bd b{display:block;font-size:13px;margin-top:2px}.bd small{display:block;font-size:11.5px;color:var(--sub);margin-top:1px;line-height:1.3}
+.bd.off{opacity:.45}.bd.off .e{filter:grayscale(1)}
+.bd-sub{font-size:12.5px;color:var(--sub);margin-top:8px;line-height:1.5}
+@media(max-width:420px){ .bd-grid{grid-template-columns:repeat(2,1fr)} .bd-grid.eg{grid-template-columns:repeat(2,1fr)} }
+.ga{display:flex;align-items:center;justify-content:center;gap:14px}.ga b{font-size:44px;min-width:70px;font-variant-numeric:tabular-nums}.ga span{color:var(--sub);margin-left:-8px}
+.ga button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);font-size:22px;color:var(--accent);cursor:pointer}
+.ga-ch{display:flex;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.qc-list{display:flex;flex-direction:column;gap:8px}.qc-opt{text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:12px 14px;font-size:16px;font-weight:700;color:var(--text);font-family:inherit;cursor:pointer}
+.qc-opt small{display:block;font-weight:400;font-size:12.5px;color:var(--sub);margin-top:2px}.qc-opt.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 </style>
 </head>
 <body>
@@ -861,7 +871,7 @@ const REST_EMO=['☕','🍵','🧋','🍪','🛋️','😌','🌿','🎧','🐱'
 function pcfg(){ const c=prof(me.id)?.pomo_cfg||{};
   return { mine:{focus:40,brk:8,rounds:4,long:20,...(c.mine||{})}, msg:c.msg||'起來走走、喝口水 💧', last:c.last||'none', auto:!!c.auto,
     rest:c.rest||'☕', start:c.start||'🍅', sound:c.sound||'melody', vib:c.vib!==false, awake:!!c.awake,
-    dayGoal:c.dayGoal??3, tomGoal:c.tomGoal??6, askNote:c.askNote!==false }; }
+    dayGoal:c.dayGoal??3, tomGoal:c.tomGoal??6, askNote:c.askNote!==false, dg:c.dg||null, askGoal:c.askGoal!==false }; }
 async function savePcfg(patch){ const c={...(prof(me.id)?.pomo_cfg||{}),...patch}; const p=prof(me.id); if(p) p.pomo_cfg=c;
   const {error}=await sb.from('profiles').update({pomo_cfg:c}).eq('id',me.id); if(error) toast('設定儲存失敗'); }
 function presetOf(key){ return key==='mine'?{...pcfg().mine}:POMO_PRESETS[key]?{...POMO_PRESETS[key]}:null; }
@@ -870,7 +880,10 @@ function prun(){ return prof(me.id)?.pomo_run||null; }
 async function setRun(r){ const p=prof(me.id); if(p) p.pomo_run=r; await sb.from('profiles').update({pomo_run:r}).eq('id',me.id); }
 function tomatoToday(uid){ const t=prof(uid||me.id)?.tomatoes; return t && t.d===workDateKey(Date.now(),userCut(uid||me.id)) ? (t.n||0) : 0; }
 async function addTomato(){ const n=tomatoToday()+1, k=todayKey(), old=prof(me.id)?.tomatoes||{}, h={...(old.h||{})}; h[k]=n;
-  Object.keys(h).sort().slice(0,-60).forEach(x=>delete h[x]); const v={d:k,n,h}; const p=prof(me.id); if(p) p.tomatoes=v;
+  Object.keys(h).sort().slice(0,-60).forEach(x=>delete h[x]);
+  const sm={...(old.s||{})}, o=openOf(me.id); if(o){ const e=sm[o.id]||[k,0]; sm[o.id]=[e[0],e[1]+1]; }
+  const ks=Object.keys(sm); if(ks.length>400) ks.slice(0,ks.length-400).forEach(x=>delete sm[x]);
+  const v={d:k,n,h,s:sm}; const p=prof(me.id); if(p) p.tomatoes=v;
   await W({t:'profiles',k:'update',row:{tomatoes:v},m:{id:me.id}}); if(n>=10) egg('tom10'); }
 function tomRow(done,total){ const e=pcfg().start; let h=''; for(let i=0;i<total;i++) h+= i<done?e:`<span class="off">${e}</span>`; return `<div class="toms">${h}</div>`; }
 function ringHTML(pct,big,small,col){ const C=2*Math.PI*60, off=C*(1-Math.max(0,Math.min(1,pct)));
@@ -967,7 +980,7 @@ async function pomoBreakEnd(){
   ringStart({kind:'break', emoji:pcfg().start, title:'休息結束', sub:`準備好就開始第 ${r.round+1} 輪`, flash:`${pcfg().start} 休息結束`,
     toms:tomRow(r.round,r.p.rounds), rnd:`已完成 ${r.round} 輪`,
     b1:`▶ 開始第 ${r.round+1} 輪`, b2:'再休息 3 分鐘',
-    on1:()=>pomoResume(), on3:()=>endFromPause(), on2:async()=>{ r.end=Date.now()+3*60000; await setRun(r); pushJob('pomo',r.end,`${pcfg().start} 休息結束`,`準備好就回來，開始第 ${r.round+1} 輪`); render(); } });
+    on1:()=>pomoResume(), on3:()=>endFromPause(false), on2:async()=>{ r.end=Date.now()+3*60000; await setRun(r); pushJob('pomo',r.end,`${pcfg().start} 休息結束`,`準備好就回來，開始第 ${r.round+1} 輪`); render(); } });
 }
 async function pomoResume(pid,tid){
   const r=prun(), z=pausedOf(me.id); if(!r) return;
@@ -1016,7 +1029,24 @@ window.addEventListener('offline',offBar);
 setInterval(()=>{ if(navigator.onLine!==false && qGet().length) qFlush(); },30000);
 
 // ---- 每天的目標（工時為主，番茄為輔）----
-function dayGoal(){ return +pcfg().dayGoal||0; }
+function dayGoal(){ const c=pcfg(); return c.dg && c.dg.d===todayKey() ? (+c.dg.h||0) : (+c.dayGoal||0); }
+function maybeAskGoal(){ try{ if(window.__noYday || !pcfg().askGoal) return; const k=todayKey(); if(localStorage.getItem('wt_goal_ask')===k) return;
+  if(openOf(me.id) || pausedOf(me.id) || todayMs()>0) { localStorage.setItem('wt_goal_ask',k); return; }
+  if(document.querySelector('.modal-bg')) return setTimeout(maybeAskGoal,1200); localStorage.setItem('wt_goal_ask',k); openGoalAsk(); }catch(e){} }
+function openGoalAsk(){ let h=dayGoal()||pcfg().dayGoal||3; const d=new Date(), hr=d.getHours();
+  const hi=hr<11?'早安 ☀️':hr<18?'午安 🌤':'晚安 🌙';
+  modal(`<div style="text-align:center"><div style="font-size:15px;color:var(--sub)">${hi}</div><h3 style="margin:4px 0 2px;font-size:21px">今天想做多久？</h3><div class="hint" style="margin:0 0 14px">只算今天，明天會回到平常的 ${pcfg().dayGoal} 小時</div>
+    <div class="ga"><button data-ga="-1">−</button><b id="gaV">${h}</b><span>小時</span><button data-ga="1">＋</button></div>
+    <div class="ga-ch">${[2,3,4,5].map(n=>`<button class="chipx" data-gq="${n}">${n} 小時</button>`).join('')}</div>
+    <button class="btn big" id="gaOk" style="width:100%;margin-top:14px">好，順便選今天的重點</button>
+    <div class="row" style="justify-content:space-between;margin-top:10px"><a href="#" class="lnk" style="color:var(--sub)" id="gaSkip">今天先不設</a><a href="#" class="lnk" id="gaOnly">只設時數就好</a></div></div>`,(el,close)=>{
+    const v=el.querySelector('#gaV'), set=x=>{ h=Math.max(0.5,Math.min(16,x)); v.textContent=h; };
+    el.querySelectorAll('[data-ga]').forEach(b=>b.onclick=()=>set(h+0.5*(+b.dataset.ga)));
+    el.querySelectorAll('[data-gq]').forEach(b=>b.onclick=()=>set(+b.dataset.gq));
+    const save=async()=>{ await savePcfg({dg:{d:todayKey(),h}}); render(); };
+    el.querySelector('#gaOk').onclick=async()=>{ close(); await save(); setTimeout(openFocusModal,250); };
+    el.querySelector('#gaOnly').onclick=async e=>{ e.preventDefault(); close(); await save(); toast(`今天的目標：${h} 小時 💪`); };
+    el.querySelector('#gaSkip').onclick=e=>{ e.preventDefault(); close(); }; }); }
 function tomGoal(){ return +pcfg().tomGoal||0; }
 function todayMs(){ const c=userCut(me.id); return sumMs(st.sessions.filter(s=>s.user_id===me.id),periodOf('day',Date.now(),0,c)); }
 function goalCardHTML(){
@@ -1042,11 +1072,12 @@ function contHTML(c){ if(!c) return ''; const key=pcfg().last, pr=presetOf(key);
     <div class="cont-s">${[c.tid?esc(projName(c.pid)):'',c.intent?'🎯 '+esc(c.intent):'',pr?pcfg().start+' '+presetLabel(pr):''].filter(Boolean).join('・')||'點一下直接開始'}</div></div>
     <span class="cont-p">${PLAY_SVG}</span></button>`; }
 // ---- 到期與進度：收成一行（很急的照樣展開）----
+function isRed(d){ if(!d) return false; const t=new Date(); const dd=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(t.getFullYear(),t.getMonth(),t.getDate()))/86400000); return +d<Date.now()+86400000 || dd<=3; }
 function urgentRows(){
-  const out=[]; const day=Date.now()+86400000;
+  const out=[];
   st.projects.filter(p=>!p.archived && isMine(p)).forEach(p=>{
-    const d=projDeadline(p); if(d && +d<=day) out.push({t:+d,h:`<div class="rec tap up-task" data-open="${p.id}"><div class="main"><b>${esc(p.name)}</b><div class="meta">專案期限</div></div>${dueBadge(d)}${isOver(d)?`<div class="od-acts"><button class="od-btn" data-oredue-p="${p.id}">改期限</button></div>`:''}</div>`});
-    st.tasks.filter(t=>t.project_id===p.id && taskDue(t) && +taskDue(t)<=day && canCheck(t) && !myChecked(t)).forEach(t=>out.push({t:+taskDue(t),h:`<div class="rec tap up-task" data-open="${p.id}"><div class="main">${esc(t.title)}<div class="meta">${esc(p.name)}</div></div>${dueBadge(taskDue(t))}${isOver(taskDue(t))?overdueActs(t):''}</div>`})); });
+    const d=projDeadline(p); if(isRed(d)) out.push({t:+d,h:`<div class="rec tap up-task" data-open="${p.id}"><div class="main"><b>${esc(p.name)}</b><div class="meta">專案期限</div></div>${dueBadge(d)}${isOver(d)?`<div class="od-acts"><button class="od-btn" data-oredue-p="${p.id}">改期限</button></div>`:''}</div>`});
+    st.tasks.filter(t=>t.project_id===p.id && isRed(taskDue(t)) && canCheck(t) && !myChecked(t)).forEach(t=>out.push({t:+taskDue(t),h:`<div class="rec tap up-task" data-open="${p.id}"><div class="main">${esc(t.title)}<div class="meta">${esc(p.name)}</div></div>${dueBadge(taskDue(t))}${isOver(taskDue(t))?overdueActs(t):''}</div>`})); });
   return out.sort((a,b)=>a.t-b.t).map(x=>x.h);
 }
 function dueCount(){ const lim=Date.now()+7*86400000; let n=0;
@@ -1200,7 +1231,7 @@ function render(){
     <nav><div class="in"><div class="nav-brand">Work Together</div>
       ${[['home','今天'],['proj','專案'],['cheer','加油'],['me','我的']].map(([k,l])=>`<button data-tab="${k}" class="${st.tab===k?'act':''}">${ICONS[k]}${l}${k==='cheer'?'<span id="cheerBadge" class="badge hidden"></span>':''}</button>`).join('')}
     </div></nav>`;
-  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{ if(st.tab!==b.dataset.tab){ st.freshIds=null; st.moreRecv=false; st.histN=10; } st.tab=b.dataset.tab; st.projView=null; st.meView=null; render(); window.scrollTo(0,0); });
+  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{ if(st.tab!==b.dataset.tab){ st.freshIds=null; st.wSent=null; st.moreRecv=false; st.histN=10; } st.tab=b.dataset.tab; st.projView=null; st.meView=null; render(); window.scrollTo(0,0); });
   updateBadge(); offBar();
   if(st.tab==='proj' && st.projView && projOf(st.projView)) return renderProjectDetail();
   ({home:renderHome,proj:renderProjects,cheer:renderCheer,me:renderMe})[st.tab]();
@@ -1358,7 +1389,9 @@ function breakHTML(z){
   else mid=`<div class="foc-l">已休息</div><div class="mins hms" style="color:var(--sub)" data-since="${+new Date(z.since)}">${hms(Date.now()-new Date(z.since))}</div>`;
   const since=+new Date(z.since)-3*3600000, got=st.kudos.filter(k=>k.to_user===me.id && +new Date(k.created_at)>=since).slice(0,4);
   return `<div class="card wk"><div style="font-size:22px;font-weight:800">休息中</div><div class="hint" style="margin:2px 0 0">${esc(comboText(z.project_id,z.task_id))}・休息時間不算工時</div>${mid}
-    <div class="row" style="gap:10px"><button class="btn big" id="resumeBtn" style="flex:1.4">▶ ${r?`繼續第 ${r.round+1} 輪`:'繼續工作'}</button><button class="btn big ghost" id="endPauseBtn" style="flex:1">今天先到這</button></div></div>
+    <button class="btn big" id="resumeBtn" style="width:100%">▶ ${r?`繼續第 ${r.round+1} 輪`:'繼續做這件'}</button>
+    <div class="row" style="gap:10px;margin-top:10px"><button class="btn ghost" id="brkOther" style="flex:1">⇄ 換做別的</button><button class="btn ghost" id="endPauseBtn" style="flex:1">🌙 今天先到這</button></div>
+    <div class="hint" style="margin:8px 0 0;font-size:12.5px">換做別的：這件先結束，接著做另一件｜今天先到這：收工，看今日小結</div></div>
     ${got.length?`<div class="recap"><b>剛剛收到的</b>${got.map(k=>`<div class="it"><span style="font-size:22px">${esc(k.emoji||'💌')}</span><div><b>${esc(nameOf(k.from_user))}</b>${k.message?'：'+esc(k.message):' 給你一個肯定'}<div class="meta">${ago(k.created_at)}</div></div></div>`).join('')}</div>`:''}`;
 }
 function renderHome(){
@@ -1373,12 +1406,12 @@ function renderHome(){
     </div><div class="col-b">
     ${sumCardHTML(isWide())}</div></div>`;
   bindHome(); st.newDone=null;
-  if(!st._ysum){ st._ysum=1; maybeYesterday(); setTimeout(checkUs,1500); }
+  if(!st._ysum){ st._ysum=1; maybeYesterday(); setTimeout(maybeAskGoal,1600); setTimeout(checkUs,2500); }
 }
 function bindHome(){
   bindOpen(); bindScope(); bindOverdue($('#view'));
   const on=(id,fn)=>{ const e=$('#'+id); if(e) e.onclick=fn; };
-  on('goCheer',()=>{ st.freshIds=null; st.tab='cheer'; render(); });
+  on('goCheer',()=>{ st.freshIds=null; st.wSent=null; st.tab='cheer'; render(); });
   on('rvHide',()=>{ hideReview(); render(); });
   on('rvGo',()=>{ hideReview(); render(); if(myOpenTasks().length) openFocusModal(); });
   const j=$('#joinBtn'); if(j) j.onclick=()=>openTogether(j.dataset.u);
@@ -1386,7 +1419,7 @@ function bindHome(){
   const ef=$('#editFocus'); if(ef) ef.onclick=e=>{ e.preventDefault(); openFocusModal(); };
   document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{ const [p,t]=b.dataset.go.split('|'); goWork(p||null,t||null); });
   const lc=lastCombo(), rc=recentCombos(lc?[lc.k]:[]); document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=()=>{ const c=rc[+b.dataset.rc]; goWork(c.pid,c.tid); });
-  const cb=$('#contBtn'); if(cb) cb.onclick=async()=>{ cb.disabled=true; const z=pausedOf(me.id); if(z&&prun()) return pomoResume(lc.pid,lc.tid); await beginWork(lc.pid,lc.tid,pcfg().last,lc.intent); };
+  const cb=$('#contBtn'); if(cb) cb.onclick=async()=>{ cb.disabled=true; const z=pausedOf(me.id); if(z&&prun()) return pomoResume(lc.pid,lc.tid); await beginWork(lc.pid,lc.tid,pcfg().last,lc.intent,true); };
   const dsl=$('#daySum'); if(dsl) dsl.onclick=e=>{ e.preventDefault(); openDaySummary(); };
   document.querySelectorAll('[data-tgl]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const k=a.dataset.tgl==='due'?'dueOpen':'progOpen', wide=isWide(); st[k]=!(st[k]??wide); renderHome(); });
   bindInbox(); bindIntentCheck();
@@ -1403,7 +1436,8 @@ function bindHome(){
   on('shunAdd',()=>openShunSheet(openOf(me.id)));
   // 休息中
   on('resumeBtn',()=>{ $('#resumeBtn').disabled=true; const r=prun(); if(r) pomoResume(); else { const z=pausedOf(me.id); startWork(z.project_id,z.task_id,{intent:lastIntent(z.project_id,z.task_id)}); } });
-  on('endPauseBtn',()=>endFromPause());
+  on('endPauseBtn',()=>endFromPause(true));
+  on('brkOther',()=>openPicker(async(pid,tid)=>{ await pomoClear(); goWork(pid,tid); },'接著做什麼？'));
 }
 // 打勾：勾勾畫出來＋整列染色 → 直接彈進「今天完成的」
 function checkA(b){
@@ -1458,13 +1492,32 @@ function openStartSheet(pid,tid,preKey){
       close(); await beginWork(pid,tid,key,intent); };
   });
 }
-async function beginWork(pid,tid,key,intent){
+async function beginWork(pid,tid,key,intent,quick){
   if(key!==pcfg().last) savePcfg({last:key});
   const ok=await startWork(pid,tid,{intent,quiet:true}); if(!ok) return;
   if(key && key!=='none') await startPomo(key,pid,tid,intent);
   render();
   const o=openOf(me.id);
+  if(quick) return quickCard(o,pid,tid,key,intent);
   toastUndo(`已開始：${esc(workTitle(pid,tid))}`, async()=>{ if(!o) return; await sb.from('sessions').delete().eq('id',o.id); await pomoClear(); await loadSessions(); render(); toast('已復原'); }, '', 5000);
+}
+function pomoLabel(key){ if(!key||key==='none') return '不用番茄鐘'; const p=presetOf(key); return p?`${key==='mine'?'🍅 我的 ':''}${p.focus}＋${p.brk}`:'不用番茄鐘'; }
+function quickCard(o,pid,tid,key,intent){
+  document.querySelectorAll('.endc').forEach(x=>x.remove()); clearInterval(endT);
+  const el=document.createElement('div'); el.className='endc qc';
+  el.innerHTML=`<div><b>▶ 開始了：${esc(workTitle(pid,tid))}</b><div class="hint" style="margin:2px 0 0">番茄鐘：<b style="color:var(--text)">${esc(pomoLabel(key))}</b>（跟上次一樣）</div></div>
+    <div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost sm" data-q="undo" style="flex:1">復原</button><button class="btn sm" data-q="chg" style="flex:2">換番茄鐘</button></div><div class="endc-bar"><i></i></div>`;
+  document.body.appendChild(el);
+  let left=8000; const bar=el.querySelector('.endc-bar i'), close=()=>{ clearInterval(endT); el.classList.add('out'); setTimeout(()=>el.remove(),250); };
+  endT=setInterval(()=>{ left-=100; bar.style.width=Math.max(0,left/80)+'%'; if(left<=0) close(); },100);
+  el.querySelector('[data-q="undo"]').onclick=async()=>{ close(); if(!o) return; await sb.from('sessions').delete().eq('id',o.id); await pomoClear(); await loadSessions(); render(); toast('已復原'); };
+  el.querySelector('[data-q="chg"]').onclick=()=>{ close(); const c=pcfg(), ks=['none','25','50','mine'];
+    modal(`<h3 style="margin:0 0 4px">換番茄鐘</h3><div class="hint" style="margin:0 0 10px">工作已經開始，番茄鐘從現在重新計時</div>
+      <div class="qc-list">${ks.map(k=>`<button class="qc-opt ${k===key?'on':''}" data-k="${k}">${esc(pomoLabel(k))}${k==='mine'?`<small>每 ${c.mine.rounds} 輪長休息 ${c.mine.long} 分</small>`:k==='none'?'<small>只計時，不提醒</small>':''}</button>`).join('')}
+      <button class="qc-opt" data-k="custom">自訂…<small>這次用不一樣的時間</small></button></div>`,(m,cl)=>{
+      m.querySelectorAll('[data-k]').forEach(b=>b.onclick=async()=>{ const k=b.dataset.k; cl();
+        if(k==='custom') return openCustomPomo(pid,tid,intent);
+        await pomoClear(); savePcfg({last:k}); if(k!=='none') await startPomo(k,pid,tid,intent); render(); toast(k==='none'?'改成不用番茄鐘':`改成 ${pomoLabel(k)} ✓`); }); }); };
 }
 function openCustomPomo(pid,tid,intent){
   const c=pcfg(); const v={...c.mine}; let msg=c.msg, auto=c.auto;
@@ -1624,9 +1677,22 @@ function achTabHTML(){
   const cnt=k=>list.filter(a=>a.kind===k).length;
   const hearts=a=>st.kudos.filter(k=>k.ref==='ach:'+a.id && k.to_user===a.user_id);
   const eggs=list.filter(a=>EGGS[a.kind]).length;
+  const foundE=[...new Set(list.filter(a=>EGGS[a.kind]).map(a=>a.kind))], projs=list.filter(a=>a.kind==='project_done'), usL=usAch().filter(a=>a.kind==='us_hours').map(a=>+a.ref).sort((a,b)=>a-b);
+  const tile=(e,t,sub,off)=>`<div class="bd${off?' off':''}"><div class="e">${e}</div><b>${t}</b>${sub?`<small>${sub}</small>`:''}</div>`;
+  const N=st.achN||20;
   return segs+`
-    <div class="card"><div class="ach-grid four">${Object.entries(ACH).map(([k,[e,t]])=>`<div><div class="e">${e}</div><b>${cnt(k)}</b><div class="meta">${t==='本週目標達成'?'週目標達成':t}</div></div>`).join('')}<div><div class="e">🎁</div><b>${eggs}</b><div class="meta">小確幸</div></div></div>
-    ${list.length?`<div class="lab">最近</div>${list.slice(0,30).map(a=>{ const hs=hearts(a); return `<div class="ach-row"><span class="e">${achIcon(a)}</span><div style="flex:1"><b>${esc(achText(a))}</b><div class="meta">${fmtFullM(a.created_at)}${hs.length?`・${hs.map(k=>esc(nameOf(k.from_user))+' '+esc(k.emoji||'❤️')).join(' ')}`:''}</div></div>${a.user_id!==me.id?`<button class="heart-btn sm" data-ah="${a.id}">❤️</button>`:''}</div>`; }).join('')}`
+    <div class="card"><div class="lab" style="margin-top:0">總覽・已達成</div>
+    <div class="bd-grid">
+      ${tile('🏅','說到做到',cnt('say_do')?`${cnt('say_do')} 天`:'還沒達成',!cnt('say_do'))}
+      ${tile('🎯','週目標達成',cnt('week_goal')?`${cnt('week_goal')} 次`:'還沒達成',!cnt('week_goal'))}
+      ${tile('🏆','專案完成',projs.length?`${projs.length} 個`:'還沒達成',!projs.length)}
+      ${ps.length>1?tile('🤝','一起專注',usL.length?`${usL[usL.length-1]} 小時`:'還沒達成',!usL.length):''}
+    </div>
+    ${projs.length?`<div class="bd-sub">🏆 ${projs.slice(0,12).map(a=>esc(achText(a).replace(/^完成「|」$/g,''))).join('・')}${projs.length>12?'…':''}</div>`:''}
+    <div class="lab">🎁 小確幸（${foundE.length}）</div>
+    ${foundE.length?`<div class="bd-grid eg">${foundE.map(k=>tile(EGGS[k][0],EGGS[k][1],EGGS[k][2])).join('')}</div>`:''}
+    <div class="hint" style="margin:6px 0 0">${foundE.length?'還有一些藏在日常裡，慢慢就會遇到 ✨':'藏在日常裡的小驚喜，做著做著就會遇到 ✨'}</div>
+    ${list.length?`<div class="lab">全部紀錄（${list.length}）</div>${list.slice(0,N).map(a=>{ const hs=hearts(a); return `<div class="ach-row"><span class="e">${achIcon(a)}</span><div style="flex:1"><b>${esc(achText(a))}</b><div class="meta">${fmtFullM(a.created_at)}${hs.length?`・${hs.map(k=>esc(nameOf(k.from_user))+' '+esc(k.emoji||'❤️')).join(' ')}`:''}</div></div>${a.user_id!==me.id?`<button class="heart-btn sm" data-ah="${a.id}">❤️</button>`:''}</div>`; }).join('')}${list.length>N?`<div class="more-row"><a href="#" class="lnk" id="achMore">再顯示 20 筆 ▼</a></div>`:''}`
       :`<div class="empty" style="padding:16px 0 4px">${who===me.id?'完成今日重點、達成週目標、完成專案，都會收進這裡':'還沒有成就'}</div>`}
     <div class="hint" style="text-align:center;margin-top:10px">一直累積，不會歸零</div></div>`;
 }
@@ -1777,10 +1843,12 @@ async function stopWork(pause,silent,opt={}){
   if(opt.day){ setTimeout(()=>openDaySummary(),newly.length?900:300); return; }
   afterEnd(o,newly.length);
 }
-async function endFromPause(){
+async function endFromPause(day){
   await pomoClear();
   const r=await W({t:'profiles',k:'update',row:{paused:null},m:{id:me.id}}); prof(me.id).paused=null; if(!r.queued) await loadProfiles(); render();
-  if(todayMs()>0) openDaySummary(); else toast('辛苦了，今天先到這 🌙');
+  if(day){ if(todayMs()>0) openDaySummary(); else toast('辛苦了，今天先到這 🌙'); return; }
+  const last=st.sessions.filter(s=>s.user_id===me.id && s.end_at && !s.split_of).sort((a,b)=>new Date(b.end_at)-new Date(a.end_at))[0];
+  if(last) afterEnd(last,0); else toast('這段結束了 ✓');
 }
 // ---- 這段做了什麼 ----
 function myTags(){
@@ -2553,7 +2621,8 @@ function renderCheer(){
   const segH=desk?'':`<div class="seg"><button data-ct="feed" class="${tab==='feed'?'on':''}">動態</button><button data-ct="ach" class="${tab==='ach'?'on':''}">成就</button></div>`;
   if(tab==='ach'){ $('#view').innerHTML=segH+achTabHTML(); bindCheerTabs(); bindAch(); return; }
   function bindAch(){
-    document.querySelectorAll('[data-aw]').forEach(b=>b.onclick=()=>{ st.achWho=b.dataset.aw; renderCheer(); });
+    document.querySelectorAll('[data-aw]').forEach(b=>b.onclick=()=>{ st.achWho=b.dataset.aw; st.achN=20; renderCheer(); });
+    const am=$('#achMore'); if(am) am.onclick=e=>{ e.preventDefault(); st.achN=(st.achN||20)+20; renderCheer(); };
     document.querySelectorAll('[data-ah]').forEach(b=>{ const a=st.ach.find(x=>x.id===b.dataset.ah); const w={ref:'ach:'+a.id,kind:'ach',icon:achIcon(a),text:achText(a)};
       b.onclick=()=>{ b.classList.add('pop'); sendKudos(a.user_id,w,'❤️',null); }; bindLongPress(b,()=>openEmojiBar(b,'💬 留言',e=>{ if(e==='reply'||e==='more') openKudosModal(a.user_id,w); else sendKudos(a.user_id,w,e,null); })); });
   }
@@ -2570,14 +2639,17 @@ function renderCheer(){
       ${st.moreRecv?`<div class="card list">${hist.slice(0,st.histN).map(kudoRow).join('')}</div>${hist.length>st.histN?`<div class="more-row"><a href="#" class="lnk" id="histMore">再顯示 10 則 ▼</a></div>`:''}`:''}`:''}
     ${fresh.length||hist.length?`<p class="hint" style="text-align:center;margin-top:0">長按訊息（電腦按右鍵）或點「回應」可以快速回覆</p>`:''}
     ${ps.map(u=>{ const ws=winsOf(u), sent=st.kudos.filter(k=>k.from_user===me.id&&k.to_user===u);
-      return `<div class="h2 row" style="justify-content:space-between"><span>給 ${esc(nameOf(u))} 加油</span><button class="btn sm ghost" data-gen="${u}">💌 說句話</button></div>
-      ${ws.length?`<div class="card list">${ws.map((w,i)=>{ if(i>=4 && !st.moreWins[u]) return ''; const mine=sent.filter(k=>k.ref===w.ref);
+      st.wSent=st.wSent||{}; if(!st.wSent[u]) st.wSent[u]=new Set(ws.filter(w=>sent.some(k=>k.ref===w.ref)).map(w=>w.ref));
+      const nw=ws.filter(w=>!st.wSent[u].has(w.ref)), old=ws.filter(w=>st.wSent[u].has(w.ref)), oN=st.oldWins?.[u];
+      const row=(w)=>{ const i=ws.indexOf(w), mine=sent.filter(k=>k.ref===w.ref);
         return `<div class="rec win${w.gold?' gold':''}"><span class="big-e">${w.icon}</span>
           <div class="main"><div>${w.text}</div><div class="meta">${w.sub?w.sub+'・':''}${ago(w.t)}</div>
           ${mine.length?`<div class="sent">你送了 ${mine.map(k=>esc(k.emoji||'💌')).join(' ')}${mine.some(k=>k.message)?'・含留言':''}</div>`:''}
-          <div class="win-acts"><button class="heart-btn" data-u="${u}" data-w="${i}">❤️ 給個愛心</button><span class="hint" style="margin:0">長按可選其他表情或留言</span></div></div></div>`; }).join('')}</div>
-      ${ws.length>4?`<div class="more-row"><a href="#" class="lnk" data-morew="${u}">${st.moreWins[u]?'收起 ▲':`顯示更多（還有 ${ws.length-4} 項）▼`}</a></div>`:''}`
-      :`<div class="card empty">${esc(nameOf(u))} 最近 7 天還沒有新的成果<br><span class="hint">也可以按上面的「說句話」直接鼓勵</span></div>`}`; }).join('')}
+          <div class="win-acts"><button class="heart-btn" data-u="${u}" data-w="${i}">❤️ ${mine.length?'再給一個':'給個愛心'}</button><span class="hint" style="margin:0">長按可選其他表情或留言</span></div></div></div>`; };
+      return `<div class="h2 row" style="justify-content:space-between"><span>給 ${esc(nameOf(u))} 加油</span><span class="row" style="gap:8px">${nw.length?`<span class="pill-new">${nw.length} 則新的</span>`:''}<button class="btn sm ghost" data-gen="${u}">💌 說句話</button></span></div>
+      ${nw.length?`<div class="card list">${nw.slice(0,st.moreWins[u]?99:4).map(row).join('')}</div>${nw.length>4?`<div class="more-row"><a href="#" class="lnk" data-morew="${u}">${st.moreWins[u]?'收起 ▲':`顯示更多（還有 ${nw.length-4} 項）▼`}</a></div>`:''}`
+        :`<div class="card empty" style="padding:14px">${ws.length?`${esc(nameOf(u))} 最近的成果你都加油過了 👍`:`${esc(nameOf(u))} 最近 7 天還沒有新的成果<br><span class="hint">也可以按上面的「說句話」直接鼓勵</span>`}</div>`}
+      ${old.length?`<div class="hist-bar tap" data-oldw="${u}"><span>📜 已加油過（${old.length}）</span><span>${oN?'收起 ▲':'展開 ▼'}</span></div>${oN?`<div class="card list">${old.map(row).join('')}</div>`:''}`:''}`; }).join('')}
     <p class="hint" style="text-align:center">具體說出對方「做了什麼、投入了什麼」，比「好棒」更有力量 💡</p>`+(desk?`</div><div class="ch-b"><div class="h2" style="margin-top:6px">成就</div>${achTabHTML()}</div></div>`:'');
   bindCheerTabs(); if(desk) bindAch();
   const wsMap={}; ps.forEach(u=>wsMap[u]=winsOf(u));
@@ -2585,6 +2657,7 @@ function renderCheer(){
     b.onclick=()=>{ b.classList.add('pop'); sendKudos(u,w,'❤️',null); };
     bindLongPress(b,()=>openEmojiBar(b,'💬 留言',e=>{ if(e==='reply'||e==='more') openKudosModal(u,w); else sendKudos(u,w,e,null); })); });
   document.querySelectorAll('[data-gen]').forEach(b=>b.onclick=()=>openKudosModal(b.dataset.gen,null));
+  document.querySelectorAll('[data-oldw]').forEach(a=>a.onclick=()=>{ st.oldWins=st.oldWins||{}; st.oldWins[a.dataset.oldw]=!st.oldWins[a.dataset.oldw]; renderCheer(); });
   document.querySelectorAll('[data-morew]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const u=a.dataset.morew; st.moreWins[u]=!st.moreWins[u]; renderCheer(); });
   const hb=$('#histBar'); if(hb) hb.onclick=()=>{ st.moreRecv=!st.moreRecv; renderCheer(); };
   const hm=$('#histMore'); if(hm) hm.onclick=e=>{ e.preventDefault(); st.histN+=10; renderCheer(); };
@@ -2702,7 +2775,7 @@ function renderMe(){
   }));
   on('goRem',openRemindHoursModal);
   on('goPomo',()=>{ st.meView='pomo'; render(); window.scrollTo(0,0); });
-  on('goAbout',()=>modal(`<h3>關於 Work Together</h3><p class="hint" style="font-size:14px">版本 v18（2026/11）<br>兩個人一起工作、互相加油的小工具。</p>
+  on('goAbout',()=>modal(`<h3>關於 Work Together</h3><p class="hint" style="font-size:14px">版本 v18.1（2026/11）<br>兩個人一起工作、互相加油的小工具。</p>
     <p class="hint" style="font-size:13px">提醒音效「小段旋律」「連續長音」使用 FluidR3_GM 音色庫的樂器錄音（Frank Wen 製作），經 gleitz/midi-js-soundfonts 轉成網頁可用的格式。</p><div class="actions"><button class="btn" id="abX">知道了</button></div>`,(el,close)=>{ el.querySelector('#abX').onclick=close; }));
   on('goTheme',()=>{ const cur=themeMode();
     modal(`<h3>外觀</h3><div class="pm-grid" style="grid-template-columns:repeat(3,1fr)">${[['auto','🔄 跟隨手機'],['light','☀️ 淺色'],['dark','🌙 深色']].map(([k,l])=>`<button class="dq-b ${k===cur?'on':''}" data-th="${k}" style="padding:12px 6px">${l}</button>`).join('')}</div>
@@ -2726,7 +2799,8 @@ function renderPomoSettings(){
     <div class="h2">每天的目標</div><div class="card">
       <div class="stp"><span>每天工作時數</span><span class="ct"><button data-dg="-1">−</button><input class="stp-in" type="number" inputmode="decimal" id="dgIn" min="0" max="16" step="0.5" value="${c.dayGoal}"><span class="hint" style="margin:0">小時</span><button data-dg="1">＋</button></span></div>
       <div class="stp" style="border-bottom:0"><span>每天番茄</span><span class="ct"><button data-tg2="-1">−</button><input class="stp-in" type="number" inputmode="numeric" id="tgIn" min="0" max="30" value="${c.tomGoal}"><span class="hint" style="margin:0">顆</span><button data-tg2="1">＋</button></span></div>
-      <div class="hint" style="margin:4px 0 0">今天頁會顯示離目標還差多少。填 0 就不顯示。</div></div>
+      <div class="hint" style="margin:4px 0 0">今天頁會顯示離目標還差多少。填 0 就不顯示。</div>
+      <div class="swrow" style="margin:10px 0 0"><span>每天第一次打開時先問「今天想做多久」</span><button class="tg2 ${c.askGoal?'on':''}" id="pmAskG"><i></i></button></div></div>
     <div class="h2">結束工作時</div><div class="card"><div class="swrow" style="margin:0"><span>輕輕問一句「這段做了什麼」<br><span class="hint" style="margin:0">不理它 8 秒後自己收起</span></span><button class="tg2 ${c.askNote?'on':''}" id="pmAsk"><i></i></button></div></div>
     <div class="h2">提醒圖示（點一下換）</div><div class="card">
       <div class="ic2"><button class="${st.icWhich!=='start'?'on':''}" data-ic="rest"><div class="e">${c.rest}</div><div class="meta">時間到・該休息</div></button><button class="${st.icWhich==='start'?'on':''}" data-ic="start"><div class="e">${c.start}</div><div class="meta">休息結束・該開始</div></button></div>
@@ -2746,6 +2820,7 @@ function renderPomoSettings(){
   on('pmEdit',()=>openCustomPomo(false));
   on('pmAuto',async()=>{ await savePcfg({auto:!c.auto}); renderPomoSettings(); });
   on('pmAsk',async()=>{ await savePcfg({askNote:!c.askNote}); renderPomoSettings(); });
+  on('pmAskG',async()=>{ await savePcfg({askGoal:!c.askGoal}); renderPomoSettings(); });
   const dg=$('#dgIn'), tg=$('#tgIn');
   const sv=async(k,v,lo,hi)=>{ v=Math.min(hi,Math.max(lo,v)); await savePcfg({[k]:v}); renderPomoSettings(); };
   document.querySelectorAll('[data-dg]').forEach(b=>b.onclick=()=>sv('dayGoal',(+dg.value||0)+0.5*(+b.dataset.dg),0,16));
@@ -2842,17 +2917,21 @@ function renderTrash(){
 }
 async function restoreItem(kind,id){
   const {error}=await sb.from(kind).update({deleted_at:null}).eq('id',id); if(error) return toast('復原失敗');
-  if(kind==='sessions'){ await sb.from('sessions').update({deleted_at:null}).eq('split_of',id); }
+  if(kind==='sessions'){ await sb.from('sessions').update({deleted_at:null}).eq('split_of',id); await tomAdjust(id,1); }
   await loadAll();
   if(kind==='sessions'){ const x=st.sessions.find(z=>z.id===id); if(x&&x.split_of) await recalcShare(x.split_of); }
   render(); toast('已復原 ✓');
 }
+async function tomAdjust(sid,sign){ const t=prof(me.id)?.tomatoes; if(!t||!t.s||!t.s[sid]) return; const [dk,c,gone]=t.s[sid];
+  if(sign<0 && gone) return; if(sign>0 && !gone) return;
+  const v={...t,h:{...(t.h||{})},s:{...t.s}}; v.h[dk]=Math.max(0,(v.h[dk]||0)+sign*c); if(v.d===dk) v.n=Math.max(0,(v.n||0)+sign*c);
+  v.s[sid]=sign<0?[dk,c,1]:[dk,c]; prof(me.id).tomatoes=v; await W({t:'profiles',k:'update',row:{tomatoes:v},m:{id:me.id}}); }
 async function softDelete(kind,id,label){
   const patch={deleted_at:new Date().toISOString()};
   if(kind==='sessions'){ const s=st.sessions.find(x=>x.id===id); if(s && !s.end_at) patch.end_at=patch.deleted_at; }
   const ex=kind==='sessions'?st.sessions.find(x=>x.id===id):null;
   const {error}=await sb.from(kind).update(patch).eq('id',id); if(error){ toast('刪除失敗'); return false; }
-  if(kind==='sessions') await sb.from('sessions').update({deleted_at:patch.deleted_at}).eq('split_of',id);
+  if(kind==='sessions'){ await sb.from('sessions').update({deleted_at:patch.deleted_at}).eq('split_of',id); await tomAdjust(id,-1); }
   if(kind==='projects' && st.projView===id) st.projView=null;
   await loadAll(); if(ex && ex.split_of) await recalcShare(ex.split_of); render();
   toastUndo(`已刪除「${esc(label)}」`, ()=>restoreItem(kind,id));
