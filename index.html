@@ -800,7 +800,7 @@ async function loadKudos(){
   const d=await q('kudos',r=>r.order('created_at',{ascending:false}).range(0,499)); if(!d) return;
   const fresh=d.filter(k=>k.to_user===me.id && !k.read_at && !seenKudos.has(k.id));
   st.kudos=d; d.forEach(k=>seenKudos.add(k.id));
-  if(loadKudos.ready && fresh.length && !openOf(me.id)){ const k=fresh[0]; popKudos(`${esc(nameOf(k.from_user))} 送你 ${esc(k.emoji||'💌')}`, k.message, k.id); }
+  if(loadKudos.ready && fresh.length && !openOf(me.id)){ const k=fresh[0]; claimOnce('p:k'+k.id,1).then(ok=>{ if(ok) popKudos(`${esc(nameOf(k.from_user))} 送你 ${esc(k.emoji||'💌')}`, k.message, k.id); }); }
   loadKudos.ready=true;
 }
 async function loadSessions(){
@@ -1052,11 +1052,40 @@ window.addEventListener('online',()=>{ offBar(); setTimeout(qFlush,800); });
 window.addEventListener('offline',offBar);
 setInterval(()=>{ if(navigator.onLine!==false && qGet().length) qFlush(); },30000);
 
+// ---- 同一個人多台裝置：每件事只提醒一次（記在帳號裡，不是記在各自的裝置）----
+let lastAct=Date.now(); ['pointerdown','keydown','touchstart'].forEach(e=>window.addEventListener(e,()=>{ lastAct=Date.now(); },{capture:true,passive:true}));
+function seenOf(){ return (prof(me.id)?.pomo_cfg||{}).seen||{}; }
+async function claimOnce(k,v){
+  if(window.__noClaim) return true;
+  if(seenOf()[k]===v) return false;
+  // 正在用的那台先拿；放在背景的裝置晚一點再確認，避免兩台同時跳
+  // 剛剛有在操作的那台最先（幾乎不用等）；閒置越久等越久；放在背景的最後
+  const vis=document.visibilityState==='visible', idle=Date.now()-lastAct;
+  await new Promise(ok=>setTimeout(ok, vis ? Math.min(2400, idle/50)+Math.random()*120 : 2600+Math.random()*600));
+  try{
+    const {data,error}=await sb.from('profiles').select('*').eq('id',me.id); if(error) throw error;
+    const f=(data&&data[0]&&data[0].pomo_cfg)||{}, sn={...(f.seen||{})};
+    if(sn[k]===v) { const p=prof(me.id); if(p) p.pomo_cfg={...(p.pomo_cfg||{}),seen:sn}; return false; }
+    sn[k]=v; const ks=Object.keys(sn).filter(x=>x.startsWith('p:')); if(ks.length>80) ks.slice(0,ks.length-80).forEach(x=>delete sn[x]);
+    const oid=openOf(me.id)?.id; Object.keys(sn).filter(x=>/^o[ts]:/.test(x) && x.slice(3)!==oid).forEach(x=>delete sn[x]);
+    const c={...f,seen:sn}; const p=prof(me.id); if(p) p.pomo_cfg={...(p.pomo_cfg||{}),...c};
+    await sb.from('profiles').update({pomo_cfg:c}).eq('id',me.id);
+  }catch(e){ /* 沒網路：照樣提醒，至少這台會看到 */ }
+  return true;
+}
+// 等畫面上沒有其他視窗、也沒在工作時才跳（最多等 2 分鐘）
+function whenFree(fn,tries=150){ if(document.querySelector('.modal-bg')||document.querySelector('.ring-ov')){ if(tries>0) setTimeout(()=>whenFree(fn,tries-1),800); return; } if(openOf(me.id)) return; fn(); }
+async function seenSet(k,v){ try{ const {data}=await sb.from('profiles').select('*').eq('id',me.id); const f=(data&&data[0]&&data[0].pomo_cfg)||prof(me.id)?.pomo_cfg||{};
+  const c={...f,seen:{...(f.seen||{}),[k]:v}}; const p=prof(me.id); if(p) p.pomo_cfg={...(p.pomo_cfg||{}),...c}; await W({t:'profiles',k:'update',row:{pomo_cfg:c},m:{id:me.id}}); }catch(e){} }
+
 // ---- 每天的目標（工時為主，番茄為輔）----
 function dayGoal(){ const c=pcfg(); return c.dg && c.dg.d===todayKey() ? (+c.dg.h||0) : (+c.dayGoal||0); }
-function maybeAskGoal(){ try{ if(window.__noYday || !pcfg().askGoal) return; const k=todayKey(); if(localStorage.getItem('wt_goal_ask')===k) return;
-  if(openOf(me.id) || pausedOf(me.id) || todayMs()>0) { localStorage.setItem('wt_goal_ask',k); return; }
-  if(document.querySelector('.modal-bg')) return setTimeout(maybeAskGoal,1200); localStorage.setItem('wt_goal_ask',k); openGoalAsk(); }catch(e){} }
+async function maybeAskGoal(){ try{ if(window.__noYday || !pcfg().askGoal) return; const k=todayKey(); if(seenOf().goal===k) return;
+  const c=pcfg(); if(c.dg && c.dg.d===k) return;   // 另一台已經設好今天的目標
+  if(openOf(me.id) || pausedOf(me.id) || todayMs()>0) return;
+  if(document.querySelector('.modal-bg')) return setTimeout(maybeAskGoal,1200);
+  if(maybeYesterday.pending) return setTimeout(maybeAskGoal,1200);
+  if(await claimOnce('goal',k)) whenFree(()=>{ if(!todayMs()) openGoalAsk(); }); }catch(e){} }
 function openGoalAsk(){ let h=dayGoal()||pcfg().dayGoal||3; const d=new Date(), hr=d.getHours();
   const hi=hr<11?'早安 ☀️':hr<18?'午安 🌤':'晚安 🌙';
   modal(`<div style="text-align:center"><div style="font-size:15px;color:var(--sub)">${hi}</div><h3 style="margin:4px 0 2px;font-size:21px">今天想做多久？</h3><div class="hint" style="margin:0 0 14px">只算今天，明天會回到平常的 ${pcfg().dayGoal} 小時</div>
@@ -1209,9 +1238,11 @@ function saveDayImage(D,y){ const c=document.createElement('canvas'), W2=720, H2
   if(D.sd){ g.fillStyle=acc; g.font='bold 32px sans-serif'; g.fillText('🏅 說到做到',W2/2,730); }
   g.fillStyle='#6b7280'; g.font='24px sans-serif'; g.fillText(D.done.slice(0,3).map(t=>'✓ '+t.title).join('  ').slice(0,40),W2/2,800);
   c.toBlob(b=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`今日小結_${D.dk}.png`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); toast('已存成圖片 ✓'); }); }
-function maybeYesterday(){ try{ if(window.__noYday) return; const k=todayKey(); if(localStorage.getItem('wt_ds_seen')===k) return; localStorage.setItem('wt_ds_seen',k);
-  const y=new Date(); y.setDate(y.getDate()-1); const yk=workDateKey(Date.now()-86400000,userCut(me.id)); const D=dayStats(yk);
-  if(D.ms>=10*60000 && !openOf(me.id) && !document.querySelector('.modal-bg')) setTimeout(()=>openDaySummary(yk,true),900); }catch(e){} }
+async function maybeYesterday(){ maybeYesterday.pending=true; try{ await maybeYesterday2(); } finally { setTimeout(()=>{ maybeYesterday.pending=false; },900); } }
+async function maybeYesterday2(){ try{ if(window.__noYday) return; const k=todayKey(); if(seenOf().ds===k) return;
+  const yk=workDateKey(Date.now()-86400000,userCut(me.id)); const D=dayStats(yk);
+  if(D.ms<10*60000 || openOf(me.id) || document.querySelector('.modal-bg')) return;
+  if(await claimOnce('ds',k)) setTimeout(()=>whenFree(()=>openDaySummary(yk,true)),500); }catch(e){} }
 
 // ---- 成就擴充：「我們」與小確幸 ----
 const US_STEPS=[5,10,25,50,100,200,500];
@@ -1656,7 +1687,7 @@ async function loadAch(){
   const d=await q('achievements',r=>r.order('created_at',{ascending:false})); if(!d) return;
   const fresh=d.filter(a=>a.user_id!==me.id && !(loadAch.seen||new Set()).has(a.id));
   st.ach=d; const first=!loadAch.seen; loadAch.seen=new Set(d.map(a=>a.id));
-  if(!first && fresh.length && !openOf(me.id)){ const a=fresh[0]; popKudos(`${achIcon(a)} ${esc(nameOf(a.user_id))}${a.kind==='say_do'?' 今天說到做到':' '+esc(achText(a))}`,'到「加油」頁送個愛心吧',a.id); notifyLocal(`${nameOf(a.user_id)}：${achText(a)}`,false,'wt-ach'); }
+  if(!first && fresh.length && !openOf(me.id)){ const a=fresh[0]; if(!(await claimOnce('p:a'+a.id,1))) return; popKudos(`${achIcon(a)} ${esc(nameOf(a.user_id))}${a.kind==='say_do'?' 今天說到做到':' '+esc(achText(a))}`,'到「加油」頁送個愛心吧',a.id); notifyLocal(`${nameOf(a.user_id)}：${achText(a)}`,false,'wt-ach'); }
 }
 function achText(a){ const m=a.meta||{};
   if(EGGS[a.kind]) return EGGS[a.kind][1];
@@ -2011,15 +2042,21 @@ function reviewHTML(R, inModal){
     ${inModal?'':`<div class="row" style="gap:8px;margin-top:12px"><button class="btn ghost sm" id="rvHide" style="flex:1">收起</button><button class="btn sm" id="rvGo" style="flex:2">開始新的一週 →</button></div>`}</div>`;
 }
 function reviewWeekKey(){ return periodOf('week',Date.now(),0,userCut(me.id)).start.toISOString(); }
-function showReviewCard(){ let seen=null; try{ seen=localStorage.getItem('wt_review_seen'); }catch(e){} if(seen===reviewWeekKey()) return null; const R=reviewData(-1); return R.count?R:null; }
-function hideReview(){ try{ localStorage.setItem('wt_review_seen',reviewWeekKey()); }catch(e){} }
+function showReviewCard(){ let seen=null; try{ seen=localStorage.getItem('wt_review_seen'); }catch(e){} const wk=reviewWeekKey(); if(seen===wk || seenOf().rv===wk) return null; const R=reviewData(-1); return R.count?R:null; }
+function hideReview(){ const wk=reviewWeekKey(); try{ localStorage.setItem('wt_review_seen',wk); }catch(e){} seenSet('rv',wk); }
 function openReviewModal(){ const R=reviewData(-1); modal(`${reviewHTML(R,true)}<div class="actions"><button class="btn" id="rvX">關閉</button></div>`,(el,close)=>{ el.querySelector('#rvX').onclick=close; }); }
 // ---- 超時提醒 ----
 function checkOvertime(){
   const o=openOf(me.id); if(!o || document.querySelector('.modal-bg')) return;
   const h=+(prof(me.id)?.remind_hours ?? 3); if(!(h>0)) return;
   let next=+new Date(o.start_at)+h*3600000; try{ const s=localStorage.getItem('wt_snooze_'+o.id); if(s) next=+s; }catch(e){}
-  if(Date.now()<next) return;
+  const sv=+(seenOf()['os:'+o.id]||0); if(sv>next) next=sv;
+  if(Date.now()<next || checkOvertime.busy) return;
+  checkOvertime.busy=true; claimOnce('ot:'+o.id,String(next)).then(async ok=>{ checkOvertime.busy=false;
+    try{ localStorage.setItem('wt_snooze_'+o.id, Date.now()+3600000); }catch(e){}
+    if(ok){ await seenSet('os:'+o.id, Date.now()+3600000); overtimeShow(o); } });
+}
+function overtimeShow(o){ if(document.querySelector('.modal-bg')) return;
   const el=Date.now()-new Date(o.start_at);
   if(document.hidden){ notifyLocal(`已經工作 ${zhShort(el)} 了，還在做嗎？`,false,'wt-overtime'); try{ localStorage.setItem('wt_snooze_'+o.id, Date.now()+3600000); }catch(e){} return; }
   try{ localStorage.setItem('wt_snooze_'+o.id, Date.now()+3600000); }catch(e){}
@@ -2839,7 +2876,7 @@ function renderMe(){
   }));
   on('goRem',openRemindHoursModal);
   on('goPomo',()=>{ st.meView='pomo'; render(); window.scrollTo(0,0); });
-  on('goAbout',()=>modal(`<h3>關於 Work Together</h3><p class="hint" style="font-size:14px">版本 v18.3（2026/11）<br>兩個人一起工作、互相加油的小工具。</p>
+  on('goAbout',()=>modal(`<h3>關於 Work Together</h3><p class="hint" style="font-size:14px">版本 v18.4（2026/11）<br>兩個人一起工作、互相加油的小工具。</p>
     <p class="hint" style="font-size:13px">提醒音效「小段旋律」「連續長音」使用 FluidR3_GM 音色庫的樂器錄音（Frank Wen 製作），經 gleitz/midi-js-soundfonts 轉成網頁可用的格式。</p><div class="actions"><button class="btn" id="abX">知道了</button></div>`,(el,close)=>{ el.querySelector('#abX').onclick=close; }));
   on('goTheme',()=>{ const cur=themeMode();
     modal(`<h3>外觀</h3><div class="pm-grid" style="grid-template-columns:repeat(3,1fr)">${[['auto','🔄 跟隨手機'],['light','☀️ 淺色'],['dark','🌙 深色']].map(([k,l])=>`<button class="dq-b ${k===cur?'on':''}" data-th="${k}" style="padding:12px 6px">${l}</button>`).join('')}</div>
